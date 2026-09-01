@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anatomia Muscular & Guia Especialista de Exercícios</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=15" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dark-theme">
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-icon">
+        <i data-lucide="activity"></i>
+      </div>
+      <div>
+        <h1 class="brand-title">Anatomia & Musculação</h1>
+        <div class="brand-subtitle">Desenho Anatômico Profissional & Guia de Exercícios de Atletas</div>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <div class="nav-tab-group">
+        <button id="tab-btn-explorer" class="nav-tab-btn active">
+          <i data-lucide="compass"></i> Explorar
+        </button>
+        <button id="tab-btn-planner" class="nav-tab-btn">
+          <i data-lucide="calendar"></i> Montar Treino
+        </button>
+      </div>
+
+      <button id="btn-toggle-sound" class="btn-icon-text">
+        <i data-lucide="volume-x"></i> Som Off
+      </button>
+
+      <button id="btn-toggle-theme" class="btn-icon-text">
+        <i data-lucide="sun"></i> Tema Claro
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Grid -->
+  <main class="main-wrapper">
+    
+    <!-- Coluna Esquerda: Palco Anatômico 360° -->
+    <section class="model-viewport-card">
+      <div class="viewport-header">
+        <div class="viewport-title">
+          <i data-lucide="sparkles" style="color: var(--primary-red)"></i>
+          <span id="anatomy-title">Visão Anatômica Interativa</span>
+        </div>
+        <div class="view-mode-toggle" style="display: flex; gap: 8px;">
+          <button id="btn-view-3d" class="ctrl-btn active" title="Visualização Ilustrada 360°">
+            <i data-lucide="rotate-cw"></i> 360°
+          </button>
+          <button id="btn-view-organic" class="ctrl-btn" title="Anatomia Vetorial Orgânica Integrada">
+            <i data-lucide="box"></i> Vetor SVG
+          </button>
+        </div>
+      </div>
+
+      <!-- Container do Canvas / Imagem -->
+      <div class="canvas-container">
+        <div id="threejs-canvas-container" style="width: 100%; height: 100%;">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+        <!-- Overlay Badge de Músculo Selecionado -->
+        <div id="muscle-overlay-badge" class="muscle-badge-overlay" style="opacity: 0;">
+          <div class="badge-label">Grupo Muscular</div>
+          <div class="badge-name">Peitoral</div>
+        </div>
+      </div>
+
+      <!-- Barra de Controle de Giro -->
+      <div class="model-controls-bar">
+        <button id="btn-view-front" class="ctrl-btn">
+          <i data-lucide="arrow-left" style="width: 14px;"></i> Frente
+        </button>
+        <button id="btn-view-back" class="ctrl-btn">
+          Costas <i data-lucide="arrow-right" style="width: 14px;"></i>
+        </button>
+        <button id="btn-auto-spin" class="ctrl-btn" title="Girar Automaticamente">
+          <i data-lucide="rotate-cw" style="width: 14px;"></i> Giro Auto
+        </button>
+      </div>
+    </section>
+
+    <!-- Coluna Direita: Painel de Conteúdo -->
+    <section class="content-card-panel">
+      
+      <!-- Painel do Explorador (Ativo por Padrão) -->
+      <div id="explorer-panel-content" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+        
+        <!-- Barra Superior de Ações -->
+        <div class="panel-header-toolbar">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="exercise-search-input" placeholder="Buscar exercício por nome, equipamento..." />
+          </div>
+          <button id="btn-add-new-ex" class="btn-primary" style="margin-left: 16px; font-size: 0.85rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="plus"></i> Novo Exercício
+          </button>
+        </div>
+
+        <!-- Barra de Filtros de Categoria -->
+        <div id="category-filter-bar" class="category-filter-bar">
+          <!-- Inserido dinamicamente via ExerciseUI -->
+        </div>
+
+        <!-- Detalhes do Músculo Ativo (Banner) -->
+        <div id="muscle-banner-container" class="muscle-banner-details">
+          <!-- Inserido dinamicamente via ExerciseUI -->
+        </div>
+
+        <!-- Lista Rolável de Exercícios -->
+        <div id="exercise-list-container" class="exercise-scroll-list">
+          <!-- Inserido dinamicamente via ExerciseUI -->
+        </div>
+      </div>
+
+      <!-- Painel de Montador de Treino (Oculto por Padrão) -->
+      <div id="planner-panel-content" class="planner-panel">
+        <div id="planner-container">
+          <!-- Inserido dinamicamente via WorkoutPlanner -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Script Principal App Orchestrator -->
+  <script type="module" src="js/app.js?v=15"></script>
+</body>
+</html>
