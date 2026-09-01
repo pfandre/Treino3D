@@ -125,8 +125,8 @@ export class ImageAnatomyInteractive {
       // Frame 0: Front
       0: `
         <path data-muscle="cuello" data-pin-x="50" data-pin-y="14" class="anatomy-trigger-area" d="M 440 100 C 460 95, 540 95, 560 100 L 545 170 L 455 170 Z" />
-        <path data-muscle="pecho" data-pin-x="38" data-pin-y="24" class="anatomy-trigger-area" d="M 320 175 C 380 170, 480 175, 480 180 L 480 295 C 400 292, 335 280, 315 240 Z" />
-        <path data-muscle="pecho" data-pin-x="62" data-pin-y="24" class="anatomy-trigger-area" d="M 520 180 C 520 175, 620 170, 680 175 L 685 240 C 665 280, 600 292, 520 295 Z" />
+        <path data-muscle="pecho" data-pin-x="45" data-pin-y="26" class="anatomy-trigger-area" d="M 490 210 C 450 210, 420 215, 410 220 L 400 280 C 420 295, 450 310, 490 310 Z" />
+        <path data-muscle="pecho" data-pin-x="55" data-pin-y="26" class="anatomy-trigger-area" d="M 510 210 C 550 210, 580 215, 590 220 L 600 280 C 580 295, 550 310, 510 310 Z" />
         <path data-muscle="hombros" data-pin-x="31" data-pin-y="22" class="anatomy-trigger-area" d="M 230 175 C 270 170, 320 175, 320 180 L 325 250 C 290 265, 245 255, 225 215 Z" />
         <path data-muscle="hombros" data-pin-x="69" data-pin-y="22" class="anatomy-trigger-area" d="M 680 180 C 680 175, 730 170, 770 175 L 775 215 C 755 255, 710 265, 675 250 Z" />
         <path data-muscle="biceps" data-pin-x="22" data-pin-y="33" class="anatomy-trigger-area" d="M 195 260 C 230 258, 265 260, 265 268 L 255 395 C 230 400, 195 392, 185 375 Z" />
@@ -207,14 +207,23 @@ export class ImageAnatomyInteractive {
 
     let currentPaths = svgAreas[this.currentFrame] || svgAreas[0];
     currentPaths += `
-      <g id="muscle-target-pin" style="display: none; pointer-events: none;">
-        <circle cx="0" cy="0" r="8" fill="none" stroke="#ffffff" stroke-width="2">
-          <animate attributeName="r" values="8;24" dur="1.5s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="1;0" dur="1.5s" repeatCount="indefinite" />
-          <animate attributeName="stroke-width" values="2.5;0.5" dur="1.5s" repeatCount="indefinite" />
-        </circle>
-        <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-red)" stroke-width="2.5" />
-      </g>
+        <!-- Pin Target (Até 2 que se movem para músculos bilaterais) -->
+        <g id="muscle-target-pin" style="display: none; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+          <circle cx="0" cy="0" r="12" fill="var(--primary-red)" opacity="0.3" />
+          <circle cx="0" cy="0" r="8" fill="none" stroke="#ffffff" stroke-width="2">
+            <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-red)" stroke-width="2.5" />
+        </g>
+        <g id="muscle-target-pin-2" style="display: none; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+          <circle cx="0" cy="0" r="12" fill="var(--primary-red)" opacity="0.3" />
+          <circle cx="0" cy="0" r="8" fill="none" stroke="#ffffff" stroke-width="2">
+            <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-red)" stroke-width="2.5" />
+        </g>
     `;
     return currentPaths;
   }
@@ -341,7 +350,9 @@ export class ImageAnatomyInteractive {
 
     // Esconder pin ao mudar de quadro
     const pin = document.getElementById('muscle-target-pin');
+    const pin2 = document.getElementById('muscle-target-pin-2');
     if (pin) pin.style.display = 'none';
+    if (pin2) pin2.style.display = 'none';
   }
 
   showAngleIndicator() {
@@ -411,22 +422,38 @@ export class ImageAnatomyInteractive {
   selectMuscle(muscleId, triggerCallback = true, pinX = null, pinY = null) {
     this.selectedMuscleId = muscleId;
 
-    if (!pinX || !pinY) {
+    let pinsCoords = [];
+    if (pinX && pinY) {
+      pinsCoords.push({x: pinX, y: pinY});
+    } else {
       if (this.container) {
-        const area = this.container.querySelector(`.anatomy-trigger-area[data-muscle="${muscleId}"]`);
-        if (area && area.dataset) {
-          pinX = area.dataset.pinX;
-          pinY = area.dataset.pinY;
-        }
+        const areas = this.container.querySelectorAll(`.anatomy-trigger-area[data-muscle="${muscleId}"]`);
+        areas.forEach(area => {
+          if (area.dataset && area.dataset.pinX && area.dataset.pinY) {
+            pinsCoords.push({x: area.dataset.pinX, y: area.dataset.pinY});
+          }
+        });
       }
     }
 
-    const pin = document.getElementById('muscle-target-pin');
-    if (pin && pinX && pinY) {
-      const x = parseFloat(pinX) * 10;
-      const y = parseFloat(pinY) * 10;
-      pin.setAttribute('transform', `translate(${x}, ${y})`);
-      pin.style.display = 'block';
+    // Hide all pins first
+    const pin1 = document.getElementById('muscle-target-pin');
+    const pin2 = document.getElementById('muscle-target-pin-2');
+    if (pin1) pin1.style.display = 'none';
+    if (pin2) pin2.style.display = 'none';
+
+    // Show needed pins
+    if (pinsCoords.length > 0 && pin1) {
+      const x = parseFloat(pinsCoords[0].x) * 10;
+      const y = parseFloat(pinsCoords[0].y) * 10;
+      pin1.setAttribute('transform', `translate(${x}, ${y})`);
+      pin1.style.display = 'block';
+    }
+    if (pinsCoords.length > 1 && pin2) {
+      const x = parseFloat(pinsCoords[1].x) * 10;
+      const y = parseFloat(pinsCoords[1].y) * 10;
+      pin2.setAttribute('transform', `translate(${x}, ${y})`);
+      pin2.style.display = 'block';
     }
 
     if (triggerCallback && this.onSelectCallback) {
@@ -436,7 +463,7 @@ export class ImageAnatomyInteractive {
 
   rotateToFront() {
     this.setFrame(0);
-    this.selectMuscle('pecho', true, 38, 24);
+    this.selectMuscle('pecho');
   }
 
   rotateToBack() {
