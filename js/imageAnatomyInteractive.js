@@ -187,8 +187,8 @@ export class ImageAnatomyInteractive {
       4: `
         <path data-muscle="cuello" data-pin-x="50" data-pin-y="12" class="anatomy-trigger-area" d="M 430 80 C 460 75, 540 75, 570 80 L 555 155 L 445 155 Z" />
         <path data-muscle="espalda" data-pin-x="50" data-pin-y="28" class="anatomy-trigger-area" d="M 320 160 L 680 160 C 660 300, 650 390, 635 425 C 600 380, 570 295, 565 210 C 555 295, 525 380, 490 425 C 475 390, 440 300, 320 160 Z" />
-        <path data-muscle="hombros" data-pin-x="28" data-pin-y="20" class="anatomy-trigger-area" d="M 220 165 C 260 160, 320 165, 320 172 L 328 245 C 295 258, 240 250, 215 215 Z" />
-        <path data-muscle="hombros" data-pin-x="72" data-pin-y="20" class="anatomy-trigger-area" d="M 680 172 C 680 165, 740 160, 780 165 L 785 215 C 760 250, 705 258, 672 245 Z" />
+        <path data-muscle="hombros" data-pin-x="31" data-pin-y="22" class="anatomy-trigger-area" d="M 220 165 C 260 160, 320 165, 320 172 L 328 245 C 295 258, 240 250, 215 215 Z" />
+        <path data-muscle="hombros" data-pin-x="69" data-pin-y="22" class="anatomy-trigger-area" d="M 680 172 C 680 165, 740 160, 780 165 L 785 215 C 760 250, 705 258, 672 245 Z" />
         <path data-muscle="triceps" data-pin-x="22" data-pin-y="31" class="anatomy-trigger-area" d="M 175 252 C 215 248, 255 252, 255 258 L 245 385 C 225 390, 185 382, 170 365 Z" />
         <path data-muscle="triceps" data-pin-x="78" data-pin-y="31" class="anatomy-trigger-area" d="M 745 258 C 745 252, 785 248, 825 252 L 830 365 C 815 382, 775 390, 755 385 Z" />
         <path data-muscle="antebrazos" data-pin-x="35" data-pin-y="43" class="anatomy-trigger-area" d="M 345 360 C 365 360, 380 375, 380 395 L 355 495 C 335 495, 312 480, 312 455 L 345 360 Z" />
