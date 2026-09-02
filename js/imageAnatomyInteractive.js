@@ -129,8 +129,8 @@ export class ImageAnatomyInteractive {
         <path data-muscle="pecho" data-pin-x="55" data-pin-y="26" class="anatomy-trigger-area" d="M 510 210 C 550 210, 580 215, 590 220 L 600 280 C 580 295, 550 310, 510 310 Z" />
         <path data-muscle="hombros" data-pin-x="38.6" data-pin-y="24" class="anatomy-trigger-area" d="M 410 200 C 380 195, 360 200, 350 210 L 340 260 C 350 270, 370 280, 400 280 Z" />
         <path data-muscle="hombros" data-pin-x="61.4" data-pin-y="24" class="anatomy-trigger-area" d="M 590 200 C 620 195, 640 200, 650 210 L 660 260 C 650 270, 630 280, 600 280 Z" />
-        <path data-muscle="biceps" data-pin-x="35" data-pin-y="33" class="anatomy-trigger-area" d="M 320 260 C 355 258, 390 260, 390 268 L 380 395 C 355 400, 320 392, 310 375 Z" />
-        <path data-muscle="biceps" data-pin-x="65" data-pin-y="33" class="anatomy-trigger-area" d="M 610 268 C 610 260, 645 258, 680 260 L 690 375 C 680 392, 645 400, 620 395 Z" />
+        <path data-muscle="biceps" data-pin-x="36.5" data-pin-y="33" class="anatomy-trigger-area" d="M 335 260 C 370 258, 405 260, 405 268 L 395 395 C 370 400, 335 392, 325 375 Z" />
+        <path data-muscle="biceps" data-pin-x="63.5" data-pin-y="33" class="anatomy-trigger-area" d="M 595 268 C 595 260, 630 258, 665 260 L 675 375 C 665 392, 630 400, 605 395 Z" />
         <path data-muscle="antebrazos" data-pin-x="35" data-pin-y="42" class="anatomy-trigger-area" d="M 340 360 C 365 358, 380 370, 380 385 L 355 490 C 335 492, 320 480, 320 465 L 340 360 Z" />
         <path data-muscle="antebrazos" data-pin-x="65" data-pin-y="42" class="anatomy-trigger-area" d="M 660 360 C 635 358, 620 370, 620 385 L 645 490 C 665 492, 680 480, 680 465 L 660 360 Z" />
         <path data-muscle="abdominales" data-pin-x="50" data-pin-y="38" class="anatomy-trigger-area" d="M 400 300 L 600 300 L 585 505 L 415 505 Z" />
@@ -145,7 +145,7 @@ export class ImageAnatomyInteractive {
         <path data-muscle="pecho" data-pin-x="45" data-pin-y="24" class="anatomy-trigger-area" d="M 330 180 C 380 175, 520 180, 560 185 L 555 290 C 460 288, 345 275, 325 240 Z" />
         <path data-muscle="hombros" data-pin-x="29.1" data-pin-y="21" class="anatomy-trigger-area" d="M 250 178 C 290 175, 335 178, 335 183 L 340 250 C 305 262, 260 255, 245 218 Z" />
         <path data-muscle="hombros" data-pin-x="61.9" data-pin-y="21" class="anatomy-trigger-area" d="M 560 185 C 590 180, 640 178, 670 183 L 680 230 C 665 260, 620 268, 575 255 Z" />
-        <path data-muscle="biceps" data-pin-x="32" data-pin-y="33" class="anatomy-trigger-area" d="M 290 262 C 325 258, 360 262, 360 268 L 350 395 C 328 400, 295 392, 280 375 Z" />
+        <path data-muscle="biceps" data-pin-x="33.5" data-pin-y="33" class="anatomy-trigger-area" d="M 305 262 C 340 258, 375 262, 375 268 L 365 395 C 343 400, 310 392, 295 375 Z" />
         <path data-muscle="antebrazos" data-pin-x="37" data-pin-y="42" class="anatomy-trigger-area" d="M 365 355 C 385 355, 397 370, 397 390 L 375 495 C 360 498, 350 485, 350 465 L 365 355 Z" />
         <path data-muscle="antebrazos" data-pin-x="60" data-pin-y="42" class="anatomy-trigger-area" d="M 605 370 C 625 370, 637 385, 635 405 L 610 485 C 595 488, 580 475, 580 455 L 605 370 Z" />
         <path data-muscle="triceps" data-pin-x="72" data-pin-y="31" class="anatomy-trigger-area" d="M 670 265 C 700 260, 730 265, 730 270 L 720 390 C 705 395, 675 388, 665 370 Z" />
