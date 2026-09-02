@@ -76,9 +76,9 @@ export class OrganicAnatomySVG {
 
         <!-- MÚSCULOS ANATÔMICOS INTERATIVOS (CURVAS ORGÂNICAS REAIS) -->
         <g id="muscle-groups">
-          <!-- PESCOÇO (CUELLO) -->
-          <path data-muscle="cuello" class="muscle-path" d="M 186 102 C 188 115, 190 120, 193 125 L 180 128 C 175 120, 178 110, 186 102 Z" />
-          <path data-muscle="cuello" class="muscle-path" d="M 214 102 C 212 115, 210 120, 207 125 L 220 128 C 225 120, 222 110, 214 102 Z" />
+          <!-- PESCOÇO / TRAPÉZIO (TRAPEZIO) -->
+          <path data-muscle="trapezio" class="muscle-path" d="M 186 102 C 188 115, 190 120, 193 125 L 180 128 C 175 120, 178 110, 186 102 Z" />
+          <path data-muscle="trapezio" class="muscle-path" d="M 214 102 C 212 115, 210 120, 207 125 L 220 128 C 225 120, 222 110, 214 102 Z" />
 
           <!-- PEITORAL MAIOR (PECHO) -->
           <path data-muscle="pecho" class="muscle-path" d="M 162 128 C 180 125, 196 128, 197 132 C 197 165, 188 185, 158 180 C 150 170, 150 145, 162 128 Z" />

@@ -26,7 +26,7 @@ export class MuscleModel3D {
     
     // Mapeamento de Cores Fiéis à Anatomia do Usuário
     this.COLOR_MAP = {
-      cuello: 0xcc0000,       // Vermelho Escuro
+      trapezio: 0xcc0000,       // Vermelho Escuro
       pecho: 0xff4500,        // Vermelho-Laranja
       hombros: 0xe52b2b,      // Vermelho
       biceps: 0xffcc00,       // Amarelo
@@ -136,7 +136,7 @@ export class MuscleModel3D {
 
     // Pescoço (Vermelho)
     const neckGeo = new THREE.CylinderGeometry(0.075, 0.095, 0.14, 20);
-    this.addMusclePart("cuello", neckGeo, { x: 0, y: 1.58, z: 0 });
+    this.addMusclePart("trapezio", neckGeo, { x: 0, y: 1.58, z: 0 });
 
     // --- B. Peitoral (Pecho - Laranja/Vermelho) ---
     const pecUpperGeo = new THREE.BoxGeometry(0.19, 0.11, 0.08);

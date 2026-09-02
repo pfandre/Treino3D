@@ -90,8 +90,8 @@ export class VectorAnatomy2D {
 
         <!-- 2. MÚSCULOS COLORIDOS PERFEITAMENTE ENCAIXADOS (VISTA FRONTAL) -->
         <g id="muscles-front">
-          <!-- PESCOÇO (VERMELHO - CUELLO) -->
-          <path data-muscle="cuello" class="h-muscle" fill="#cc0000" stroke="#0f172a" stroke-width="1.3" d="M 106 80 L 120 98 L 134 80 C 142 92, 138 104, 120 106 C 102 104, 98 92, 106 80 Z" />
+          <!-- PESCOÇO / TRAPÉZIO (VERMELHO - TRAPEZIO) -->
+          <path data-muscle="trapezio" class="h-muscle" fill="#cc0000" stroke="#0f172a" stroke-width="1.3" d="M 106 80 L 120 98 L 134 80 C 142 92, 138 104, 120 106 C 102 104, 98 92, 106 80 Z" />
 
           <!-- PEITORAL MAIOR (VERMELHO-LARANJA - PECHO) -->
           <path data-muscle="pecho" class="h-muscle" fill="#ff4500" stroke="#0f172a" stroke-width="1.3" d="M 78 106 C 98 102, 118 106, 118 108 C 118 148, 106 156, 76 150 C 70 140, 70 118, 78 106 Z" />
@@ -162,8 +162,8 @@ export class VectorAnatomy2D {
 
         <!-- 2. MÚSCULOS COLORIDOS POSTERIORES HARMONIOSOS -->
         <g id="muscles-back">
-          <!-- PESCOÇO / TRAPÉZIO SUPERIOR (VERMELHO - CUELLO) -->
-          <path data-muscle="cuello" class="h-muscle" fill="#cc0000" stroke="#0f172a" stroke-width="1.3" d="M 104 80 L 120 102 L 136 80 C 144 94, 140 106, 120 108 C 100 106, 96 94, 104 80 Z" />
+          <!-- PESCOÇO / TRAPÉZIO SUPERIOR (VERMELHO - TRAPEZIO) -->
+          <path data-muscle="trapezio" class="h-muscle" fill="#cc0000" stroke="#0f172a" stroke-width="1.3" d="M 104 80 L 120 102 L 136 80 C 144 94, 140 106, 120 108 C 100 106, 96 94, 104 80 Z" />
 
           <!-- COSTAS & TRAPÉZIO/DORSAL (VERMELHO-LARANJA - ESPALDA) -->
           <path data-muscle="espalda" class="h-muscle" fill="#ff4500" stroke="#0f172a" stroke-width="1.3" d="M 78 106 C 98 112, 120 120, 120 175 C 98 164, 78 148, 78 106 Z" />
