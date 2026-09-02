@@ -51,7 +51,7 @@ export class WorkoutPlanner {
       checkboxesHtml += `
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
           <input type="checkbox" value="${key}" class="muscle-checkbox" style="width: 16px; height: 16px; accent-color: var(--primary-red);">
-          <span style="font-size: 0.9rem; color: #fff;">${muscle.name.split(' (')[0]}</span>
+          <span style="font-size: 0.9rem; color: var(--text-main);">${muscle.name.split(' (')[0]}</span>
         </label>
       `;
     });
@@ -59,14 +59,14 @@ export class WorkoutPlanner {
     modal.innerHTML = `
       <div style="background: var(--bg-card); width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column;">
         <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-          <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #fff; margin: 0;">Novo Treino</h3>
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin: 0;">Novo Treino</h3>
           <button id="btn-close-modal" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="x"></i></button>
         </div>
         
         <div style="padding: 20px; overflow-y: auto; max-height: 60vh;">
           <div style="margin-bottom: 20px;">
             <label style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase;">Nome do Treino</label>
-            <input type="text" id="routine-name-input" placeholder="Ex: Treino Upper, Push, Sabadão..." style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 1rem; outline: none;">
+            <input type="text" id="routine-name-input" placeholder="Ex: Treino Upper, Push, Sabadão..." style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 1rem; outline: none;">
           </div>
           
           <div>
@@ -197,7 +197,7 @@ export class WorkoutPlanner {
     this.containerEl.innerHTML = `
       <div class="planner-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
         <div>
-          <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">
+          <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: var(--text-main);">
             <i data-lucide="calendar" style="color: var(--primary-red)"></i> Montador de Rotinas de Treino
           </h3>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
@@ -234,7 +234,7 @@ export class WorkoutPlanner {
       <div class="metrics-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0;">
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Exercícios</div>
-          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: #fff;">${totalExercises}</div>
+          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text-main);">${totalExercises}</div>
         </div>
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Séries Totais</div>
@@ -242,7 +242,7 @@ export class WorkoutPlanner {
         </div>
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Tempo Estimado</div>
-          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: #fff;">${totalExercises * 12} min</div>
+          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text-main);">${totalExercises * 12} min</div>
         </div>
       </div>
 
@@ -258,7 +258,7 @@ export class WorkoutPlanner {
             ${activeRoutine.exercises.map((ex, idx) => `
               <div class="exercise-card" style="flex-direction: row; align-items: center; justify-content: space-between;">
                 <div>
-                  <h4 style="font-size: 1rem; color: #fff;">${idx + 1}. ${ex.name}</h4>
+                  <h4 style="font-size: 1rem; color: var(--text-main);">${idx + 1}. ${ex.name}</h4>
                   <span class="target-head-badge">${ex.targetHead}</span>
                   <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">${ex.equipment} | ${ex.customSets}</div>
                 </div>

@@ -2,13 +2,13 @@
  * App.js - Orquestrador Principal do Aplicativo Anatômico Profissional Mestre
  */
 
-import { MUSCLE_DATABASE } from './database.js?v=20';
-import { ImageAnatomyInteractive } from './imageAnatomyInteractive.js?v=20';
-import { OrganicAnatomySVG } from './organicAnatomySVG.js?v=20';
-import { ExerciseUI } from './exerciseUI.js?v=20';
-import { EditorModal } from './editorModal.js?v=20';
-import { WorkoutPlanner } from './workoutPlanner.js?v=20';
-import { SoundEffects } from './soundEffects.js?v=20';
+import { MUSCLE_DATABASE } from './database.js?v=21';
+import { ImageAnatomyInteractive } from './imageAnatomyInteractive.js?v=21';
+import { OrganicAnatomySVG } from './organicAnatomySVG.js?v=21';
+import { ExerciseUI } from './exerciseUI.js?v=21';
+import { EditorModal } from './editorModal.js?v=21';
+import { WorkoutPlanner } from './workoutPlanner.js?v=21';
+import { SoundEffects } from './soundEffects.js?v=21';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
