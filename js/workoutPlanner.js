@@ -1,6 +1,7 @@
 /**
  * WorkoutPlanner - Criador Avançado de Rotinas de Treino & Métricas Atléticas
  */
+import { MUSCLE_DATABASE } from './database.js';
 
 export class WorkoutPlanner {
   constructor(options) {
@@ -34,17 +35,101 @@ export class WorkoutPlanner {
     this.render();
   }
 
-  addNewRoutine() {
-    const name = prompt("Digite o nome do novo treino (ex: Treino D - Full Body):");
-    if (name && name.trim()) {
+  openRoutineModal() {
+    const modal = document.createElement('div');
+    modal.className = 'routine-modal-overlay';
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 3000; padding: 20px; transition: opacity 0.3s ease;
+    `;
+
+    let checkboxesHtml = '';
+    Object.keys(MUSCLE_DATABASE).forEach(key => {
+      const muscle = MUSCLE_DATABASE[key];
+      checkboxesHtml += `
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+          <input type="checkbox" value="${key}" class="muscle-checkbox" style="width: 16px; height: 16px; accent-color: var(--primary-red);">
+          <span style="font-size: 0.9rem; color: #fff;">${muscle.name.split(' (')[0]}</span>
+        </label>
+      `;
+    });
+
+    modal.innerHTML = `
+      <div style="background: var(--bg-card); width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #fff; margin: 0;">Novo Treino</h3>
+          <button id="btn-close-modal" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="x"></i></button>
+        </div>
+        
+        <div style="padding: 20px; overflow-y: auto; max-height: 60vh;">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase;">Nome do Treino</label>
+            <input type="text" id="routine-name-input" placeholder="Ex: Treino Upper, Push, Sabadão..." style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 1rem; outline: none;">
+          </div>
+          
+          <div>
+            <label style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase;">Adicionar Exercícios dos Músculos:</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              ${checkboxesHtml}
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px;">
+              * Todos os exercícios dos músculos marcados serão adicionados ao treino automaticamente.
+            </p>
+          </div>
+        </div>
+        
+        <div style="padding: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2);">
+          <button id="btn-cancel-modal" class="btn-secondary" style="padding: 10px 20px;">Cancelar</button>
+          <button id="btn-save-modal" class="btn-primary" style="padding: 10px 24px;">Salvar Treino</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    if (window.lucide) window.lucide.createIcons({ root: modal });
+
+    const inputEl = modal.querySelector('#routine-name-input');
+    setTimeout(() => inputEl.focus(), 100);
+
+    const closeModal = () => {
+      modal.style.opacity = '0';
+      setTimeout(() => modal.remove(), 300);
+    };
+
+    modal.querySelector('#btn-close-modal').addEventListener('click', closeModal);
+    modal.querySelector('#btn-cancel-modal').addEventListener('click', closeModal);
+    
+    modal.querySelector('#btn-save-modal').addEventListener('click', () => {
+      const name = inputEl.value.trim();
+      if (!name) {
+        alert("Por favor, digite um nome para o treino.");
+        return;
+      }
+
+      const selectedMuscles = Array.from(modal.querySelectorAll('.muscle-checkbox:checked')).map(cb => cb.value);
+      let newExercises = [];
+
+      selectedMuscles.forEach(muscleKey => {
+        const cat = MUSCLE_DATABASE[muscleKey];
+        if (cat && cat.exercises) {
+          cat.exercises.forEach(ex => {
+            newExercises.push({ ...ex, customSets: '4 séries x 10-12 reps' });
+          });
+        }
+      });
+
       const key = 'routine_' + Date.now();
-      this.routines[key] = { name: name.trim(), exercises: [] };
+      this.routines[key] = { name: name, exercises: newExercises };
       this.activeRoutineKey = key;
       this.saveRoutinesToStorage();
       this.render();
       if (this.soundEffects) this.soundEffects.playAdd();
-      this.showNotification(`Treino "${name}" criado com sucesso!`);
-    }
+      this.showNotification(\`Treino "\${name}" criado com \${newExercises.length} exercícios!\`);
+      
+      closeModal();
+    });
   }
 
   renameRoutine() {
@@ -210,7 +295,7 @@ export class WorkoutPlanner {
     }
 
     const btnAddRoutine = document.getElementById('btn-add-routine');
-    if (btnAddRoutine) btnAddRoutine.addEventListener('click', () => this.addNewRoutine());
+    if (btnAddRoutine) btnAddRoutine.addEventListener('click', () => this.openRoutineModal());
 
     const btnRenameRoutine = document.getElementById('btn-rename-routine');
     if (btnRenameRoutine) btnRenameRoutine.addEventListener('click', () => this.renameRoutine());
