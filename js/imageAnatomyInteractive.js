@@ -134,8 +134,8 @@ export class ImageAnatomyInteractive {
         <path data-muscle="antebrazos" data-pin-x="35" data-pin-y="42" class="anatomy-trigger-area" d="M 340 360 C 365 358, 380 370, 380 385 L 355 490 C 335 492, 320 480, 320 465 L 340 360 Z" />
         <path data-muscle="antebrazos" data-pin-x="65" data-pin-y="42" class="anatomy-trigger-area" d="M 660 360 C 635 358, 620 370, 620 385 L 645 490 C 665 492, 680 480, 680 465 L 660 360 Z" />
         <path data-muscle="abdominales" data-pin-x="50" data-pin-y="38" class="anatomy-trigger-area" d="M 400 300 L 600 300 L 585 505 L 415 505 Z" />
-        <path data-muscle="quadriceps" data-pin-x="41.5" data-pin-y="60" class="anatomy-trigger-area" d="M 340 510 C 400 505, 485 510, 485 516 L 470 760 C 410 758, 340 735, 340 700 Z" />
-        <path data-muscle="quadriceps" data-pin-x="58.5" data-pin-y="60" class="anatomy-trigger-area" d="M 515 516 C 515 510, 600 505, 660 510 L 660 700 C 660 735, 590 758, 530 760 Z" />
+        <path data-muscle="quadriceps" data-pin-x="43" data-pin-y="60" class="anatomy-trigger-area" d="M 340 510 C 400 505, 485 510, 485 516 L 470 760 C 410 758, 340 735, 340 700 Z" />
+        <path data-muscle="quadriceps" data-pin-x="57" data-pin-y="60" class="anatomy-trigger-area" d="M 515 516 C 515 510, 600 505, 660 510 L 660 700 C 660 735, 590 758, 530 760 Z" />
         <path data-muscle="pantorrillas" data-pin-x="38" data-pin-y="80" class="anatomy-trigger-area" d="M 335 765 C 380 762, 430 765, 430 772 L 415 920 C 380 925, 335 910, 335 890 Z" />
         <path data-muscle="pantorrillas" data-pin-x="62" data-pin-y="80" class="anatomy-trigger-area" d="M 570 772 C 570 765, 620 762, 665 765 L 665 890 C 665 910, 620 925, 585 920 Z" />
       `,
@@ -150,7 +150,7 @@ export class ImageAnatomyInteractive {
         <path data-muscle="antebrazos" data-pin-x="60" data-pin-y="42" class="anatomy-trigger-area" d="M 605 370 C 625 370, 637 385, 635 405 L 610 485 C 595 488, 580 475, 580 455 L 605 370 Z" />
         <path data-muscle="triceps" data-pin-x="72" data-pin-y="31" class="anatomy-trigger-area" d="M 670 265 C 700 260, 730 265, 730 270 L 720 390 C 705 395, 675 388, 665 370 Z" />
         <path data-muscle="abdominales" data-pin-x="48" data-pin-y="38" class="anatomy-trigger-area" d="M 370 295 L 560 295 L 545 500 L 385 500 Z" />
-        <path data-muscle="quadriceps" data-pin-x="44" data-pin-y="60" class="anatomy-trigger-area" d="M 320 505 C 400 500, 530 505, 555 510 L 540 755 C 440 752, 320 730, 320 695 Z" />
+        <path data-muscle="quadriceps" data-pin-x="45.5" data-pin-y="60" class="anatomy-trigger-area" d="M 320 505 C 400 500, 530 505, 555 510 L 540 755 C 440 752, 320 730, 320 695 Z" />
         <path data-muscle="pantorrillas" data-pin-x="42" data-pin-y="80" class="anatomy-trigger-area" d="M 310 760 C 370 755, 530 760, 545 766 L 530 920 C 440 925, 310 905, 310 885 Z" />
       `,
       // Frame 2: Right Side
@@ -163,7 +163,7 @@ export class ImageAnatomyInteractive {
         <path data-muscle="antebrazos" data-pin-x="50" data-pin-y="42" class="anatomy-trigger-area" d="M 495 350 C 520 350, 532 370, 530 395 L 505 495 C 485 498, 470 480, 470 450 L 495 350 Z" />
         <path data-muscle="abdominales" data-pin-x="46" data-pin-y="38" class="anatomy-trigger-area" d="M 410 295 L 490 295 L 485 460 L 415 460 Z" />
         <path data-muscle="gluteos" data-pin-x="55" data-pin-y="51" class="anatomy-trigger-area" d="M 495 430 C 540 428, 580 435, 580 465 C 575 510, 545 525, 510 518 C 500 498, 493 468, 495 430 Z" />
-        <path data-muscle="quadriceps" data-pin-x="44" data-pin-y="60" class="anatomy-trigger-area" d="M 380 475 C 430 470, 495 475, 495 482 L 485 725 C 435 722, 380 705, 380 675 Z" />
+        <path data-muscle="quadriceps" data-pin-x="45.5" data-pin-y="60" class="anatomy-trigger-area" d="M 380 475 C 430 470, 495 475, 495 482 L 485 725 C 435 722, 380 705, 380 675 Z" />
         <path data-muscle="femorales" data-pin-x="58" data-pin-y="62" class="anatomy-trigger-area" d="M 500 482 C 545 478, 585 482, 585 488 L 578 725 C 540 722, 500 705, 500 675 Z" />
         <path data-muscle="pantorrillas" data-pin-x="50" data-pin-y="80" class="anatomy-trigger-area" d="M 380 730 C 430 725, 580 730, 580 738 L 565 910 C 490 915, 380 898, 380 878 Z" />
       `,
@@ -287,7 +287,7 @@ export class ImageAnatomyInteractive {
       area.addEventListener('mouseenter', (e) => {
         const id = e.currentTarget.dataset.muscle;
         this.hoveredMuscleId = id;
-        e.currentTarget.style.fill = 'rgba(255, 26, 64, 0.2)';
+        e.currentTarget.style.fill = 'transparent';
         this.updateTooltip(e, id);
       });
 
