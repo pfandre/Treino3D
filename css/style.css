@@ -890,9 +890,9 @@ body.light-theme .biomechanics-box {
 }
 
 body.light-theme .exercise-card {
-  background: #fff;
-  border-color: rgba(15, 23, 42, 0.1);
-  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+  background: linear-gradient(145deg, rgba(161, 126, 34, 0.35), rgba(87, 62, 10, 0.5));
+  border-color: rgba(255, 26, 64, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), inset 0 0 15px rgba(255, 26, 64, 0.05);
 }
 
 body.light-theme .exercise-card .meta-info-row,
@@ -901,12 +901,22 @@ body.light-theme .exercise-card .card-instructions {
 }
 
 body.light-theme .exercise-card:hover {
-  background: var(--bg-card-hover) !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+  background: linear-gradient(145deg, rgba(161, 126, 34, 0.5), rgba(87, 62, 10, 0.65));
+  border-color: rgba(255, 26, 64, 0.6);
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 20px rgba(255, 26, 64, 0.1), 0 8px 24px rgba(255, 26, 64, 0.15);
 }
 
 body.light-theme .card-title {
-  color: var(--text-main) !important;
+  color: #fff !important;
+}
+
+body.light-theme .exercise-card .meta-info-row {
+  color: #cbd5e1 !important;
+}
+
+body.light-theme .exercise-card .card-instructions {
+  color: #e2e8f0 !important;
 }
 
 body.light-theme .btn-icon-text {
