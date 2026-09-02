@@ -13,12 +13,68 @@ export class WorkoutPlanner {
       'Treino C': { name: 'Treino C (Pernas & Ombros)', exercises: [] }
     };
     
-    this.activeRoutineKey = 'Treino A';
+    // Fallback if local storage returns empty object or valid key missing
+    if (Object.keys(this.routines).length === 0) {
+      this.routines = {
+        'Treino A': { name: 'Treino A (Peitoral & Tríceps)', exercises: [] }
+      };
+    }
+    
+    const storedActiveKey = localStorage.getItem('gym_muscle_app_active_routine');
+    if (storedActiveKey && this.routines[storedActiveKey]) {
+      this.activeRoutineKey = storedActiveKey;
+    } else {
+      this.activeRoutineKey = Object.keys(this.routines)[0];
+    }
+    
     this.init();
   }
 
   init() {
     this.render();
+  }
+
+  addNewRoutine() {
+    const name = prompt("Digite o nome do novo treino (ex: Treino D - Full Body):");
+    if (name && name.trim()) {
+      const key = 'routine_' + Date.now();
+      this.routines[key] = { name: name.trim(), exercises: [] };
+      this.activeRoutineKey = key;
+      this.saveRoutinesToStorage();
+      this.render();
+      if (this.soundEffects) this.soundEffects.playAdd();
+      this.showNotification(`Treino "${name}" criado com sucesso!`);
+    }
+  }
+
+  renameRoutine() {
+    if (!this.activeRoutineKey) return;
+    const currentName = this.routines[this.activeRoutineKey].name;
+    const newName = prompt("Digite o novo nome para este treino:", currentName);
+    if (newName && newName.trim() && newName.trim() !== currentName) {
+      this.routines[this.activeRoutineKey].name = newName.trim();
+      this.saveRoutinesToStorage();
+      this.render();
+      this.showNotification("Nome atualizado com sucesso!");
+    }
+  }
+
+  deleteRoutine() {
+    if (!this.activeRoutineKey) return;
+    const keys = Object.keys(this.routines);
+    if (keys.length <= 1) {
+      alert("Você precisa ter pelo menos um treino configurado.");
+      return;
+    }
+    const currentName = this.routines[this.activeRoutineKey].name;
+    if (confirm(`Tem certeza que deseja apagar o "${currentName}" permanentemente?`)) {
+      delete this.routines[this.activeRoutineKey];
+      const remainingKeys = Object.keys(this.routines);
+      this.activeRoutineKey = remainingKeys[0];
+      this.saveRoutinesToStorage();
+      this.render();
+      this.showNotification("Treino removido.");
+    }
   }
 
   addExerciseToActiveRoutine(exercise) {
@@ -64,18 +120,29 @@ export class WorkoutPlanner {
           </div>
         </div>
         
-        <button id="btn-export-workout" class="btn-primary" style="font-size: 0.82rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
-          <i data-lucide="printer" style="width: 14px;"></i> Imprimir / Exportar
-        </button>
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-rename-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="edit-2" style="width: 14px;"></i> Renomear Atual
+          </button>
+          <button id="btn-delete-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px; color: #ff4d4d;">
+            <i data-lucide="trash-2" style="width: 14px;"></i> Apagar Atual
+          </button>
+          <button id="btn-export-workout" class="btn-primary" style="font-size: 0.82rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="printer" style="width: 14px;"></i> Imprimir / Exportar
+          </button>
+        </div>
       </div>
 
       <!-- Abas dos Treinos -->
-      <div class="planner-tabs">
+      <div class="planner-tabs" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
         ${keys.map(k => `
           <button class="planner-tab-btn ${k === this.activeRoutineKey ? 'active' : ''}" data-key="${k}">
             ${this.routines[k].name}
           </button>
         `).join('')}
+        <button class="planner-tab-btn" id="btn-add-routine" style="background: rgba(255,255,255,0.05); border: 1px dashed var(--border-color); opacity: 0.8; padding: 10px 16px;">
+           <i data-lucide="plus" style="width: 14px; margin-right: 4px;"></i> Novo Treino
+        </button>
       </div>
 
       <!-- Métricas Rápidas do Treino -->
@@ -120,9 +187,10 @@ export class WorkoutPlanner {
       </div>
     `;
 
-    this.containerEl.querySelectorAll('.planner-tab-btn').forEach(btn => {
+    this.containerEl.querySelectorAll('.planner-tab-btn[data-key]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.activeRoutineKey = e.currentTarget.dataset.key;
+        localStorage.setItem('gym_muscle_app_active_routine', this.activeRoutineKey);
         this.render();
       });
     });
@@ -140,6 +208,15 @@ export class WorkoutPlanner {
         window.print();
       });
     }
+
+    const btnAddRoutine = document.getElementById('btn-add-routine');
+    if (btnAddRoutine) btnAddRoutine.addEventListener('click', () => this.addNewRoutine());
+
+    const btnRenameRoutine = document.getElementById('btn-rename-routine');
+    if (btnRenameRoutine) btnRenameRoutine.addEventListener('click', () => this.renameRoutine());
+
+    const btnDeleteRoutine = document.getElementById('btn-delete-routine');
+    if (btnDeleteRoutine) btnDeleteRoutine.addEventListener('click', () => this.deleteRoutine());
 
     if (window.lucide) window.lucide.createIcons();
   }
