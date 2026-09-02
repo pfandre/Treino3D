@@ -197,8 +197,8 @@ export class ImageAnatomyInteractive {
         <path data-muscle="gluteos" data-pin-x="54" data-pin-y="51" class="anatomy-trigger-area" d="M 645 430 C 580 425, 502 440, 502 480 C 505 535, 560 548, 585 542 C 610 515, 648 478, 645 430 Z" />
         <path data-muscle="femorales" data-pin-x="44" data-pin-y="64" class="anatomy-trigger-area" d="M 345 550 C 400 545, 490 550, 490 558 L 478 755 C 420 752, 345 730, 345 695 Z" />
         <path data-muscle="femorales" data-pin-x="56" data-pin-y="64" class="anatomy-trigger-area" d="M 510 558 C 510 550, 600 545, 655 550 L 655 695 C 655 730, 580 752, 522 755 Z" />
-        <path data-muscle="pantorrillas" data-pin-x="38" data-pin-y="82" class="anatomy-trigger-area" d="M 335 760 C 385 755, 475 760, 475 768 L 460 920 C 405 925, 335 908, 335 888 Z" />
-        <path data-muscle="pantorrillas" data-pin-x="62" data-pin-y="82" class="anatomy-trigger-area" d="M 525 768 C 525 760, 615 755, 665 760 L 665 888 C 665 908, 595 925, 540 920 Z" />
+        <path data-muscle="pantorrillas" data-pin-x="44" data-pin-y="76" class="anatomy-trigger-area" d="M 335 760 C 385 755, 475 760, 475 768 L 460 920 C 405 925, 335 908, 335 888 Z" />
+        <path data-muscle="pantorrillas" data-pin-x="56" data-pin-y="76" class="anatomy-trigger-area" d="M 525 768 C 525 760, 615 755, 665 760 L 665 888 C 665 908, 595 925, 540 920 Z" />
       `,
     };
     svgAreas[5] = svgAreas[3];
