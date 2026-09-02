@@ -20,14 +20,14 @@ const ROTATION_FRAMES = [
 
 // Mapeamento de músculos visíveis por quadro (índice do frame)
 const FRAME_MUSCLES = {
-  0: ['pecho','cuello','hombros','biceps','antebrazos','abdominales','quadriceps','pantorrillas'],
-  1: ['pecho','cuello','hombros','biceps','antebrazos','abdominales','quadriceps','pantorrillas','triceps'],
-  2: ['hombros','triceps','antebrazos','abdominales','espalda','gluteos','quadriceps','femorales','pantorrillas','cuello'],
-  3: ['espalda','hombros','triceps','antebrazos','gluteos','femorales','pantorrillas','cuello'],
-  4: ['espalda','cuello','hombros','triceps','antebrazos','gluteos','femorales','pantorrillas'],
-  5: ['espalda','hombros','triceps','antebrazos','gluteos','femorales','pantorrillas','cuello'],
-  6: ['hombros','triceps','antebrazos','abdominales','espalda','gluteos','quadriceps','femorales','pantorrillas','cuello'],
-  7: ['pecho','cuello','hombros','biceps','antebrazos','abdominales','quadriceps','pantorrillas','triceps'],
+  0: ['pecho','trapezio','hombros','biceps','antebrazos','abdominales','quadriceps','pantorrillas'],
+  1: ['pecho','trapezio','hombros','biceps','antebrazos','abdominales','quadriceps','pantorrillas','triceps'],
+  2: ['hombros','triceps','antebrazos','abdominales','espalda','gluteos','quadriceps','femorales','pantorrillas','trapezio'],
+  3: ['espalda','hombros','triceps','antebrazos','gluteos','femorales','pantorrillas','trapezio'],
+  4: ['espalda','trapezio','hombros','triceps','antebrazos','gluteos','femorales','pantorrillas'],
+  5: ['espalda','hombros','triceps','antebrazos','gluteos','femorales','pantorrillas','trapezio'],
+  6: ['hombros','triceps','antebrazos','abdominales','espalda','gluteos','quadriceps','femorales','pantorrillas','trapezio'],
+  7: ['pecho','trapezio','hombros','biceps','antebrazos','abdominales','quadriceps','pantorrillas','triceps'],
 };
 
 export class ImageAnatomyInteractive {
@@ -124,7 +124,7 @@ export class ImageAnatomyInteractive {
     const svgAreas = {
       // Frame 0: Front
       0: `
-        <path data-muscle="cuello" data-pin-x="50" data-pin-y="14" class="anatomy-trigger-area" d="M 440 100 C 460 95, 540 95, 560 100 L 545 170 L 455 170 Z" />
+        <path data-muscle="trapezio" data-pin-x="50" data-pin-y="17" class="anatomy-trigger-area" d="M 440 100 C 460 95, 540 95, 560 100 L 545 170 L 455 170 Z" />
         <path data-muscle="pecho" data-pin-x="45" data-pin-y="26" class="anatomy-trigger-area" d="M 490 210 C 450 210, 420 215, 410 220 L 400 280 C 420 295, 450 310, 490 310 Z" />
         <path data-muscle="pecho" data-pin-x="55" data-pin-y="26" class="anatomy-trigger-area" d="M 510 210 C 550 210, 580 215, 590 220 L 600 280 C 580 295, 550 310, 510 310 Z" />
         <path data-muscle="hombros" data-pin-x="38.6" data-pin-y="24" class="anatomy-trigger-area" d="M 410 200 C 380 195, 360 200, 350 210 L 340 260 C 350 270, 370 280, 400 280 Z" />
@@ -141,7 +141,7 @@ export class ImageAnatomyInteractive {
       `,
       // Frame 1: Front-Right 3/4
       1: `
-        <path data-muscle="cuello" data-pin-x="48" data-pin-y="14" class="anatomy-trigger-area" d="M 420 95 C 450 90, 530 90, 555 100 L 540 170 L 430 165 Z" />
+        <path data-muscle="trapezio" data-pin-x="48" data-pin-y="17" class="anatomy-trigger-area" d="M 420 95 C 450 90, 530 90, 555 100 L 540 170 L 430 165 Z" />
         <path data-muscle="pecho" data-pin-x="45" data-pin-y="24" class="anatomy-trigger-area" d="M 330 180 C 380 175, 520 180, 560 185 L 555 290 C 460 288, 345 275, 325 240 Z" />
         <path data-muscle="hombros" data-pin-x="29.1" data-pin-y="21" class="anatomy-trigger-area" d="M 250 178 C 290 175, 335 178, 335 183 L 340 250 C 305 262, 260 255, 245 218 Z" />
         <path data-muscle="hombros" data-pin-x="61.9" data-pin-y="21" class="anatomy-trigger-area" d="M 560 185 C 590 180, 640 178, 670 183 L 680 230 C 665 260, 620 268, 575 255 Z" />
@@ -155,7 +155,7 @@ export class ImageAnatomyInteractive {
       `,
       // Frame 2: Right Side
       2: `
-        <path data-muscle="cuello" data-pin-x="48" data-pin-y="12" class="anatomy-trigger-area" d="M 430 80 C 460 75, 520 80, 540 95 L 530 160 L 440 155 Z" />
+        <path data-muscle="trapezio" data-pin-x="48" data-pin-y="17" class="anatomy-trigger-area" d="M 430 80 C 460 75, 520 80, 540 95 L 530 160 L 440 155 Z" />
         <path data-muscle="hombros" data-pin-x="42.5" data-pin-y="21" class="anatomy-trigger-area" d="M 370 165 C 420 160, 480 165, 480 172 L 472 245 C 435 258, 380 250, 365 215 Z" />
         <path data-muscle="espalda" data-pin-x="58" data-pin-y="28" class="anatomy-trigger-area" d="M 490 172 C 530 168, 570 172, 570 178 L 565 420 C 535 415, 500 395, 488 355 Z" />
         <path data-muscle="pecho" data-pin-x="40" data-pin-y="24" class="anatomy-trigger-area" d="M 370 178 C 410 175, 480 178, 480 185 L 475 290 C 440 288, 380 278, 368 248 Z" />
@@ -169,7 +169,7 @@ export class ImageAnatomyInteractive {
       `,
       // Frame 3: Back-Right 3/4
       3: `
-        <path data-muscle="cuello" data-pin-x="48" data-pin-y="12" class="anatomy-trigger-area" d="M 400 80 C 440 75, 530 80, 560 95 L 545 165 L 415 158 Z" />
+        <path data-muscle="trapezio" data-pin-x="48" data-pin-y="17" class="anatomy-trigger-area" d="M 400 80 C 440 75, 530 80, 560 95 L 545 165 L 415 158 Z" />
         <path data-muscle="espalda" data-pin-x="52" data-pin-y="28" class="anatomy-trigger-area" d="M 350 170 L 620 175 C 600 310, 590 395, 575 430 C 540 385, 510 305, 505 225 C 500 305, 470 385, 435 430 C 420 395, 380 310, 350 170 Z" />
         <path data-muscle="hombros" data-pin-x="31.1" data-pin-y="21" class="anatomy-trigger-area" d="M 265 175 C 305 170, 350 175, 350 180 L 355 248 C 320 260, 278 252, 260 218 Z" />
         <path data-muscle="hombros" data-pin-x="65.9" data-pin-y="21" class="anatomy-trigger-area" d="M 620 180 C 620 175, 665 170, 705 175 L 710 218 C 692 252, 650 260, 615 248 Z" />
@@ -185,7 +185,7 @@ export class ImageAnatomyInteractive {
       `,
       // Frame 4: Back
       4: `
-        <path data-muscle="cuello" data-pin-x="50" data-pin-y="12" class="anatomy-trigger-area" d="M 430 80 C 460 75, 540 75, 570 80 L 555 155 L 445 155 Z" />
+        <path data-muscle="trapezio" data-pin-x="50" data-pin-y="17" class="anatomy-trigger-area" d="M 430 80 C 460 75, 540 75, 570 80 L 555 155 L 445 155 Z" />
         <path data-muscle="espalda" data-pin-x="50" data-pin-y="28" class="anatomy-trigger-area" d="M 320 160 L 680 160 C 660 300, 650 390, 635 425 C 600 380, 570 295, 565 210 C 555 295, 525 380, 490 425 C 475 390, 440 300, 320 160 Z" />
         <path data-muscle="hombros" data-pin-x="38.6" data-pin-y="24" class="anatomy-trigger-area" d="M 410 200 C 380 195, 360 200, 350 210 L 340 260 C 350 270, 370 280, 400 280 Z" />
         <path data-muscle="hombros" data-pin-x="61.4" data-pin-y="24" class="anatomy-trigger-area" d="M 590 200 C 620 195, 640 200, 650 210 L 660 260 C 650 270, 630 280, 600 280 Z" />

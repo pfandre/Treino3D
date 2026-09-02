@@ -745,5 +745,48 @@ export const MUSCLE_DATABASE = {
         biomechanics: "Fortalece a desaceleração do tornozelo."
       }
     ]
+  },
+
+  trapezio: {
+    id: "trapezio",
+    name: "Trapézio (Trapecio)",
+    anatomicalNames: ["Trapecio Superior", "Trapecio Medio"],
+    color: "#cc0000",
+    colorRgb: "204, 0, 0",
+    view: "back",
+    description: "Músculo localizado na parte superior das costas e pescoço. O trapézio superior eleva as escápulas e é fundamental para estabilidade e força.",
+    bioMechanicsTips: "Movimentos de encolhimento e puxadas altas constroem densidade nesta região. Pause no topo da contração.",
+    exercises: [
+      {
+        id: "ex_trapezio_1",
+        name: "Encolhimento com Barra (Barbell Shrug)",
+        targetHead: "Trapézio Superior",
+        equipment: "Barra Olímpica",
+        difficulty: "Todos os níveis",
+        setsReps: "4 séries x 12-15 reps",
+        instructions: "Com os braços esticados, eleve os ombros em direção às orelhas. Segure a contração no topo e desça devagar.",
+        biomechanics: "Foco principal na elevação escapular e sobrecarga mecânica."
+      },
+      {
+        id: "ex_trapezio_2",
+        name: "Encolhimento com Halteres",
+        targetHead: "Trapézio Superior & Médio",
+        equipment: "Halteres",
+        difficulty: "Iniciante",
+        setsReps: "4 séries x 12-15 reps",
+        instructions: "Com os halteres ao lado do corpo, encolha os ombros sem dobrar os cotovelos.",
+        biomechanics: "Pegada neutra que alivia tensão nos ombros e permite melhor encaixe."
+      },
+      {
+        id: "ex_trapezio_3",
+        name: "Remada Alta com Pegada Larga (Upright Row)",
+        targetHead: "Trapézio & Deltoide Lateral",
+        equipment: "Barra ou Polia",
+        difficulty: "Intermediário",
+        setsReps: "3 séries x 10-12 reps",
+        instructions: "Puxe a barra até a altura do peito, conduzindo o movimento com os cotovelos acima da linha da barra.",
+        biomechanics: "Excelente para a parte média do trapézio e estabilização escapular."
+      }
+    ]
   }
 };
