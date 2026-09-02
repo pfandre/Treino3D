@@ -126,7 +126,7 @@ export class WorkoutPlanner {
       this.saveRoutinesToStorage();
       this.render();
       if (this.soundEffects) this.soundEffects.playAdd();
-      this.showNotification(\`Treino "\${name}" criado com \${newExercises.length} exercícios!\`);
+      this.showNotification(`Treino "${name}" criado com ${newExercises.length} exercícios!`);
       
       closeModal();
     });
