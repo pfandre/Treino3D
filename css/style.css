@@ -442,9 +442,14 @@ body {
 }
 
 .filter-chip.active {
-  background: rgba(255, 26, 64, 0.18);
-  border-color: var(--primary-red);
-  color: var(--primary-red);
+  background: linear-gradient(135deg, var(--primary-red), #e11d48);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 26, 64, 0.3);
+}
+
+.filter-chip.active .muscle-dot {
+  background-color: #ffffff !important;
 }
 
 .muscle-dot {
@@ -871,9 +876,14 @@ body.light-theme .filter-chip:hover {
 }
 
 body.light-theme .filter-chip.active {
-  background: rgba(225, 29, 72, 0.12) !important;
-  color: var(--primary-red) !important;
-  border-color: var(--primary-red) !important;
+  background: linear-gradient(135deg, var(--primary-red), #be123c) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3) !important;
+}
+
+body.light-theme .filter-chip.active .muscle-dot {
+  background-color: #ffffff !important;
 }
 
 body.light-theme .muscle-banner-details {
