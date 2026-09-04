@@ -1,4 +1,4 @@
-const CACHE_NAME = 'treino3d-cache-v1';
+const CACHE_NAME = 'treino3d-cache-v32';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -8,6 +8,10 @@ const urlsToCache = [
   '/js/exerciseUI.js',
   '/js/editorModal.js',
   '/js/imageAnatomyInteractive.js',
+  '/js/store.js',
+  '/js/activeWorkoutUI.js',
+  '/js/dashboardUI.js',
+  '/js/progressionModal.js',
   '/js/app.js',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png',
@@ -19,6 +23,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -72,6 +77,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });

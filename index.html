@@ -7,7 +7,7 @@
   
   <!-- PWA Setup -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0a0d14" />
+  <meta name="theme-color" content="#0F172A" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png" />
@@ -15,15 +15,46 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Tailwind CSS 3.4+ CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '.dark-theme'],
+      theme: {
+        extend: {
+          colors: {
+            background: '#0F172A',
+            primaryText: '#F8FAFC',
+            accent: '#84CC16',
+            surface: '#1E293B',
+            slate: {
+              400: '#94a3b8',
+              800: '#1e293b',
+              900: '#0f172a'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Rajdhani', 'sans-serif'],
+            mono: ['Roboto Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=35" />
+  <link rel="stylesheet" href="css/style.css?v=44" />
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="dark-theme">
+<body class="dark-theme pb-[70px] md:pb-0">
 
   <!-- App Header -->
   <header class="app-header">
@@ -39,7 +70,10 @@
 
     <!-- Header Actions -->
     <div class="header-actions">
-      <div class="nav-tab-group">
+      <div class="nav-tab-group hidden md:flex">
+        <button id="tab-btn-dashboard" class="nav-tab-btn">
+          <i data-lucide="bar-chart-2"></i> Dashboard
+        </button>
         <button id="tab-btn-explorer" class="nav-tab-btn active">
           <i data-lucide="compass"></i> Explorar
         </button>
@@ -47,14 +81,6 @@
           <i data-lucide="calendar"></i> Montar Treino
         </button>
       </div>
-
-      <button id="btn-toggle-sound" class="btn-icon-text">
-        <i data-lucide="volume-x"></i> Som Off
-      </button>
-
-      <button id="btn-toggle-theme" class="btn-icon-text">
-        <i data-lucide="sun"></i> Tema Claro
-      </button>
     </div>
   </header>
 
@@ -139,18 +165,42 @@
       </div>
 
       <!-- Painel de Montador de Treino (Oculto por Padrão) -->
-      <div id="planner-panel-content" class="planner-panel">
+      <div id="planner-panel-content" class="planner-panel" style="display: none;">
         <div id="planner-container">
           <!-- Inserido dinamicamente via WorkoutPlanner -->
         </div>
+      </div>
+
+      <!-- Painel do Dashboard (Oculto por Padrão) -->
+      <div id="dashboard-panel-content" style="display: none; overflow-y: auto; padding: 0;">
+        <!-- Renderizado inteiramente via DashboardUI.js -->
       </div>
 
     </section>
 
   </main>
 
+  <!-- Mobile Bottom Navigation (Glassmorphism) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-[100] w-full h-[70px] bg-[#0F172A]/80 backdrop-blur-xl border-t border-white/5 flex items-center justify-around md:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
+    <button id="mobile-tab-btn-dashboard" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
+      <i data-lucide="bar-chart-2" stroke-width="1.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide uppercase">Stats</span>
+    </button>
+    <button id="mobile-tab-btn-explorer" class="flex flex-col items-center justify-center w-full h-full text-[#84CC16] gap-1 transition-all">
+      <i data-lucide="compass" stroke-width="1.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide uppercase">Explorar</span>
+    </button>
+    <button id="mobile-tab-btn-planner" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
+      <i data-lucide="calendar" stroke-width="1.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide uppercase">Treino</span>
+    </button>
+  </nav>
+
+  <!-- Container for Progression Modal -->
+  <div id="progression-modal-root"></div>
+
   <!-- Script Principal App Orchestrator -->
-  <script type="module" src="js/app.js?v=27"></script>
+  <script type="module" src="js/app.js?v=52"></script>
 
   <!-- PWA Service Worker Registration -->
   <script>

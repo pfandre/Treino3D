@@ -2,6 +2,7 @@
  * WorkoutPlanner - Criador Avançado de Rotinas de Treino & Métricas Atléticas
  */
 import { MUSCLE_DATABASE } from './database.js';
+import { useWorkoutStore } from './store.js';
 
 export class WorkoutPlanner {
   constructor(options) {
@@ -40,7 +41,7 @@ export class WorkoutPlanner {
     modal.className = 'routine-modal-overlay';
     modal.style.cssText = `
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
       display: flex; justify-content: center; align-items: center;
       z-index: 3000; padding: 20px; transition: opacity 0.3s ease;
     `;
@@ -57,7 +58,7 @@ export class WorkoutPlanner {
     });
 
     modal.innerHTML = `
-      <div style="background: var(--bg-card); width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column;">
+      <div style="background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: all 0.3s ease;">
         <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
           <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin: 0;">Novo Treino</h3>
           <button id="btn-close-modal" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="x"></i></button>
@@ -209,11 +210,14 @@ export class WorkoutPlanner {
           <button id="btn-rename-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px;">
             <i data-lucide="edit-2" style="width: 14px;"></i> Renomear Atual
           </button>
-          <button id="btn-delete-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px; color: #ff4d4d;">
+          <button id="btn-delete-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px; color: #ef4444;">
             <i data-lucide="trash-2" style="width: 14px;"></i> Apagar Atual
           </button>
           <button id="btn-export-workout" class="btn-primary" style="font-size: 0.82rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
             <i data-lucide="printer" style="width: 14px;"></i> Imprimir / Exportar
+          </button>
+          <button id="btn-start-planner-workout" class="flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-black px-4 py-2 rounded-md font-semibold transition-colors shadow-lg shadow-lime-500/20" style="font-size: 0.82rem;">
+            <i data-lucide="play" style="width: 14px;"></i> Iniciar Treino
           </button>
         </div>
       </div>
@@ -234,15 +238,15 @@ export class WorkoutPlanner {
       <div class="metrics-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0;">
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Exercícios</div>
-          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text-main);">${totalExercises}</div>
+          <div class="font-mono tabular-nums text-3xl font-bold" style="color: var(--text-main);">${totalExercises}</div>
         </div>
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Séries Totais</div>
-          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--primary-red);">${estimatedSets}</div>
+          <div class="font-mono tabular-nums text-3xl font-bold" style="color: var(--primary-red);">${estimatedSets}</div>
         </div>
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Tempo Estimado</div>
-          <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text-main);">${totalExercises * 12} min</div>
+          <div class="font-mono tabular-nums text-3xl font-bold" style="color: var(--text-main);">${totalExercises * 12}<span style="font-size: 1rem; font-weight: normal; font-family: var(--font-sans); margin-left: 4px;">min</span></div>
         </div>
       </div>
 
@@ -255,22 +259,63 @@ export class WorkoutPlanner {
           </div>
         ` : `
           <div class="routine-exercise-list" style="display: flex; flex-direction: column; gap: 10px;">
-            ${activeRoutine.exercises.map((ex, idx) => `
-              <div class="exercise-card" style="flex-direction: row; align-items: center; justify-content: space-between;">
-                <div>
-                  <h4 style="font-size: 1rem; color: var(--text-main);">${idx + 1}. ${ex.name}</h4>
-                  <span class="target-head-badge">${ex.targetHead}</span>
-                  <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">${ex.equipment} | ${ex.customSets}</div>
+            ${activeRoutine.exercises.map((ex, idx) => {
+              const numSetsMatch = ex.customSets ? ex.customSets.match(/(\d+)\s*séries/i) : null;
+              const numSets = numSetsMatch ? parseInt(numSetsMatch[1]) : 4;
+              const repsMatch = ex.customSets ? ex.customSets.match(/x\s*(.+)/i) : null;
+              const repsText = repsMatch ? repsMatch[1] : '10-12 reps';
+              
+              let setsHtml = '';
+              for (let i = 1; i <= numSets; i++) {
+                setsHtml += `
+                  <div class="set-row flex items-center justify-between bg-white/5 rounded-xl p-4 transition-all duration-300" data-ex-name="${ex.name}">
+                    <div class="flex items-center gap-4">
+                      <span class="font-mono text-slate-400 font-bold w-6">${i}</span>
+                      <div class="font-mono text-lg font-bold text-white tabular-nums">${repsText}</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center gap-1">
+                        <input type="number" class="input-kg w-16 bg-transparent border border-white/10 rounded-lg px-2 py-1 text-right font-mono text-lg font-bold text-[#84CC16] tabular-nums outline-none focus:border-[#84CC16]/50 focus:ring-1 focus:ring-[#84CC16]/30 transition-all placeholder:text-slate-500" placeholder="--" min="0" max="999" step="0.5" data-ex-name="${ex.name}" data-set-num="${i}">
+                        <span class="text-[#84CC16] font-mono text-sm font-bold">kg</span>
+                      </div>
+                      <button class="btn-check-set h-12 w-12 rounded-full bg-white/5 border-2 border-white/10 flex items-center justify-center text-slate-400 transition-all duration-300 active:scale-90 hover:border-white/20" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
+                        <i data-lucide="check" class="w-6 h-6 transition-all duration-300"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }
+
+              return `
+              <div class="exercise-card" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                  <div>
+                    <h4 style="font-size: 1.1rem; color: var(--text-main); font-weight: 700;">${idx + 1}. ${ex.name}</h4>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">${ex.equipment}</div>
+                  </div>
+                  <button class="btn-close btn-remove-ex" data-index="${idx}" title="Remover do treino">
+                    <i data-lucide="trash-2" style="width: 20px; color: var(--primary-red);"></i>
+                  </button>
                 </div>
-                <button class="btn-close btn-remove-ex" data-index="${idx}" title="Remover do treino">
-                  <i data-lucide="trash-2" style="width: 16px; color: var(--primary-red);"></i>
-                </button>
+                <div class="sets-container flex flex-col gap-2">
+                  ${setsHtml}
+                </div>
               </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         `}
       </div>
     `;
+
+    const btnStart = this.containerEl.querySelector('#btn-start-planner-workout');
+    if (btnStart) {
+      btnStart.addEventListener('click', () => {
+        const currentRoutineName = this.routines[this.activeRoutineKey]?.name || 'Treino Livre';
+        useWorkoutStore.getState().startWorkout(currentRoutineName);
+        if (this.soundEffects) this.soundEffects.playAdd();
+      });
+    }
 
     this.containerEl.querySelectorAll('.planner-tab-btn[data-key]').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -284,6 +329,66 @@ export class WorkoutPlanner {
       btn.addEventListener('click', (e) => {
         const idx = parseInt(e.currentTarget.dataset.index);
         this.removeExercise(idx);
+      });
+    });
+
+    this.containerEl.querySelectorAll('.btn-check-set').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const button = e.currentTarget;
+        const row = button.closest('.set-row');
+        const exName = button.dataset.exName;
+        const setNum = button.dataset.setIdx;
+        const kgInput = row.querySelector('.input-kg');
+        const kgValue = parseFloat(kgInput?.value) || 0;
+        
+        const isChecking = !button.classList.contains('checked');
+        button.classList.toggle('checked');
+
+        if (isChecking) {
+          // ── Visual: botão fica verde vibrante ──
+          button.style.background = '#84CC16';
+          button.style.borderColor = '#84CC16';
+          button.style.color = '#000';
+          button.style.boxShadow = '0 0 20px rgba(132, 204, 22, 0.6)';
+          button.querySelector('i')?.setAttribute('style', 'color: #000; transform: scale(1.3);');
+          
+          // ── Flash animation no botão ──
+          button.animate([
+            { transform: 'scale(1)', boxShadow: '0 0 0px rgba(132, 204, 22, 0)' },
+            { transform: 'scale(1.3)', boxShadow: '0 0 30px rgba(132, 204, 22, 0.8)' },
+            { transform: 'scale(1)', boxShadow: '0 0 20px rgba(132, 204, 22, 0.6)' }
+          ], { duration: 400, easing: 'ease-out' });
+
+          // ── Flash na row inteira ──
+          row.style.background = 'rgba(132, 204, 22, 0.15)';
+          row.style.borderLeft = '3px solid #84CC16';
+          
+          // ── Desabilitar input ──
+          if (kgInput) {
+            kgInput.disabled = true;
+            kgInput.style.opacity = '0.6';
+          }
+
+          // ── Persistir os kg no localStorage ──
+          if (kgValue > 0) {
+            this._saveSetRecord(exName, setNum, kgValue);
+          }
+          
+          if (this.soundEffects) this.soundEffects.playClick();
+        } else {
+          // ── Desfazer ──
+          button.style.background = 'rgba(255,255,255,0.05)';
+          button.style.borderColor = 'rgba(255,255,255,0.1)';
+          button.style.color = '#94A3B8';
+          button.style.boxShadow = 'none';
+          button.querySelector('i')?.setAttribute('style', '');
+          row.style.background = 'rgba(255,255,255,0.05)';
+          row.style.borderLeft = 'none';
+          if (kgInput) {
+            kgInput.disabled = false;
+            kgInput.style.opacity = '1';
+          }
+        }
       });
     });
 
@@ -305,6 +410,27 @@ export class WorkoutPlanner {
 
     if (window.lucide) window.lucide.createIcons();
   }
+  /**
+   * Persiste o registro de uma série concluída (exercício + kg) no localStorage.
+   * Formato: { exercise, kg, set, date }
+   * Chave: 'treino3d_set_records'
+   */
+  _saveSetRecord(exerciseName, setNum, kg) {
+    const STORAGE_KEY = 'treino3d_set_records';
+    let records = [];
+    try {
+      records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch { /* empty */ }
+
+    records.push({
+      exercise: exerciseName,
+      kg: kg,
+      set: setNum,
+      date: new Date().toISOString()
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
 
   showNotification(msg, type = 'success') {
     const toast = document.createElement('div');
@@ -312,7 +438,7 @@ export class WorkoutPlanner {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: ${type === 'success' ? 'linear-gradient(135deg, var(--primary-red), #e11d48)' : '#ff4d4d'};
+      background: ${type === 'success' ? 'linear-gradient(135deg, var(--primary-red), #65a30d)' : '#ef4444'};
       color: #fff;
       padding: 12px 20px;
       border-radius: 30px;

@@ -55,7 +55,7 @@ export class OrganicAnatomySVG {
           </linearGradient>
           <linearGradient id="highlightRed" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#ff2a4b" />
-            <stop offset="100%" stop-color="#e11d48" />
+            <stop offset="100%" stop-color="#65a30d" />
           </linearGradient>
           <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -212,15 +212,15 @@ export class OrganicAnatomySVG {
       const isHovered = id === this.hoveredMuscleId;
 
       if (isSelected) {
-        path.style.fill = '#ff1a40'; // Vermelho vívido da referência
+        path.style.fill = '#84CC16'; // Verde Limão da referência
         path.style.opacity = '1';
         path.style.filter = 'url(#glowEffect)';
         path.style.stroke = '#ffffff';
         path.style.strokeWidth = '1.5px';
       } else if (isHovered) {
-        path.style.fill = '#ff1a40';
+        path.style.fill = '#84CC16';
         path.style.opacity = '0.85';
-        path.style.stroke = '#ff1a40';
+        path.style.stroke = '#84CC16';
         path.style.strokeWidth = '1px';
       } else {
         path.style.fill = '#475569';

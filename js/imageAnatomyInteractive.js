@@ -86,7 +86,7 @@ export class ImageAnatomyInteractive {
           <div id="rotation-progress" style="position: absolute; top: 10px; right: 10px; z-index: 15; pointer-events: none;">
             <svg width="36" height="36" viewBox="0 0 36 36">
               <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2.5" />
-              <circle id="progress-circle" cx="18" cy="18" r="15" fill="none" stroke="var(--primary-red, #ff1a40)" stroke-width="2.5" stroke-dasharray="94.2" stroke-dashoffset="${94.2 - (this.currentFrame / this.totalFrames) * 94.2}" stroke-linecap="round" transform="rotate(-90 18 18)" style="transition: stroke-dashoffset 0.3s ease;" />
+              <circle id="progress-circle" cx="18" cy="18" r="15" fill="none" stroke="var(--primary-red, #84CC16)" stroke-width="2.5" stroke-dasharray="94.2" stroke-dashoffset="${94.2 - (this.currentFrame / this.totalFrames) * 94.2}" stroke-linecap="round" transform="rotate(-90 18 18)" style="transition: stroke-dashoffset 0.3s ease;" />
             </svg>
           </div>
 
@@ -98,11 +98,7 @@ export class ImageAnatomyInteractive {
           </svg>
         </div>
 
-        <!-- Legenda Flutuante -->
-        <div id="cursor-anatomy-tooltip" class="floating-tooltip" style="position: fixed; display: none; pointer-events: none; z-index: 1000; background: rgba(10, 13, 20, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); border-left: 4px solid var(--primary-red); padding: 8px 16px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); transition: opacity 0.15s ease, transform 0.1s ease; opacity: 0; transform: scale(0.95);">
-          <div class="tooltip-title" style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: #fff;"></div>
-          <div class="tooltip-sub" style="font-size: 0.75rem; color: var(--primary-red); font-weight: 600; margin-top: 2px;"></div>
-        </div>
+
 
         <!-- Instrução de Interação -->
         <div id="drag-instruction" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 25; opacity: 0; transition: opacity 0.5s ease;">
@@ -114,7 +110,6 @@ export class ImageAnatomyInteractive {
       </div>
     `;
 
-    this.tooltipEl = document.getElementById('cursor-anatomy-tooltip');
     this.setupDragRotation();
     this.setupMuscleInteraction();
     this.showDragInstruction();
@@ -294,20 +289,11 @@ export class ImageAnatomyInteractive {
       area.style.transition = 'fill 0.2s ease';
 
       area.addEventListener('mouseenter', (e) => {
-        const id = e.currentTarget.dataset.muscle;
-        this.hoveredMuscleId = id;
-        e.currentTarget.style.fill = 'transparent';
-        this.updateTooltip(e, id);
-      });
-
-      area.addEventListener('mousemove', (e) => {
-        this.updateTooltip(e, this.hoveredMuscleId);
+        // Sem hover (opcional, ou podemos adicionar um brilho fraco futuro)
       });
 
       area.addEventListener('mouseleave', (e) => {
-        this.hoveredMuscleId = null;
-        e.currentTarget.style.fill = 'transparent';
-        this.updateTooltip(e, null);
+        // Sem hover
       });
 
       area.addEventListener('click', (e) => {
@@ -383,48 +369,6 @@ export class ImageAnatomyInteractive {
     if (instruction) {
       setTimeout(() => { instruction.style.opacity = '1'; }, 500);
       setTimeout(() => { instruction.style.opacity = '0'; }, 3500);
-    }
-  }
-
-  updateTooltip(e, muscleId) {
-    if (!this.tooltipEl) return;
-
-    if (!muscleId) {
-      this.tooltipEl.style.opacity = '0';
-      this.tooltipEl.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        if (this.tooltipEl.style.opacity === '0') {
-          this.tooltipEl.style.display = 'none';
-        }
-      }, 150);
-      return;
-    }
-
-    const data = MUSCLE_DATABASE[muscleId];
-    if (data) {
-      this.tooltipEl.querySelector('.tooltip-title').innerText = data.name;
-      this.tooltipEl.querySelector('.tooltip-sub').innerText = `${data.exercises.length} Exercícios Cadastrados`;
-      
-      this.tooltipEl.style.display = 'block';
-      this.tooltipEl.offsetHeight;
-      this.tooltipEl.style.opacity = '1';
-      this.tooltipEl.style.transform = 'scale(1)';
-
-      const tooltipRect = this.tooltipEl.getBoundingClientRect();
-      const margin = 16;
-      let left = e.clientX + margin;
-      let top = e.clientY + margin;
-
-      if (left + tooltipRect.width > window.innerWidth - margin) {
-        left = e.clientX - tooltipRect.width - margin;
-      }
-      
-      if (top + tooltipRect.height > window.innerHeight - margin) {
-        top = e.clientY - tooltipRect.height - margin;
-      }
-
-      this.tooltipEl.style.left = `${left}px`;
-      this.tooltipEl.style.top = `${top}px`;
     }
   }
 

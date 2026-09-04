@@ -12,8 +12,9 @@ export class ExerciseUI {
     this.searchInput = document.getElementById(options.searchInputId);
 
     this.onSelectMuscleCallback = options.onSelectMuscleCallback;
-    this.onEditExerciseCallback = options.onEditExerciseCallback;
-    this.onAddToWorkoutCallback = options.onAddToWorkoutCallback;
+    this.onEditExerciseCallback = options.onEditExerciseCallback || null;
+    this.onAddToWorkoutCallback = options.onAddToWorkoutCallback || null;
+    this.onOpenProgressionCallback = options.onOpenProgressionCallback || null;
 
     this.activeCategory = "pecho"; // Padrão inicial
     this.searchQuery = "";
@@ -159,24 +160,30 @@ export class ExerciseUI {
 
       card.innerHTML = `
         <div class="card-top">
-          <h3 class="card-title editable-field" contenteditable="true" data-field="name" spellcheck="false" title="Clique para editar">${ex.name}</h3>
-          <span class="target-head-badge editable-field" contenteditable="true" data-field="targetHead" spellcheck="false" title="Clique para editar" style="background: ${accentColor}20; color: ${accentColor}">
+          <h3 class="card-title cursor-pointer hover:text-lime-400 transition-colors" title="Ver Histórico de Progressão">${ex.name}</h3>
+          <span class="target-head-badge editable-field bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-300 text-xs uppercase tracking-wider" contenteditable="true" data-field="targetHead" spellcheck="false" title="Clique para editar">
             ${ex.targetHead}
           </span>
         </div>
-        <div class="meta-info-row">
-          <span class="meta-item"><i data-lucide="wrench" style="width: 14px;"></i> <span class="editable-field inline-edit" contenteditable="true" data-field="equipment" spellcheck="false" title="Clique para editar">${ex.equipment}</span></span>
-          <span class="meta-item"><i data-lucide="repeat" style="width: 14px;"></i> <span class="editable-field inline-edit" contenteditable="true" data-field="setsReps" spellcheck="false" title="Clique para editar">${ex.setsReps}</span></span>
+        <div class="flex gap-2 mt-2 mb-3">
+          <span class="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 rounded-md px-2.5 py-1 text-sm text-slate-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
+            <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
+            <span class="editable-field inline-edit outline-none" contenteditable="true" data-field="equipment" spellcheck="false" title="Clique para editar">${ex.equipment}</span>
+          </span>
+          <span class="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 rounded-md px-2.5 py-1 text-sm text-slate-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
+            <i data-lucide="repeat" class="w-3.5 h-3.5"></i>
+            <span class="editable-field inline-edit outline-none" contenteditable="true" data-field="setsReps" spellcheck="false" title="Clique para editar">${ex.setsReps.replace(/(\d+(?:-\d+)?)/g, '<span class="font-mono font-bold text-slate-800 dark:text-white tabular-nums">$1</span>')}</span>
+          </span>
         </div>
         <p class="card-instructions editable-field" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
         ${ex.biomechanics ? `<div style="font-size: 0.78rem; color: var(--text-dim); font-style: italic;">💡 <span class="editable-field" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span></div>` : ''}
         
-        <div class="card-actions">
-          <button class="btn-icon-text btn-add-workout">
-            <i data-lucide="plus-circle" style="width: 14px;"></i> Treino
+        <div class="card-actions flex gap-2">
+          <button class="btn-add-workout flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors bg-lime-500 text-black font-semibold hover:bg-lime-600">
+            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Progresso
           </button>
-          <button class="btn-icon-text btn-edit-ex">
-            <i data-lucide="edit-3" style="width: 14px;"></i> Editar
+          <button class="btn-edit-ex flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors text-gray-400 hover:text-gray-800 hover:bg-gray-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Editar
           </button>
         </div>
       `;
@@ -204,7 +211,11 @@ export class ExerciseUI {
       });
 
       card.querySelector('.btn-add-workout').addEventListener('click', () => {
-        if (this.onAddToWorkoutCallback) this.onAddToWorkoutCallback(ex);
+        if (this.onOpenProgressionCallback) this.onOpenProgressionCallback(ex);
+      });
+
+      card.querySelector('.card-title').addEventListener('click', () => {
+        if (this.onOpenProgressionCallback) this.onOpenProgressionCallback(ex);
       });
 
       card.querySelector('.btn-edit-ex').addEventListener('click', () => {
