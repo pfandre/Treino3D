@@ -41,7 +41,8 @@ export class ExerciseUI {
     // Botão "Todos"
     const allChip = document.createElement('button');
     allChip.className = `filter-chip ${this.activeCategory === 'all' ? 'active' : ''}`;
-    allChip.innerHTML = `<span class="muscle-dot" style="background: var(--primary-cyan)"></span> Todos os Músculos`;
+    allChip.style.setProperty('--chip-color', 'var(--primary-cyan)');
+    allChip.innerHTML = `<span class="muscle-dot"></span> Todos os Músculos`;
     allChip.addEventListener('click', () => this.selectCategory('all'));
     this.filterContainer.appendChild(allChip);
 
@@ -50,8 +51,9 @@ export class ExerciseUI {
       const data = MUSCLE_DATABASE[key];
       const chip = document.createElement('button');
       chip.className = `filter-chip ${this.activeCategory === key ? 'active' : ''}`;
+      chip.style.setProperty('--chip-color', data.color);
       chip.innerHTML = `
-        <span class="muscle-dot" style="background: ${data.color}"></span>
+        <span class="muscle-dot"></span>
         ${data.name}
       `;
       chip.addEventListener('click', () => this.selectCategory(key));
@@ -157,17 +159,17 @@ export class ExerciseUI {
 
       card.innerHTML = `
         <div class="card-top">
-          <h3 class="card-title">${ex.name}</h3>
-          <span class="target-head-badge" style="background: ${accentColor}20; color: ${accentColor}">
+          <h3 class="card-title editable-field" contenteditable="true" data-field="name" spellcheck="false" title="Clique para editar">${ex.name}</h3>
+          <span class="target-head-badge editable-field" contenteditable="true" data-field="targetHead" spellcheck="false" title="Clique para editar" style="background: ${accentColor}20; color: ${accentColor}">
             ${ex.targetHead}
           </span>
         </div>
         <div class="meta-info-row">
-          <span class="meta-item"><i data-lucide="wrench" style="width: 14px;"></i> ${ex.equipment}</span>
-          <span class="meta-item"><i data-lucide="repeat" style="width: 14px;"></i> ${ex.setsReps}</span>
+          <span class="meta-item"><i data-lucide="wrench" style="width: 14px;"></i> <span class="editable-field inline-edit" contenteditable="true" data-field="equipment" spellcheck="false" title="Clique para editar">${ex.equipment}</span></span>
+          <span class="meta-item"><i data-lucide="repeat" style="width: 14px;"></i> <span class="editable-field inline-edit" contenteditable="true" data-field="setsReps" spellcheck="false" title="Clique para editar">${ex.setsReps}</span></span>
         </div>
-        <p class="card-instructions">${ex.instructions}</p>
-        ${ex.biomechanics ? `<div style="font-size: 0.78rem; color: var(--text-dim); font-style: italic;">💡 ${ex.biomechanics}</div>` : ''}
+        <p class="card-instructions editable-field" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
+        ${ex.biomechanics ? `<div style="font-size: 0.78rem; color: var(--text-dim); font-style: italic;">💡 <span class="editable-field" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span></div>` : ''}
         
         <div class="card-actions">
           <button class="btn-icon-text btn-add-workout">
@@ -178,6 +180,28 @@ export class ExerciseUI {
           </button>
         </div>
       `;
+
+      // Inline Editing Logic
+      const editableFields = card.querySelectorAll('.editable-field');
+      editableFields.forEach(field => {
+        // Save value on blur
+        field.addEventListener('blur', (e) => {
+          const fieldName = e.target.getAttribute('data-field');
+          const newValue = e.target.textContent.trim();
+          if (newValue) {
+            ex[fieldName] = newValue;
+          }
+        });
+
+        // Prevent newlines in single-line fields
+        field.addEventListener('keydown', (e) => {
+          const fieldName = e.target.getAttribute('data-field');
+          if (e.key === 'Enter' && fieldName !== 'instructions' && fieldName !== 'biomechanics') {
+            e.preventDefault();
+            e.target.blur();
+          }
+        });
+      });
 
       card.querySelector('.btn-add-workout').addEventListener('click', () => {
         if (this.onAddToWorkoutCallback) this.onAddToWorkoutCallback(ex);

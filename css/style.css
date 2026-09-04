@@ -421,9 +421,9 @@ body {
 }
 
 .filter-chip {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
+  background: color-mix(in srgb, var(--chip-color, var(--primary-red)) 12%, rgba(255,255,255,0.02));
+  border: 1px solid color-mix(in srgb, var(--chip-color, var(--primary-red)) 30%, transparent);
+  color: var(--text-main);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.82rem;
@@ -437,15 +437,17 @@ body {
 }
 
 .filter-chip:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--chip-color, var(--primary-red)) 22%, rgba(255,255,255,0.06));
+  border-color: color-mix(in srgb, var(--chip-color, var(--primary-red)) 50%, transparent);
   color: #fff;
+  transform: translateY(-1px);
 }
 
 .filter-chip.active {
-  background: linear-gradient(135deg, var(--primary-red), #e11d48);
+  background: linear-gradient(135deg, var(--chip-color, var(--primary-red)), color-mix(in srgb, var(--chip-color, var(--primary-red)) 70%, #000));
   border-color: transparent;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(255, 26, 64, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--chip-color, var(--primary-red)) 40%, transparent);
 }
 
 .filter-chip.active .muscle-dot {
@@ -457,7 +459,7 @@ body {
   height: 8px;
   border-radius: 50%;
   display: inline-block;
-  background-color: var(--primary-red) !important;
+  background-color: var(--chip-color, var(--primary-red));
 }
 
 /* Muscle Banner Details */
@@ -508,22 +510,53 @@ body {
 
 /* Exercise Cards */
 .exercise-card {
-  background: linear-gradient(145deg, rgba(137, 207, 240, 0.25), rgba(137, 207, 240, 0.15)); /* Soft baby blue background */
-  border: 1px solid rgba(137, 207, 240, 0.5); /* Baby blue border instead of red */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(137, 207, 240, 0.1);
+  position: relative;
+  z-index: 1;
+  background: transparent !important; /* Move background to ::after to fix stacking context */
+  border: 1px solid rgba(255, 150, 30, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 160, 30, 0.1);
   border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: var(--transition);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.exercise-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255, 200, 50, 0.05), rgba(255, 140, 20, 0.25)), #121826;
+  border-radius: var(--radius-md);
+  z-index: -1;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.exercise-card::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: calc(var(--radius-md) + 2px);
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(6px);
 }
 
 .exercise-card:hover {
-  background: linear-gradient(145deg, rgba(137, 207, 240, 0.35), rgba(137, 207, 240, 0.25)); /* Slightly brighter baby blue on hover */
-  border-color: rgba(137, 207, 240, 0.8);
-  transform: translateY(-2px);
-  box-shadow: inset 0 0 20px rgba(137, 207, 240, 0.15), 0 8px 24px rgba(137, 207, 240, 0.2);
+  border-color: rgba(255, 150, 30, 0.7);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: inset 0 0 20px rgba(255, 160, 30, 0.15), 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.exercise-card:hover::after {
+  background: linear-gradient(145deg, rgba(255, 200, 50, 0.1), rgba(255, 140, 20, 0.35)), #121826;
+}
+
+.exercise-card:hover::before {
+  opacity: 0.75;
 }
 
 .card-title {
@@ -867,19 +900,21 @@ body.light-theme .category-filter-bar {
 }
 
 body.light-theme .filter-chip {
-  background: rgba(15, 23, 42, 0.03) !important;
+  background: color-mix(in srgb, var(--chip-color, var(--primary-red)) 10%, rgba(255,255,255,0.9)) !important;
+  border-color: color-mix(in srgb, var(--chip-color, var(--primary-red)) 25%, rgba(15, 23, 42, 0.1)) !important;
 }
 
 body.light-theme .filter-chip:hover {
-  background: rgba(15, 23, 42, 0.06) !important;
+  background: color-mix(in srgb, var(--chip-color, var(--primary-red)) 18%, rgba(255,255,255,0.95)) !important;
+  border-color: color-mix(in srgb, var(--chip-color, var(--primary-red)) 40%, rgba(15, 23, 42, 0.2)) !important;
   color: var(--text-main) !important;
 }
 
 body.light-theme .filter-chip.active {
-  background: linear-gradient(135deg, var(--primary-red), #be123c) !important;
+  background: linear-gradient(135deg, var(--chip-color, var(--primary-red)), color-mix(in srgb, var(--chip-color, var(--primary-red)) 90%, #fff)) !important;
   color: #ffffff !important;
   border-color: transparent !important;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3) !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--chip-color, var(--primary-red)) 35%, transparent) !important;
 }
 
 body.light-theme .filter-chip.active .muscle-dot {
@@ -900,9 +935,12 @@ body.light-theme .biomechanics-box {
 }
 
 body.light-theme .exercise-card {
-  background: linear-gradient(145deg, rgba(137, 207, 240, 0.4), rgba(137, 207, 240, 0.25)); /* Brighter baby blue for light mode */
-  border-color: rgba(137, 207, 240, 0.6);
-  box-shadow: 0 6px 16px rgba(137, 207, 240, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 150, 30, 0.5);
+  box-shadow: 0 6px 16px rgba(255, 140, 20, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+body.light-theme .exercise-card::after {
+  background: linear-gradient(145deg, rgba(255, 210, 80, 0.15), rgba(255, 140, 20, 0.35)), #f8fafc;
 }
 
 body.light-theme .exercise-card .meta-info-row,
@@ -911,10 +949,13 @@ body.light-theme .exercise-card .card-instructions {
 }
 
 body.light-theme .exercise-card:hover {
-  background: linear-gradient(145deg, rgba(137, 207, 240, 0.5), rgba(137, 207, 240, 0.35));
-  border-color: rgba(137, 207, 240, 0.8);
-  transform: translateY(-2px);
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.3), 0 8px 24px rgba(137, 207, 240, 0.25);
+  border-color: rgba(255, 150, 30, 0.7);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.3), 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+body.light-theme .exercise-card:hover::after {
+  background: linear-gradient(145deg, rgba(255, 210, 80, 0.25), rgba(255, 140, 20, 0.45)), #ffffff;
 }
 
 body.light-theme .card-title {
@@ -994,4 +1035,39 @@ body.light-theme .floating-tooltip {
 
 body.light-theme .floating-tooltip .tooltip-title {
   color: var(--text-main) !important;
+}
+
+/* Inline Editing Styles */
+.editable-field {
+  cursor: text;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.2s ease;
+  padding: 0 4px;
+  margin: 0 -4px;
+}
+
+.editable-field:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.editable-field:focus {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+body.light-theme .editable-field:hover {
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .editable-field:focus {
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.inline-edit {
+  display: inline-block;
+  min-width: 20px;
 }
