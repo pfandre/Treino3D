@@ -72,14 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
       masterAnatomyEngine = new ImageAnatomyInteractive('threejs-canvas-container', (selectedMuscleId) => {
         if (exerciseUI) {
           exerciseUI.selectCategory(selectedMuscleId, false);
-          updateMuscleBadgeOverlay(selectedMuscleId);
         }
       }, soundEffects);
     } else {
       masterAnatomyEngine = new OrganicAnatomySVG('threejs-canvas-container', (selectedMuscleId) => {
         if (exerciseUI) {
           exerciseUI.selectCategory(selectedMuscleId, false);
-          updateMuscleBadgeOverlay(selectedMuscleId);
         }
       });
     }
@@ -87,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sincronizar o músculo atualmente selecionado no novo motor
     if (currentSelectedMuscle && currentSelectedMuscle !== 'all') {
       masterAnatomyEngine.selectMuscle(currentSelectedMuscle, false);
-      updateMuscleBadgeOverlay(currentSelectedMuscle);
     }
   }
 
@@ -104,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
     onSelectMuscleCallback: (muscleId) => {
       if (masterAnatomyEngine && muscleId !== 'all') {
         masterAnatomyEngine.selectMuscle(muscleId, false);
-        updateMuscleBadgeOverlay(muscleId);
       }
     },
 
@@ -269,17 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mobBtnExplorer) mobBtnExplorer.addEventListener('click', () => switchTab('explorer'));
   if (mobBtnPlanner) mobBtnPlanner.addEventListener('click', () => switchTab('planner'));
   if (mobBtnDashboard) mobBtnDashboard.addEventListener('click', () => switchTab('dashboard'));
-
-  function updateMuscleBadgeOverlay(muscleId) {
-    const overlay = document.getElementById('muscle-overlay-badge');
-    if (!overlay) return;
-
-    const data = MUSCLE_DATABASE[muscleId];
-    if (data) {
-      overlay.querySelector('.badge-name').innerText = data.name;
-      overlay.style.opacity = '1';
-    }
-  }
 
   if (window.lucide) {
     window.lucide.createIcons();
