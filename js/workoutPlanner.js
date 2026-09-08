@@ -408,7 +408,7 @@ export class WorkoutPlanner {
     const btnDeleteRoutine = document.getElementById('btn-delete-routine');
     if (btnDeleteRoutine) btnDeleteRoutine.addEventListener('click', () => this.deleteRoutine());
 
-    if (window.lucide) window.lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons({ root: this.containerEl });
   }
   /**
    * Persiste o registro de uma série concluída (exercício + kg) no localStorage.

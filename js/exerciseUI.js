@@ -109,7 +109,7 @@ export class ExerciseUI {
     }
 
     if (window.lucide) {
-      window.lucide.createIcons();
+      window.lucide.createIcons({ root: this.bannerContainer });
     }
   }
 
@@ -147,7 +147,7 @@ export class ExerciseUI {
           <p>Nenhum exercício encontrado para "${this.searchQuery}".</p>
         </div>
       `;
-      if (window.lucide) window.lucide.createIcons();
+      if (window.lucide) window.lucide.createIcons({ root: this.listContainer });
       return;
     }
 
@@ -226,7 +226,7 @@ export class ExerciseUI {
     });
 
     if (window.lucide) {
-      window.lucide.createIcons();
+      window.lucide.createIcons({ root: this.listContainer });
     }
   }
 }

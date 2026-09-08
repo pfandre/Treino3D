@@ -99,7 +99,7 @@ export class EditorModal {
     document.getElementById('form-ex-biomechanics').value = "";
 
     this.modalEl.classList.add('open');
-    if (window.lucide) window.lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons({ root: this.modalEl });
   }
 
   openForEdit(exercise) {
@@ -115,7 +115,7 @@ export class EditorModal {
     document.getElementById('form-ex-biomechanics').value = exercise.biomechanics || '';
 
     this.modalEl.classList.add('open');
-    if (window.lucide) window.lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons({ root: this.modalEl });
   }
 
   close() {
