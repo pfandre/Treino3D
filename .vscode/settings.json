@@ -1,4 +1,4 @@
 {
-    "fiveServer.port": 3000,
-    "liveServer.settings.port": 3000
+    "fiveServer.port": 5500,
+    "liveServer.settings.port": 5500
 }
