@@ -4,7 +4,7 @@
 
 import { MUSCLE_DATABASE } from './database.js?v=28';
 import { ImageAnatomyInteractive } from './imageAnatomyInteractive.js?v=32';
-import { OrganicAnatomySVG } from './organicAnatomySVG.js?v=28';
+
 import { ExerciseUI } from './exerciseUI.js?v=31';
 import { EditorModal } from './editorModal.js?v=27';
 import { WorkoutPlanner } from './workoutPlanner.js?v=32';
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exerciseUI) exerciseUI.renderExerciseList();
   });
 
-  // 4. Função para inicializar/trocar o motor anatômico
-  function initAnatomyEngine(type) {
+  // 4. Função para inicializar o motor anatômico 360°
+  function initAnatomyEngine() {
     if (masterAnatomyEngine) {
       if (masterAnatomyEngine.stopAutoSpin) {
         masterAnatomyEngine.stopAutoSpin();
@@ -65,22 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (container) container.innerHTML = '';
     }
 
-    activeEngineType = type;
     const currentSelectedMuscle = exerciseUI ? exerciseUI.activeCategory : 'pecho';
 
-    if (type === '3d') {
-      masterAnatomyEngine = new ImageAnatomyInteractive('threejs-canvas-container', (selectedMuscleId) => {
-        if (exerciseUI) {
-          exerciseUI.selectCategory(selectedMuscleId, false);
-        }
-      }, soundEffects);
-    } else {
-      masterAnatomyEngine = new OrganicAnatomySVG('threejs-canvas-container', (selectedMuscleId) => {
-        if (exerciseUI) {
-          exerciseUI.selectCategory(selectedMuscleId, false);
-        }
-      });
-    }
+    masterAnatomyEngine = new ImageAnatomyInteractive('threejs-canvas-container', (selectedMuscleId) => {
+      if (exerciseUI) {
+        exerciseUI.selectCategory(selectedMuscleId, false);
+      }
+    }, soundEffects);
 
     // Sincronizar o músculo atualmente selecionado no novo motor
     if (currentSelectedMuscle && currentSelectedMuscle !== 'all') {
@@ -89,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Inicializar motor padrão (360° / ImageAnatomyInteractive)
-  initAnatomyEngine('3d');
+  initAnatomyEngine();
 
   // 5. Inicializar UI de Exercícios e bi-direcionalidade
   exerciseUI = new ExerciseUI({
@@ -117,28 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6. Configurar Toggles de Visualização (360° vs Vetor SVG)
+  // 6. Configurar Botão 360° (Agora é o único modo)
   const btnView3d = document.getElementById('btn-view-3d');
-  const btnViewOrganic = document.getElementById('btn-view-organic');
-
-  if (btnView3d && btnViewOrganic) {
-    btnView3d.addEventListener('click', () => {
-      if (activeEngineType !== '3d') {
-        btnView3d.classList.add('active');
-        btnViewOrganic.classList.remove('active');
-        initAnatomyEngine('3d');
-        if (soundEffects) soundEffects.playSelect();
-      }
-    });
-
-    btnViewOrganic.addEventListener('click', () => {
-      if (activeEngineType !== 'organic') {
-        btnViewOrganic.classList.add('active');
-        btnView3d.classList.remove('active');
-        initAnatomyEngine('organic');
-        if (soundEffects) soundEffects.playSelect();
-      }
-    });
+  if (btnView3d) {
+    btnView3d.classList.add('active');
   }
 
 
