@@ -86,7 +86,7 @@ export class ImageAnatomyInteractive {
           <div id="rotation-progress" style="position: absolute; top: 10px; right: 10px; z-index: 15; pointer-events: none;">
             <svg width="36" height="36" viewBox="0 0 36 36">
               <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2.5" />
-              <circle id="progress-circle" cx="18" cy="18" r="15" fill="none" stroke="var(--primary-red, #84CC16)" stroke-width="2.5" stroke-dasharray="94.2" stroke-dashoffset="${94.2 - (this.currentFrame / this.totalFrames) * 94.2}" stroke-linecap="round" transform="rotate(-90 18 18)" style="transition: stroke-dashoffset 0.3s ease;" />
+              <circle id="progress-circle" cx="18" cy="18" r="15" fill="none" stroke="var(--primary-lime, #84CC16)" stroke-width="2.5" stroke-dasharray="94.2" stroke-dashoffset="${94.2 - (this.currentFrame / this.totalFrames) * 94.2}" stroke-linecap="round" transform="rotate(-90 18 18)" style="transition: stroke-dashoffset 0.3s ease;" />
             </svg>
           </div>
 
@@ -213,20 +213,20 @@ export class ImageAnatomyInteractive {
     currentPaths += `
         <!-- Pin Target (Até 2 que se movem para músculos bilaterais) -->
         <g id="muscle-target-pin" style="display: none; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-          <circle cx="0" cy="0" r="12" fill="var(--primary-red)" opacity="0.3" />
+          <circle cx="0" cy="0" r="12" fill="var(--primary-lime)" opacity="0.3" />
           <circle cx="0" cy="0" r="8" fill="none" stroke="#ffffff" stroke-width="2">
             <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite" />
             <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
           </circle>
-          <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-red)" stroke-width="2.5" />
+          <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-lime)" stroke-width="2.5" />
         </g>
         <g id="muscle-target-pin-2" style="display: none; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-          <circle cx="0" cy="0" r="12" fill="var(--primary-red)" opacity="0.3" />
+          <circle cx="0" cy="0" r="12" fill="var(--primary-lime)" opacity="0.3" />
           <circle cx="0" cy="0" r="8" fill="none" stroke="#ffffff" stroke-width="2">
             <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite" />
             <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
           </circle>
-          <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-red)" stroke-width="2.5" />
+          <circle cx="0" cy="0" r="6" fill="#ffffff" stroke="var(--primary-lime)" stroke-width="2.5" />
         </g>
     `;
     return currentPaths;

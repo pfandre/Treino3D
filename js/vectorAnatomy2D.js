@@ -30,7 +30,7 @@ export class VectorAnatomy2D {
           <!-- VISTA FRONTAL -->
           <div class="figure-box" style="flex: 1; display: flex; flex-direction: column; align-items: center;">
             <div style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1.5px; display: flex; align-items: center; gap: 6px;">
-              <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--primary-red);"></span> Vista Frontal
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--primary-lime);"></span> Vista Frontal
             </div>
             <div id="svg-front-container" style="width: 100%; max-width: 230px; height: 460px;">
               ${this.getHarmoniousFrontSVG()}
@@ -40,7 +40,7 @@ export class VectorAnatomy2D {
           <!-- VISTA POSTERIOR -->
           <div class="figure-box" style="flex: 1; display: flex; flex-direction: column; align-items: center;">
             <div style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1.5px; display: flex; align-items: center; gap: 6px;">
-              <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--primary-red);"></span> Vista Posterior
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--primary-lime);"></span> Vista Posterior
             </div>
             <div id="svg-back-container" style="width: 100%; max-width: 230px; height: 460px;">
               ${this.getHarmoniousBackSVG()}

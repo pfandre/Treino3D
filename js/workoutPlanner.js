@@ -51,7 +51,7 @@ export class WorkoutPlanner {
       const muscle = MUSCLE_DATABASE[key];
       checkboxesHtml += `
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-          <input type="checkbox" value="${key}" class="muscle-checkbox" style="width: 16px; height: 16px; accent-color: var(--primary-red);">
+          <input type="checkbox" value="${key}" class="muscle-checkbox" style="width: 16px; height: 16px; accent-color: var(--primary-lime);">
           <span style="font-size: 0.9rem; color: var(--text-main);">${muscle.name.split(' (')[0]}</span>
         </label>
       `;
@@ -199,7 +199,7 @@ export class WorkoutPlanner {
       <div class="planner-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
         <div>
           <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: var(--text-main);">
-            <i data-lucide="calendar" style="color: var(--primary-red)"></i> Montador de Rotinas de Treino
+            <i data-lucide="calendar" style="color: var(--primary-lime)"></i> Montador de Rotinas de Treino
           </h3>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
             Atletas de Alto Rendimento • Carga & Métricas
@@ -242,7 +242,7 @@ export class WorkoutPlanner {
         </div>
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Séries Totais</div>
-          <div class="font-mono tabular-nums text-3xl font-bold" style="color: var(--primary-red);">${estimatedSets}</div>
+          <div class="font-mono tabular-nums text-3xl font-bold" style="color: var(--primary-lime);">${estimatedSets}</div>
         </div>
         <div class="metric-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; text-align: center;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Tempo Estimado</div>
@@ -294,7 +294,7 @@ export class WorkoutPlanner {
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">${ex.equipment}</div>
                   </div>
                   <button class="btn-close btn-remove-ex" data-index="${idx}" title="Remover do treino">
-                    <i data-lucide="trash-2" style="width: 20px; color: var(--primary-red);"></i>
+                    <i data-lucide="trash-2" style="width: 20px; color: var(--primary-lime);"></i>
                   </button>
                 </div>
                 <div class="sets-container flex flex-col gap-2">
@@ -438,7 +438,7 @@ export class WorkoutPlanner {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: ${type === 'success' ? 'linear-gradient(135deg, var(--primary-red), #65a30d)' : '#ef4444'};
+      background: ${type === 'success' ? 'linear-gradient(135deg, var(--primary-lime), #65a30d)' : '#ef4444'};
       color: #fff;
       padding: 12px 20px;
       border-radius: 30px;
