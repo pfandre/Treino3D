@@ -234,11 +234,21 @@ export class DashboardUI {
       container.querySelectorAll('.btn-ver-detalhes').forEach(btn => {
         btn.addEventListener('click', (e) => {
           try {
-            const wData = JSON.parse(e.currentTarget.dataset.workout);
-            const event = new CustomEvent('open-workout-details', { detail: wData });
-            document.dispatchEvent(event);
+            const index = e.currentTarget.dataset.index;
+            if (this._lastRecentWorkouts && this._lastRecentWorkouts[index]) {
+              const wData = this._lastRecentWorkouts[index];
+              const event = new CustomEvent('open-workout-details', { detail: {
+                name: wData.name, 
+                date: wData.dateStr, 
+                durationLabel: wData.duration, 
+                durationSeconds: wData.durationSeconds,
+                volume: wData.volume,
+                sets: wData.sets
+              } });
+              document.dispatchEvent(event);
+            }
           } catch (err) {
-            console.error("Erro ao parsear dados do treino:", err);
+            console.error("Erro ao abrir dados do treino:", err);
           }
         });
       });
@@ -250,6 +260,7 @@ export class DashboardUI {
   _buildHTML() {
     const data = this._getData();
     const { user, metrics, recentWorkouts } = data;
+    this._lastRecentWorkouts = recentWorkouts;
 
     return `
       <div class="p-5 md:p-8 space-y-6">
@@ -331,7 +342,7 @@ export class DashboardUI {
           </div>
           <div class="space-y-3">
             ${recentWorkouts.length > 0 
-              ? recentWorkouts.map((w, i) => this._activityRow(w, i === recentWorkouts.length - 1)).join('')
+              ? recentWorkouts.map((w, i) => this._activityRow(w, i, i === recentWorkouts.length - 1)).join('')
               : `<div class="flex flex-col items-center justify-center py-10 text-center">
                    <div class="w-14 h-14 rounded-2xl bg-slate-700/50 flex items-center justify-center mb-4">
                      <i data-lucide="inbox" class="w-6 h-6 text-slate-500"></i>
@@ -373,7 +384,7 @@ export class DashboardUI {
     `;
   }
 
-  _activityRow(w, isLast) {
+  _activityRow(w, i, isLast) {
     return `
       <div class="flex items-center gap-4 py-3 ${isLast ? '' : 'border-b border-white/5'}">
         <div class="w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center shrink-0">
@@ -388,14 +399,7 @@ export class DashboardUI {
             ${w.volume} kg
           </div>
           <button class="btn-ver-detalhes text-xs text-slate-400 hover:text-white transition-colors font-medium px-3 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10" 
-            data-workout='${JSON.stringify({ 
-              name: w.name, 
-              date: w.dateStr, 
-              durationLabel: w.duration, 
-              durationSeconds: w.durationSeconds,
-              volume: w.volume,
-              sets: w.sets
-            }).replace(/'/g, "&#39;")}'>
+            data-index="${i}">
             Ver Detalhes
           </button>
         </div>
