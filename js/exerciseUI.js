@@ -88,24 +88,40 @@ export class ExerciseUI {
       if (!data) return;
 
       this.bannerContainer.innerHTML = `
-        <div class="banner-head">
-          <h2 style="color: ${data.color}">
-            <span class="muscle-dot" style="background: ${data.color}; width: 14px; height: 14px;"></span>
-            ${data.name}
-          </h2>
-          <span class="target-head-badge" style="background: ${data.color}22; color: ${data.color}">
-            Vista: ${data.view === 'front' ? 'Frontal' : 'Posterior'}
-          </span>
+        <div class="banner-head" style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="color: ${data.color}; margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span class="muscle-dot" style="background: ${data.color}; width: 14px; height: 14px;"></span>
+              ${data.name}
+            </h2>
+            <span class="target-head-badge" style="background: ${data.color}22; color: ${data.color}">
+              Vista: ${data.view === 'front' ? 'Frontal' : 'Posterior'}
+            </span>
+          </div>
+          <button id="btn-add-group-to-routine" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors bg-lime-500 text-black font-semibold hover:bg-lime-600">
+            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Grupo ao Treino
+          </button>
         </div>
-        <p class="banner-desc"><strong>Anatomia:</strong> ${data.anatomicalNames.join(" • ")}</p>
+        <p class="banner-desc mt-2"><strong>Anatomia:</strong> ${data.anatomicalNames.join(" • ")}</p>
         <p class="banner-desc">${data.description}</p>
-        <div class="biomechanics-box" style="border-left-color: ${data.color}">
+        <div class="biomechanics-box mt-2" style="border-left-color: ${data.color}">
           <i data-lucide="zap" style="color: ${data.color}; min-width: 18px;"></i>
           <div>
             <strong>Dica Biomecânica do Especialista:</strong> ${data.bioMechanicsTips}
           </div>
         </div>
       `;
+
+      const btnAddGroup = this.bannerContainer.querySelector('#btn-add-group-to-routine');
+      if (btnAddGroup) {
+        btnAddGroup.addEventListener('click', () => {
+          if (this.onAddToWorkoutCallback) {
+             data.exercises.forEach(ex => {
+               this.onAddToWorkoutCallback(ex);
+             });
+          }
+        });
+      }
     }
 
     if (window.lucide) {
@@ -152,6 +168,31 @@ export class ExerciseUI {
     }
 
     exercisesToDisplay.forEach(ex => {
+      let currentSeries = 3;
+      let currentReps = 10;
+      
+      const savedSetsReps = localStorage.getItem('gym_muscle_ex_sets_' + ex.id);
+      if (savedSetsReps) {
+         ex.setsReps = savedSetsReps;
+         const sMatch = savedSetsReps.match(/(\d+)\s*série/i) || savedSetsReps.match(/^(\d+)x/i);
+         const rMatch = savedSetsReps.match(/x\s*(\d+)/i) || savedSetsReps.match(/(\d+)(-\d+)?\s*reps/i);
+         currentSeries = sMatch ? parseInt(sMatch[1]) : 3;
+         currentReps = rMatch ? parseInt(rMatch[1]) : 10;
+      } else {
+         ex.setsReps = "3 séries x 10 reps";
+      }
+
+      let eqVal = "Máquina";
+      let eqIcon = "settings";
+      const eqLow = (ex.equipment || '').toLowerCase();
+      if (eqLow.includes('halter')) {
+        eqVal = "Halteres";
+        eqIcon = "dumbbell";
+      } else if (eqLow.includes('barra')) {
+        eqVal = "Barra";
+        eqIcon = "minus";
+      }
+
       const card = document.createElement('div');
       card.className = "exercise-card";
 
@@ -167,23 +208,42 @@ export class ExerciseUI {
         </div>
         <div class="flex gap-2 mt-2 mb-3">
           <span class="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 rounded-md px-2.5 py-1 text-sm text-slate-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
-            <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
-            <span class="editable-field inline-edit outline-none" contenteditable="true" data-field="equipment" spellcheck="false" title="Clique para editar">${ex.equipment}</span>
+            <i data-lucide="${eqIcon}" class="w-3.5 h-3.5 opacity-70 equip-icon"></i>
+            <select class="equip-select bg-transparent outline-none font-semibold text-slate-800 dark:text-white cursor-pointer" style="max-width: 140px;">
+              <option value="Máquina" class="bg-white text-slate-900 dark:bg-slate-800 dark:text-white" ${eqVal === 'Máquina' ? 'selected' : ''}>Máquina</option>
+              <option value="Halteres" class="bg-white text-slate-900 dark:bg-slate-800 dark:text-white" ${eqVal === 'Halteres' ? 'selected' : ''}>Halteres</option>
+              <option value="Barra" class="bg-white text-slate-900 dark:bg-slate-800 dark:text-white" ${eqVal === 'Barra' ? 'selected' : ''}>Barra</option>
+            </select>
           </span>
-          <span class="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 rounded-md px-2.5 py-1 text-sm text-slate-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
-            <i data-lucide="repeat" class="w-3.5 h-3.5"></i>
-            <span class="editable-field inline-edit outline-none" contenteditable="true" data-field="setsReps" spellcheck="false" title="Clique para editar">${ex.setsReps.replace(/(\d+(?:-\d+)?)/g, '<span class="font-mono font-bold text-slate-800 dark:text-white tabular-nums">$1</span>')}</span>
+          <span class="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 rounded-md px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
+            <i data-lucide="repeat" class="w-3.5 h-3.5 opacity-70"></i>
+            <div class="flex flex-col items-center justify-center -space-y-0.5">
+              <select class="series-select bg-transparent outline-none font-mono font-bold text-slate-800 dark:text-white cursor-pointer text-center" style="min-width: 2rem;">
+                ${Array.from({length: 10}, (_, i) => `<option value="${i+1}" class="bg-white text-slate-900 dark:bg-slate-800 dark:text-white" ${(i+1) === currentSeries ? 'selected' : ''}>${i+1}</option>`).join('')}
+              </select>
+              <span class="text-[0.65rem] uppercase tracking-wider font-semibold opacity-60">séries</span>
+            </div>
+            <span class="font-bold opacity-40 text-xs px-1">x</span>
+            <div class="flex flex-col items-center justify-center -space-y-0.5">
+              <select class="reps-select bg-transparent outline-none font-mono font-bold text-slate-800 dark:text-white cursor-pointer text-center" style="min-width: 2rem;">
+                ${Array.from({length: 15}, (_, i) => `<option value="${i+1}" class="bg-white text-slate-900 dark:bg-slate-800 dark:text-white" ${(i+1) === currentReps ? 'selected' : ''}>${i+1}</option>`).join('')}
+              </select>
+              <span class="text-[0.65rem] uppercase tracking-wider font-semibold opacity-60">reps</span>
+            </div>
           </span>
         </div>
         <p class="card-instructions editable-field" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
         ${ex.biomechanics ? `<div style="font-size: 0.78rem; color: var(--text-dim); font-style: italic;">💡 <span class="editable-field" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span></div>` : ''}
         
         <div class="card-actions flex gap-2">
-          <button class="btn-add-workout flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors bg-lime-500 text-black font-semibold hover:bg-lime-600">
+          <button class="btn-add-to-routine flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors bg-lime-500 text-black font-semibold hover:bg-lime-600" title="Adicionar ao Treino Atual">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Treino
+          </button>
+          <button class="btn-add-workout flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-white font-semibold hover:bg-slate-300 dark:hover:bg-slate-600 flex-1">
             <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Progresso
           </button>
-          <button class="btn-edit-ex flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors text-gray-400 hover:text-gray-800 hover:bg-gray-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800">
-            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Editar
+          <button class="btn-edit-ex flex items-center justify-center w-8 h-8 rounded-md text-sm transition-colors text-gray-400 hover:text-gray-800 hover:bg-gray-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800" title="Editar Exercício">
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
           </button>
         </div>
       `;
@@ -208,6 +268,48 @@ export class ExerciseUI {
             e.target.blur();
           }
         });
+      });
+
+      const seriesSelect = card.querySelector('.series-select');
+      const repsSelect = card.querySelector('.reps-select');
+      if (seriesSelect && repsSelect) {
+        const updateSetsReps = () => {
+          ex.setsReps = `${seriesSelect.value} séries x ${repsSelect.value} reps`;
+          localStorage.setItem('gym_muscle_ex_sets_' + ex.id, ex.setsReps);
+          if (window.workoutPlanner) {
+             window.workoutPlanner.updateExerciseSets(ex.id, ex.setsReps);
+          }
+        };
+        seriesSelect.addEventListener('change', updateSetsReps);
+        repsSelect.addEventListener('change', updateSetsReps);
+      }
+
+      const equipSelect = card.querySelector('.equip-select');
+      const equipIcon = card.querySelector('.equip-icon');
+      if (equipSelect) {
+        equipSelect.addEventListener('change', () => {
+          ex.equipment = equipSelect.value;
+          
+          let newIcon = "settings";
+          if (ex.equipment === "Halteres") newIcon = "dumbbell";
+          if (ex.equipment === "Barra") newIcon = "minus";
+          
+          if (window.lucide) {
+            const parent = equipSelect.parentElement;
+            const currentIcon = parent.querySelector('.equip-icon');
+            if (currentIcon) {
+              const newI = document.createElement('i');
+              newI.className = "w-3.5 h-3.5 opacity-70 equip-icon";
+              newI.setAttribute('data-lucide', newIcon);
+              parent.replaceChild(newI, currentIcon);
+              window.lucide.createIcons({ root: parent });
+            }
+          }
+        });
+      }
+
+      card.querySelector('.btn-add-to-routine').addEventListener('click', () => {
+        if (this.onAddToWorkoutCallback) this.onAddToWorkoutCallback(ex);
       });
 
       card.querySelector('.btn-add-workout').addEventListener('click', () => {

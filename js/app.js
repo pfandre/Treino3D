@@ -18,6 +18,15 @@ import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
 
+  // Forçar padrão 3x10 para todos os exercícios nativos
+  Object.values(MUSCLE_DATABASE).forEach(cat => {
+    if (cat.exercises) {
+      cat.exercises.forEach(ex => {
+        ex.setsReps = "3 séries x 10 reps";
+      });
+    }
+  });
+
   let masterAnatomyEngine = null;
   let activeEngineType = '3d'; // '3d' | 'organic'
   let exerciseUI = null;
@@ -46,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     containerId: 'planner-container',
     soundEffects: soundEffects
   });
+  window.workoutPlanner = workoutPlanner;
 
   // 3. Inicializar Modal de Edição
   editorModal = new EditorModal(() => {

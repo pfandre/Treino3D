@@ -10,15 +10,13 @@ export class WorkoutPlanner {
     this.soundEffects = options.soundEffects;
     
     this.routines = this.loadRoutinesFromStorage() || {
-      'Treino A': { name: 'Treino A (Peitoral & Tríceps)', exercises: [] },
-      'Treino B': { name: 'Treino B (Costas & Bíceps)', exercises: [] },
-      'Treino C': { name: 'Treino C (Pernas & Ombros)', exercises: [] }
+      'Treino_Livre': { name: 'Treino Livre', exercises: [] }
     };
     
     // Fallback if local storage returns empty object or valid key missing
     if (Object.keys(this.routines).length === 0) {
       this.routines = {
-        'Treino A': { name: 'Treino A (Peitoral & Tríceps)', exercises: [] }
+        'Treino_Livre': { name: 'Treino Livre', exercises: [] }
       };
     }
     
@@ -66,8 +64,13 @@ export class WorkoutPlanner {
         
         <div style="padding: 20px; overflow-y: auto; max-height: 60vh;">
           <div style="margin-bottom: 20px;">
-            <label style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase;">Nome do Treino</label>
-            <input type="text" id="routine-name-input" placeholder="Ex: Treino Upper, Push, Sabadão..." style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 1rem; outline: none;">
+            <label style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase;">Músculos do Treino</label>
+            <input type="text" id="routine-muscles-input" readonly placeholder="Selecione os músculos abaixo..." style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); font-size: 1rem; outline: none; cursor: not-allowed;">
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase;">Identificador (Ex: Treino 1, Segunda...)</label>
+            <input type="text" id="routine-id-input" placeholder="Ex: Treino 1, Segunda..." style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 1rem; outline: none;">
           </div>
           
           <div>
@@ -91,8 +94,24 @@ export class WorkoutPlanner {
     document.body.appendChild(modal);
     if (window.lucide) window.lucide.createIcons({ root: modal });
 
-    const inputEl = modal.querySelector('#routine-name-input');
-    setTimeout(() => inputEl.focus(), 100);
+    const idInputEl = modal.querySelector('#routine-id-input');
+    setTimeout(() => idInputEl.focus(), 100);
+
+    const updateMusclesInput = () => {
+      const selectedMuscles = Array.from(modal.querySelectorAll('.muscle-checkbox:checked')).map(cb => {
+        return MUSCLE_DATABASE[cb.value].name.split(' (')[0];
+      });
+      const musclesInput = modal.querySelector('#routine-muscles-input');
+      if (selectedMuscles.length > 0) {
+        musclesInput.value = selectedMuscles.join(' & ');
+      } else {
+        musclesInput.value = '';
+      }
+    };
+
+    modal.querySelectorAll('.muscle-checkbox').forEach(cb => {
+      cb.addEventListener('change', updateMusclesInput);
+    });
 
     const closeModal = () => {
       modal.style.opacity = '0';
@@ -103,9 +122,18 @@ export class WorkoutPlanner {
     modal.querySelector('#btn-cancel-modal').addEventListener('click', closeModal);
     
     modal.querySelector('#btn-save-modal').addEventListener('click', () => {
-      const name = inputEl.value.trim();
-      if (!name) {
-        alert("Por favor, digite um nome para o treino.");
+      const idInput = modal.querySelector('#routine-id-input').value.trim();
+      const musclesInput = modal.querySelector('#routine-muscles-input').value.trim();
+      
+      let name = 'Novo Treino';
+      if (idInput && musclesInput) {
+        name = `${idInput} (${musclesInput})`;
+      } else if (idInput) {
+        name = idInput;
+      } else if (musclesInput) {
+        name = musclesInput;
+      } else {
+        alert("Por favor, selecione os músculos ou digite um identificador.");
         return;
       }
 
@@ -116,7 +144,8 @@ export class WorkoutPlanner {
         const cat = MUSCLE_DATABASE[muscleKey];
         if (cat && cat.exercises) {
           cat.exercises.forEach(ex => {
-            newExercises.push({ ...ex, customSets: '4 séries x 10-12 reps' });
+            const savedSetsReps = localStorage.getItem('gym_muscle_ex_sets_' + ex.id);
+            newExercises.push({ ...ex, customSets: savedSetsReps || '3 séries x 10 reps' });
           });
         }
       });
@@ -167,13 +196,15 @@ export class WorkoutPlanner {
     const routine = this.routines[this.activeRoutineKey];
     if (routine) {
       if (!routine.exercises.some(e => e.id === exercise.id)) {
-        routine.exercises.push({ ...exercise, customSets: '4 séries x 10-12 reps' });
+        const savedSetsReps = localStorage.getItem('gym_muscle_ex_sets_' + exercise.id);
+        routine.exercises.push({ ...exercise, customSets: savedSetsReps || '3 séries x 10 reps' });
+        this._syncRoutineNameWithExercises(routine);
         this.saveRoutinesToStorage();
         this.render();
         if (this.soundEffects) this.soundEffects.playAdd();
-        this.showNotification(`"${exercise.name}" adicionado ao ${routine.name}!`);
+        this.showNotification(`"${exercise.name}" adicionado ao treino!`);
       } else {
-        this.showNotification(`"${exercise.name}" já está no ${routine.name}.`, 'warning');
+        this.showNotification(`"${exercise.name}" já está no treino.`, 'warning');
       }
     }
   }
@@ -182,8 +213,45 @@ export class WorkoutPlanner {
     const routine = this.routines[this.activeRoutineKey];
     if (routine) {
       routine.exercises.splice(index, 1);
+      this._syncRoutineNameWithExercises(routine);
       this.saveRoutinesToStorage();
       this.render();
+    }
+  }
+
+  updateExerciseSets(exerciseId, newSetsReps) {
+    let updated = false;
+    Object.values(this.routines).forEach(routine => {
+       routine.exercises.forEach(ex => {
+          if (ex.id === exerciseId) {
+             ex.customSets = newSetsReps;
+             updated = true;
+          }
+       });
+    });
+    if (updated) {
+       this.saveRoutinesToStorage();
+       this.render();
+    }
+  }
+
+  _syncRoutineNameWithExercises(routine) {
+    const muscleIds = [...new Set(routine.exercises.map(ex => ex.categoryId))];
+    const muscleNames = muscleIds.map(id => MUSCLE_DATABASE[id] ? MUSCLE_DATABASE[id].name.split(' (')[0] : '').filter(Boolean);
+    const musclesString = muscleNames.join(' & ');
+    
+    const match = routine.name.match(/^(.*?)\s*\((.*?)\)$/);
+    let identifier = routine.name;
+    if (match) {
+      identifier = match[1];
+    } else if (routine.name.trim() === 'Treino Livre') {
+      identifier = 'Treino Livre';
+    }
+
+    if (musclesString) {
+      routine.name = `${identifier} (${musclesString})`;
+    } else {
+      routine.name = identifier;
     }
   }
 
@@ -223,14 +291,29 @@ export class WorkoutPlanner {
       </div>
 
       <!-- Abas dos Treinos -->
-      <div class="planner-tabs" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
-        ${keys.map(k => `
-          <button class="planner-tab-btn ${k === this.activeRoutineKey ? 'active' : ''}" data-key="${k}">
-            ${this.routines[k].name}
+      <div class="planner-tabs" style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+        ${keys.map(k => {
+          const nameFull = this.routines[k].name;
+          let identifier = nameFull;
+          let muscles = '';
+          const match = nameFull.match(/^(.*?)\s*\((.*?)\)$/);
+          if (match) {
+            identifier = match[1];
+            muscles = match[2];
+          }
+          
+          let topText = muscles || identifier;
+          let bottomText = muscles ? identifier : '';
+
+          return `
+          <button class="planner-tab-btn ${k === this.activeRoutineKey ? 'active' : ''}" data-key="${k}" style="min-width: 140px;">
+            <span style="font-family: var(--font-display); font-size: 1.1rem; color: ${k === this.activeRoutineKey ? '#fff' : 'var(--text-main)'}; letter-spacing: 0.5px;">${topText}</span>
+            ${bottomText ? `<span style="font-size: 0.75rem; font-weight: 500; opacity: 0.8; max-width: 240px; white-space: normal; text-align: left; line-height: 1.4; margin-top: 2px;">${bottomText}</span>` : ''}
           </button>
-        `).join('')}
-        <button class="planner-tab-btn" id="btn-add-routine" style="background: rgba(255,255,255,0.05); border: 1px dashed var(--border-color); opacity: 0.8; padding: 10px 16px;">
-           <i data-lucide="plus" style="width: 14px; margin-right: 4px;"></i> Novo Treino
+          `;
+        }).join('')}
+        <button class="planner-tab-btn" id="btn-add-routine" style="background: rgba(255,255,255,0.03); border: 1px dashed var(--border-color); opacity: 0.7; flex-direction: row; align-items: center; justify-content: center;">
+           <i data-lucide="plus" style="width: 16px; margin-right: 6px;"></i> Novo Treino
         </button>
       </div>
 
@@ -468,7 +551,19 @@ export class WorkoutPlanner {
   loadRoutinesFromStorage() {
     try {
       const saved = localStorage.getItem('gym_muscle_app_routines');
-      return saved ? JSON.parse(saved) : null;
+      if (saved) {
+         const parsed = JSON.parse(saved);
+         Object.values(parsed).forEach(routine => {
+            if (routine.exercises) {
+               routine.exercises.forEach(ex => {
+                  const savedSetsReps = localStorage.getItem('gym_muscle_ex_sets_' + ex.id);
+                  ex.customSets = savedSetsReps || '3 séries x 10 reps';
+               });
+            }
+         });
+         return parsed;
+      }
+      return null;
     } catch (e) {
       return null;
     }
