@@ -7,7 +7,7 @@ import { ImageAnatomyInteractive } from './imageAnatomyInteractive.js?v=32';
 
 import { ExerciseUI } from './exerciseUI.js?v=32';
 import { EditorModal } from './editorModal.js?v=27';
-import { WorkoutPlanner } from './workoutPlanner.js?v=33';
+import { WorkoutPlanner } from './workoutPlanner.js?v=34';
 import { SoundEffects } from './soundEffects.js?v=27';
 import { useWorkoutStore } from './store.js?v=2';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
