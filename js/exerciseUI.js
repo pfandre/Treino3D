@@ -132,7 +132,7 @@ export class ExerciseUI {
   renderExerciseList() {
     if (!this.listContainer) return;
     this.listContainer.innerHTML = "";
-    this.listContainer.className = "flex flex-col w-full gap-4 pb-20";
+    this.listContainer.className = "flex flex-col w-full max-w-lg mx-auto gap-4 pb-20 pt-2 px-2";
 
     let exercisesToDisplay = [];
 
@@ -201,66 +201,66 @@ export class ExerciseUI {
       const accentColor = categoryData ? categoryData.color : 'var(--primary-cyan)';
 
       card.innerHTML = `
-        <div class="flex flex-col mb-3">
-          <div class="flex justify-between items-start gap-2">
-            <h3 class="card-title font-bold text-zinc-100 text-lg leading-tight cursor-pointer hover:text-lime-400 transition-colors" title="Ver Histórico de Progressão">${ex.name}</h3>
-            <button class="btn-edit-ex flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full text-sm transition-colors text-zinc-500 hover:text-zinc-200 hover:bg-white/5" title="Editar Exercício">
-              <i data-lucide="edit-3" class="w-4 h-4 pointer-events-none"></i>
+        <div class="flex flex-col mb-4">
+          <div class="flex justify-between items-start gap-3">
+            <h3 class="card-title font-semibold text-zinc-100 text-[1.1rem] leading-snug cursor-pointer hover:text-lime-400 transition-colors" title="Ver Histórico de Progressão">${ex.name}</h3>
+            <button class="btn-edit-ex flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full transition-colors text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800" title="Editar Exercício">
+              <i data-lucide="edit-3" class="w-[18px] h-[18px] pointer-events-none"></i>
             </button>
           </div>
-          <div class="mt-1">
-            <span class="editable-field bg-white/5 text-zinc-300 border border-white/10 text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold" contenteditable="true" data-field="targetHead" spellcheck="false" title="Clique para editar">
+          <div class="mt-1.5">
+            <span class="editable-field text-zinc-400 text-[11px] uppercase tracking-[0.1em] font-medium" contenteditable="true" data-field="targetHead" spellcheck="false" title="Clique para editar">
               ${ex.targetHead}
             </span>
           </div>
         </div>
         
-        <div class="flex flex-wrap gap-2 mb-3">
-          <span class="flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 transition-colors rounded-xl px-3 py-1.5 text-sm text-zinc-300 border border-zinc-700">
-            <i data-lucide="${eqIcon}" class="w-4 h-4 opacity-70 equip-icon pointer-events-none"></i>
-            <select class="equip-select bg-transparent outline-none font-semibold text-white cursor-pointer" style="max-width: 140px;">
+        <div class="flex gap-2 mb-4 w-full">
+          <div class="flex-1 flex items-center justify-center gap-1.5 bg-zinc-950/50 hover:bg-zinc-800 transition-colors rounded-xl py-2 px-1 text-sm text-zinc-300 border border-zinc-800">
+            <i data-lucide="${eqIcon}" class="w-[15px] h-[15px] opacity-70 equip-icon pointer-events-none"></i>
+            <select class="equip-select bg-transparent outline-none font-medium text-white cursor-pointer appearance-none text-center" style="text-align-last: center;">
               <option value="Máquina" class="bg-zinc-800 text-white" ${eqVal === 'Máquina' ? 'selected' : ''}>Máquina</option>
               <option value="Halteres" class="bg-zinc-800 text-white" ${eqVal === 'Halteres' ? 'selected' : ''}>Halteres</option>
               <option value="Barra" class="bg-zinc-800 text-white" ${eqVal === 'Barra' ? 'selected' : ''}>Barra</option>
             </select>
-          </span>
-          <span class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 transition-colors rounded-xl px-3 py-1.5 text-sm text-zinc-300 border border-zinc-700">
-            <i data-lucide="repeat" class="w-4 h-4 opacity-70 pointer-events-none"></i>
-            <div class="flex flex-col items-center justify-center -space-y-0.5">
-              <select class="series-select bg-transparent outline-none font-mono font-bold text-white cursor-pointer text-center" style="min-width: 2rem;">
+          </div>
+          <div class="flex-1 flex items-center justify-center gap-1 bg-zinc-950/50 hover:bg-zinc-800 transition-colors rounded-xl py-2 px-1 text-sm text-zinc-300 border border-zinc-800">
+            <i data-lucide="repeat" class="w-[15px] h-[15px] opacity-70 pointer-events-none mr-1"></i>
+            <div class="flex items-baseline gap-1">
+              <select class="series-select bg-transparent outline-none font-mono font-medium text-white cursor-pointer appearance-none text-center">
                 ${Array.from({length: 10}, (_, i) => `<option value="${i+1}" class="bg-zinc-800 text-white" ${(i+1) === currentSeries ? 'selected' : ''}>${i+1}</option>`).join('')}
               </select>
-              <span class="text-[0.65rem] uppercase tracking-wider font-semibold opacity-60">séries</span>
+              <span class="text-zinc-500 text-[10px]">S</span>
             </div>
-            <span class="font-bold opacity-40 text-xs px-1">x</span>
-            <div class="flex flex-col items-center justify-center -space-y-0.5">
-              <select class="reps-select bg-transparent outline-none font-mono font-bold text-white cursor-pointer text-center" style="min-width: 2rem;">
+            <span class="text-zinc-600 text-xs px-0.5">x</span>
+            <div class="flex items-baseline gap-1">
+              <select class="reps-select bg-transparent outline-none font-mono font-medium text-white cursor-pointer appearance-none text-center">
                 ${Array.from({length: 15}, (_, i) => `<option value="${i+1}" class="bg-zinc-800 text-white" ${(i+1) === currentReps ? 'selected' : ''}>${i+1}</option>`).join('')}
               </select>
-              <span class="text-[0.65rem] uppercase tracking-wider font-semibold opacity-60">reps</span>
+              <span class="text-zinc-500 text-[10px]">R</span>
             </div>
-          </span>
+          </div>
         </div>
         
-        <details class="group mb-4">
-          <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-lime-500 transition-colors flex items-center gap-1 list-none select-none">
-            <i data-lucide="info" class="w-3.5 h-3.5"></i> Ver instruções e dicas
+        <details class="group mb-5">
+          <summary class="cursor-pointer text-[13px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 list-none select-none">
+            <i data-lucide="info" class="w-3.5 h-3.5"></i> Instruções e dicas biomecânicas
           </summary>
-          <div class="mt-2 pt-2 border-t border-white/5 space-y-2">
-            <p class="editable-field text-sm text-zinc-300 leading-relaxed" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
-            ${ex.biomechanics ? `<div class="text-[0.78rem] text-zinc-500 italic flex gap-1.5 items-start mt-1">
-              <span class="mt-0.5">💡</span>
-              <span class="editable-field" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span>
+          <div class="mt-3 pt-3 border-t border-zinc-800/50 space-y-3">
+            <p class="editable-field text-sm text-zinc-400 leading-relaxed font-light" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
+            ${ex.biomechanics ? `<div class="text-[13px] text-zinc-500 italic flex gap-2 items-start bg-zinc-950/30 p-2.5 rounded-lg border border-zinc-900/50">
+              <span class="mt-0.5 opacity-80">💡</span>
+              <span class="editable-field leading-relaxed" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span>
             </div>` : ''}
           </div>
         </details>
         
-        <div class="flex gap-2 mt-auto pt-2">
-          <button class="btn-add-to-routine flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm transition-colors bg-lime-500 text-black font-semibold hover:bg-lime-600 flex-1 shadow-lg shadow-lime-500/20" title="Adicionar ao Treino Atual">
-            <i data-lucide="plus" class="w-4 h-4 pointer-events-none"></i> + Treino
+        <div class="flex gap-2 mt-auto">
+          <button class="btn-add-to-routine flex items-center justify-center gap-2 rounded-xl text-sm transition-colors bg-lime-500/10 text-lime-500 border border-lime-500/20 font-semibold hover:bg-lime-500/20 flex-1 shadow-sm py-2.5" title="Adicionar ao Treino Atual">
+            <i data-lucide="plus" class="w-[18px] h-[18px] pointer-events-none"></i> Treino
           </button>
-          <button class="btn-add-workout flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-sm transition-colors bg-zinc-800 text-zinc-300 font-semibold hover:bg-zinc-700 hover:text-white" title="Histórico de Progresso">
-            <i data-lucide="trending-up" class="w-4 h-4 pointer-events-none"></i>
+          <button class="btn-add-workout flex items-center justify-center w-[46px] rounded-xl transition-colors bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white" title="Histórico de Progresso">
+            <i data-lucide="trending-up" class="w-[18px] h-[18px] pointer-events-none"></i>
           </button>
         </div>
       `;

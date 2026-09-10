@@ -387,12 +387,12 @@ body {
 
 .search-box input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--border-color);
+  background: rgba(24, 24, 27, 0.8); /* zinc-900 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 10px 16px 10px 40px;
-  border-radius: 20px;
+  border-radius: 12px;
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   outline: none;
   transition: var(--transition);
 }
@@ -423,13 +423,13 @@ body {
 }
 
 .filter-chip {
-  background: color-mix(in srgb, var(--chip-color, var(--primary-lime)) 12%, rgba(255,255,255,0.02));
-  border: 1px solid color-mix(in srgb, var(--chip-color, var(--primary-lime)) 30%, transparent);
-  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #a1a1aa; /* zinc-400 */
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   transition: var(--transition);
@@ -439,17 +439,17 @@ body {
 }
 
 .filter-chip:hover {
-  background: color-mix(in srgb, var(--chip-color, var(--primary-lime)) 22%, rgba(255,255,255,0.06));
-  border-color: color-mix(in srgb, var(--chip-color, var(--primary-lime)) 50%, transparent);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #e4e4e7; /* zinc-200 */
   transform: translateY(-1px);
 }
 
 .filter-chip.active {
-  background: linear-gradient(135deg, var(--chip-color, var(--primary-lime)), color-mix(in srgb, var(--chip-color, var(--primary-lime)) 70%, #000));
-  border-color: transparent;
-  color: #ffffff;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--chip-color, var(--primary-lime)) 40%, transparent);
+  background: rgba(24, 24, 27, 0.8); /* zinc-900 */
+  border-color: color-mix(in srgb, var(--chip-color, var(--primary-lime)) 40%, transparent);
+  color: #fff;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--chip-color, var(--primary-lime)) 15%, transparent);
 }
 
 .filter-chip.active .muscle-dot {
@@ -730,12 +730,12 @@ textarea.form-control {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-lime), #65a30d);
+  background: linear-gradient(135deg, var(--primary-lime), #84cc16);
   border: none;
-  color: #fff;
+  color: #09090b; /* zinc-950 */
   font-weight: 700;
   padding: 10px 20px;
-  border-radius: 20px;
+  border-radius: 12px;
   cursor: pointer;
   transition: var(--transition);
   box-shadow: 0 0 16px rgba(132, 204, 22, 0.35);
