@@ -386,6 +386,9 @@ export class WorkoutPlanner {
                         <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="history" class="w-4 h-4"></i> Histórico
                         </button>
+                        <button class="btn-remove-set flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                          <i data-lucide="minus" class="w-4 h-4"></i> Remover Série
+                        </button>
                         <div class="border-t border-white/5 my-1"></div>
                         <button class="btn-remove-ex flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 w-full text-left transition-colors" data-index="${idx}">
                           <i data-lucide="trash-2" class="w-4 h-4"></i> Remover
@@ -540,6 +543,40 @@ export class WorkoutPlanner {
         const dropdown = document.getElementById(`dropdown-ex-${idx}`);
         if (dropdown) dropdown.classList.add('hidden');
         this.openHistoryModal(idx);
+      });
+    });
+
+    this.containerEl.querySelectorAll('.btn-remove-set').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.currentTarget.dataset.exIdx);
+        const dropdown = document.getElementById(`dropdown-ex-${idx}`);
+        if (dropdown) dropdown.classList.add('hidden');
+        
+        const routine = this.routines[this.activeRoutineKey];
+        if (routine && routine.exercises[idx]) {
+          const ex = routine.exercises[idx];
+          
+          let numSets = 4;
+          let repsText = "10 reps";
+          
+          if (ex.customSets) {
+            const numSetsMatch = ex.customSets.match(/(\d+)\s*série/i) || ex.customSets.match(/^(\d+)x/i);
+            numSets = numSetsMatch ? parseInt(numSetsMatch[1]) : 4;
+            const repsMatch = ex.customSets.match(/x\s*(.+)/i);
+            repsText = repsMatch ? repsMatch[1] : '10 reps';
+          }
+          
+          if (numSets > 1) {
+            numSets -= 1;
+            ex.customSets = `${numSets} séries x ${repsText}`;
+            
+            localStorage.setItem('gym_muscle_ex_sets_' + ex.id, ex.customSets);
+            this.saveRoutinesToStorage();
+            this.render();
+            
+            if (this.soundEffects) this.soundEffects.playSelect();
+          }
+        }
       });
     });
 
