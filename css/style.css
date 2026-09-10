@@ -372,6 +372,7 @@ body {
 }
 
 .panel-header-toolbar {
+  flex-shrink: 0;
   padding: 16px 24px;
   border-bottom: 1px solid var(--border-color);
   background: rgba(0, 0, 0, 0.2);
@@ -414,6 +415,7 @@ body {
 
 /* Category Filter Bar */
 .category-filter-bar {
+  flex-shrink: 0;
   padding: 12px 24px;
   display: flex;
   gap: 10px;
@@ -466,8 +468,9 @@ body {
 
 /* Muscle Banner Details */
 .muscle-banner-details {
-  padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(132, 204, 22, 0.08), rgba(0, 0, 0, 0.2));
+  flex-shrink: 0;
+  padding: 16px 24px;
+  background: var(--bg-card), linear-gradient(135deg, rgba(132, 204, 22, 0.08), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
