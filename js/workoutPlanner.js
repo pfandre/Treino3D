@@ -386,6 +386,10 @@ export class WorkoutPlanner {
                         <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="history" class="w-4 h-4"></i> Histórico
                         </button>
+                        <div class="border-t border-white/5 my-1"></div>
+                        <button class="btn-add-set flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                          <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Série
+                        </button>
                         <button class="btn-remove-set flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="minus" class="w-4 h-4"></i> Remover Série
                         </button>
@@ -407,13 +411,9 @@ export class WorkoutPlanner {
                     <div><i data-lucide="check" class="w-4 h-4 mx-auto opacity-70"></i></div>
                   </div>
                   
-                  <div class="space-y-2 w-full">
+                  <div class="space-y-2 w-full pb-2">
                     ${setsHtml}
                   </div>
-                  
-                  <button class="w-full mt-4 py-3 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-md transition-colors font-medium flex items-center justify-center gap-2 text-sm btn-add-set" data-ex-idx="${idx}">
-                    <i data-lucide="plus" class="w-4 h-4 pointer-events-none"></i> Adicionar Série
-                  </button>
                 </div>
               </div>
               `;
@@ -585,6 +585,9 @@ export class WorkoutPlanner {
     this.containerEl.querySelectorAll('.btn-add-set').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const idx = parseInt(e.currentTarget.dataset.exIdx);
+        const dropdown = document.getElementById(`dropdown-ex-${idx}`);
+        if (dropdown) dropdown.classList.add('hidden');
+        
         const routine = this.routines[this.activeRoutineKey];
         if (routine && routine.exercises[idx]) {
           const ex = routine.exercises[idx];
