@@ -351,71 +351,66 @@ export class WorkoutPlanner {
               let setsHtml = '';
               for (let i = 1; i <= numSets; i++) {
                 setsHtml += `
-                  <div class="grid grid-cols-[32px_1fr_64px_64px_48px] gap-2 items-center px-1 set-row group" data-ex-name="${ex.name}">
-                    <div class="w-8 h-8 flex items-center justify-center bg-slate-800 rounded text-slate-400 font-mono text-sm">
+                  <div class="grid grid-cols-[28px_1fr_64px_64px_48px] gap-2 items-center px-1 set-row group w-full" data-ex-name="${ex.name}">
+                    <div class="w-7 h-7 flex items-center justify-center bg-slate-900 rounded text-slate-400 font-mono text-xs">
                       ${i}
                     </div>
-                    <div class="text-slate-500 text-sm font-mono truncate">
+                    <div class="text-slate-500 text-xs font-mono truncate pl-1">
                       -
                     </div>
-                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-kg bg-slate-800 rounded-md text-center font-mono text-white text-lg w-full h-12 outline-none focus:ring-1 focus:ring-lime-500 placeholder:text-slate-600 transition-shadow" placeholder="--" data-ex-name="${ex.name}" data-set-num="${i}">
-                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-reps bg-slate-800 rounded-md text-center font-mono text-white text-lg w-full h-12 outline-none focus:ring-1 focus:ring-lime-500 placeholder:text-slate-600 transition-shadow" value="${repsText.replace(/\\D/g, '')}" data-ex-name="${ex.name}" data-set-num="${i}">
-                    <button class="btn-check-set h-12 w-12 rounded-md bg-slate-700 flex items-center justify-center transition-colors active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
-                      <i data-lucide="check" class="w-6 h-6 text-slate-400 transition-colors pointer-events-none"></i>
+                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-kg bg-slate-900 rounded-md text-center font-mono text-white text-lg w-full h-11 border border-slate-700 focus:border-lime-500 outline-none transition-colors" placeholder="--" data-ex-name="${ex.name}" data-set-num="${i}">
+                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-reps bg-slate-900 rounded-md text-center font-mono text-white text-lg w-full h-11 border border-slate-700 focus:border-lime-500 outline-none transition-colors" value="${repsText.replace(/\\D/g, '')}" data-ex-name="${ex.name}" data-set-num="${i}">
+                    <button class="btn-check-set h-11 w-11 rounded-md bg-slate-700 text-slate-400 flex items-center justify-center transition-colors duration-200 active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
+                      <i data-lucide="check" class="w-5 h-5 pointer-events-none"></i>
                     </button>
                   </div>
                 `;
               }
 
               return `
-              <div class="bg-slate-900 rounded-xl border border-white/5 overflow-hidden mb-4 shadow-lg">
-                <div class="p-4 flex justify-between items-center border-b border-white/5">
-                  <div>
-                    <h3 class="text-lg font-bold text-white">${idx + 1}. ${ex.name}</h3>
+              <div class="bg-slate-800 rounded-xl border border-white/5 overflow-hidden mb-4 shadow-lg flex flex-col">
+                <div class="p-4 flex justify-between items-start border-b border-white/5">
+                  <div class="flex flex-col">
+                    <h3 class="text-lg font-bold text-white leading-tight">${idx + 1}. ${ex.name}</h3>
                     <div class="text-xs text-slate-400 mt-1">${ex.equipment}</div>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <button class="btn-close btn-remove-ex text-slate-400 hover:text-red-400 transition-colors p-2 rounded-full hover:bg-white/5" data-index="${idx}" title="Remover do treino">
-                      <i data-lucide="trash-2" class="w-5 h-5"></i>
+                  <div class="relative flex-shrink-0 ml-2">
+                    <button class="text-slate-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/5 btn-ex-options" data-index="${idx}" title="Opções">
+                      <i data-lucide="more-horizontal" class="w-6 h-6 pointer-events-none"></i>
                     </button>
-                    <div class="relative">
-                      <button class="text-slate-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5 btn-ex-options" data-index="${idx}" title="Opções">
-                        <i data-lucide="more-horizontal" class="w-6 h-6 pointer-events-none"></i>
-                      </button>
-                      <div class="absolute right-0 mt-1 w-48 bg-slate-800 rounded-md shadow-2xl border border-white/10 z-50 hidden dropdown-ex-options" id="dropdown-ex-${idx}">
-                        <div class="py-1 flex flex-col">
-                          <button class="btn-replace flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Substituir
-                          </button>
-                          <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
-                            <i data-lucide="history" class="w-4 h-4"></i> Histórico
-                          </button>
-                        </div>
+                    <div class="absolute right-0 mt-1 w-48 bg-slate-800 rounded-md shadow-2xl border border-white/10 z-50 hidden dropdown-ex-options" id="dropdown-ex-${idx}">
+                      <div class="py-1 flex flex-col">
+                        <button class="btn-replace flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Substituir
+                        </button>
+                        <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                          <i data-lucide="history" class="w-4 h-4"></i> Histórico
+                        </button>
+                        <div class="border-t border-white/5 my-1"></div>
+                        <button class="btn-remove-ex flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 w-full text-left transition-colors" data-index="${idx}">
+                          <i data-lucide="trash-2" class="w-4 h-4"></i> Remover
+                        </button>
                       </div>
                     </div>
+                  </div>
                 </div>
                 
-                <div class="p-4">
-                  <div class="grid grid-cols-[32px_1fr_64px_64px_48px] gap-2 mb-3 px-1 text-[10px] uppercase text-slate-500 tracking-wider font-semibold text-center items-center">
+                <div class="p-4 w-full">
+                  <div class="grid grid-cols-[28px_1fr_64px_64px_48px] gap-2 mb-3 px-1 text-[10px] uppercase text-slate-500 tracking-wider font-semibold text-center items-center">
                     <div>Série</div>
-                    <div class="text-left">Anterior</div>
+                    <div class="text-left pl-1">Anterior</div>
                     <div>kg</div>
                     <div>Reps</div>
                     <div><i data-lucide="check" class="w-4 h-4 mx-auto opacity-70"></i></div>
                   </div>
                   
-                  <div class="space-y-2">
+                  <div class="space-y-2 w-full">
                     ${setsHtml}
                   </div>
                   
-                  <div class="flex gap-2 mt-4">
-                    <button class="flex-1 py-3 text-slate-400 hover:text-white hover:bg-slate-800 border border-white/5 rounded-md transition-colors font-medium flex items-center justify-center gap-2 text-sm btn-remove-set" data-ex-idx="${idx}">
-                      <i data-lucide="minus" class="w-4 h-4 pointer-events-none"></i> Remover
-                    </button>
-                    <button class="flex-1 py-3 text-slate-400 hover:text-white hover:bg-slate-800 border border-white/5 rounded-md transition-colors font-medium flex items-center justify-center gap-2 text-sm btn-add-set" data-ex-idx="${idx}">
-                      <i data-lucide="plus" class="w-4 h-4 pointer-events-none"></i> Adicionar Série
-                    </button>
-                  </div>
+                  <button class="w-full mt-4 py-3 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-md transition-colors font-medium flex items-center justify-center gap-2 text-sm btn-add-set" data-ex-idx="${idx}">
+                    <i data-lucide="plus" class="w-4 h-4 pointer-events-none"></i> Adicionar Série
+                  </button>
                 </div>
               </div>
               `;
@@ -548,36 +543,7 @@ export class WorkoutPlanner {
       });
     });
 
-    this.containerEl.querySelectorAll('.btn-remove-set').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = parseInt(e.currentTarget.dataset.exIdx);
-        const routine = this.routines[this.activeRoutineKey];
-        if (routine && routine.exercises[idx]) {
-          const ex = routine.exercises[idx];
-          
-          let numSets = 4;
-          let repsText = "10 reps";
-          
-          if (ex.customSets) {
-            const numSetsMatch = ex.customSets.match(/(\d+)\s*série/i) || ex.customSets.match(/^(\d+)x/i);
-            numSets = numSetsMatch ? parseInt(numSetsMatch[1]) : 4;
-            const repsMatch = ex.customSets.match(/x\s*(.+)/i);
-            repsText = repsMatch ? repsMatch[1] : '10 reps';
-          }
-          
-          if (numSets > 1) {
-            numSets -= 1;
-            ex.customSets = `${numSets} séries x ${repsText}`;
-            
-            localStorage.setItem('gym_muscle_ex_sets_' + ex.id, ex.customSets);
-            this.saveRoutinesToStorage();
-            this.render();
-            
-            if (this.soundEffects) this.soundEffects.playSelect();
-          }
-        }
-      });
-    });
+
 
     this.containerEl.querySelectorAll('.btn-add-set').forEach(btn => {
       btn.addEventListener('click', (e) => {
