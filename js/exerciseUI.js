@@ -203,7 +203,7 @@ export class ExerciseUI {
       card.innerHTML = `
         <div class="flex flex-col mb-3">
           <div class="flex justify-between items-start gap-2">
-            <h3 class="font-bold text-zinc-100 text-lg leading-tight cursor-pointer hover:text-lime-400 transition-colors" title="Ver Histórico de Progressão">${ex.name}</h3>
+            <h3 class="card-title font-bold text-zinc-100 text-lg leading-tight cursor-pointer hover:text-lime-400 transition-colors" title="Ver Histórico de Progressão">${ex.name}</h3>
             <button class="btn-edit-ex flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full text-sm transition-colors text-zinc-500 hover:text-zinc-200 hover:bg-white/5" title="Editar Exercício">
               <i data-lucide="edit-3" class="w-4 h-4 pointer-events-none"></i>
             </button>
