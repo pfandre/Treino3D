@@ -351,37 +351,66 @@ export class WorkoutPlanner {
               let setsHtml = '';
               for (let i = 1; i <= numSets; i++) {
                 setsHtml += `
-                  <div class="set-row flex items-center justify-between bg-white/5 rounded-xl p-4 transition-all duration-300" data-ex-name="${ex.name}">
-                    <div class="flex items-center gap-4">
-                      <span class="font-mono text-slate-400 font-bold w-6">${i}</span>
-                      <div class="font-mono text-lg font-bold text-white tabular-nums">${repsText}</div>
+                  <div class="grid grid-cols-[32px_1fr_64px_64px_48px] gap-2 items-center px-1 set-row group" data-ex-name="${ex.name}">
+                    <div class="w-8 h-8 flex items-center justify-center bg-slate-800 rounded text-slate-400 font-mono text-sm">
+                      ${i}
                     </div>
-                    <div class="flex items-center gap-3">
-                      <div class="flex items-center gap-1">
-                        <input type="number" class="input-kg w-16 bg-transparent border border-white/10 rounded-lg px-2 py-1 text-right font-mono text-lg font-bold text-[#84CC16] tabular-nums outline-none focus:border-[#84CC16]/50 focus:ring-1 focus:ring-[#84CC16]/30 transition-all placeholder:text-slate-500" placeholder="--" min="0" max="999" step="0.5" data-ex-name="${ex.name}" data-set-num="${i}">
-                        <span class="text-[#84CC16] font-mono text-sm font-bold">kg</span>
-                      </div>
-                      <button class="btn-check-set h-12 w-12 rounded-full bg-white/5 border-2 border-white/10 flex items-center justify-center text-slate-400 transition-all duration-300 active:scale-90 hover:border-white/20" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
-                        <i data-lucide="check" class="w-6 h-6 transition-all duration-300"></i>
-                      </button>
+                    <div class="text-slate-500 text-sm font-mono truncate">
+                      -
                     </div>
+                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-kg bg-slate-800 rounded-md text-center font-mono text-white text-lg w-full h-12 outline-none focus:ring-1 focus:ring-lime-500 placeholder:text-slate-600 transition-shadow" placeholder="--" data-ex-name="${ex.name}" data-set-num="${i}">
+                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-reps bg-slate-800 rounded-md text-center font-mono text-white text-lg w-full h-12 outline-none focus:ring-1 focus:ring-lime-500 placeholder:text-slate-600 transition-shadow" value="${repsText.replace(/\\D/g, '')}" data-ex-name="${ex.name}" data-set-num="${i}">
+                    <button class="btn-check-set h-12 w-12 rounded-md bg-slate-700 flex items-center justify-center transition-colors active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
+                      <i data-lucide="check" class="w-6 h-6 text-slate-400 transition-colors pointer-events-none"></i>
+                    </button>
                   </div>
                 `;
               }
 
               return `
-              <div class="exercise-card" style="padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div class="bg-slate-900 rounded-xl border border-white/5 overflow-hidden mb-4 shadow-lg">
+                <div class="p-4 flex justify-between items-center border-b border-white/5">
                   <div>
-                    <h4 style="font-size: 1.1rem; color: var(--text-main); font-weight: 700;">${idx + 1}. ${ex.name}</h4>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">${ex.equipment}</div>
+                    <h3 class="text-lg font-bold text-white">${idx + 1}. ${ex.name}</h3>
+                    <div class="text-xs text-slate-400 mt-1">${ex.equipment}</div>
                   </div>
-                  <button class="btn-close btn-remove-ex" data-index="${idx}" title="Remover do treino">
-                    <i data-lucide="trash-2" style="width: 20px; color: var(--primary-lime);"></i>
-                  </button>
+                  <div class="flex items-center gap-2">
+                    <button class="btn-close btn-remove-ex text-slate-400 hover:text-red-400 transition-colors p-2 rounded-full hover:bg-white/5" data-index="${idx}" title="Remover do treino">
+                      <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                    <div class="relative">
+                      <button class="text-slate-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5 btn-ex-options" data-index="${idx}" title="Opções">
+                        <i data-lucide="more-horizontal" class="w-6 h-6 pointer-events-none"></i>
+                      </button>
+                      <div class="absolute right-0 mt-1 w-48 bg-slate-800 rounded-md shadow-2xl border border-white/10 z-50 hidden dropdown-ex-options" id="dropdown-ex-${idx}">
+                        <div class="py-1 flex flex-col">
+                          <button class="flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Substituir
+                          </button>
+                          <button class="flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors">
+                            <i data-lucide="history" class="w-4 h-4"></i> Histórico
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                 </div>
-                <div class="sets-container flex flex-col gap-2">
-                  ${setsHtml}
+                
+                <div class="p-4">
+                  <div class="grid grid-cols-[32px_1fr_64px_64px_48px] gap-2 mb-3 px-1 text-[10px] uppercase text-slate-500 tracking-wider font-semibold text-center items-center">
+                    <div>Série</div>
+                    <div class="text-left">Anterior</div>
+                    <div>kg</div>
+                    <div>Reps</div>
+                    <div><i data-lucide="check" class="w-4 h-4 mx-auto opacity-70"></i></div>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    ${setsHtml}
+                  </div>
+                  
+                  <button class="w-full mt-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors font-medium flex items-center justify-center gap-2 text-sm btn-add-set" data-ex-idx="${idx}">
+                    <i data-lucide="plus" class="w-4 h-4 pointer-events-none"></i> Adicionar Série
+                  </button>
                 </div>
               </div>
               `;
@@ -424,32 +453,29 @@ export class WorkoutPlanner {
         const kgInput = row.querySelector('.input-kg');
         const kgValue = parseFloat(kgInput?.value) || 0;
         
-        const isChecking = !button.classList.contains('checked');
-        button.classList.toggle('checked');
+        const isChecking = !button.classList.contains('bg-lime-500');
 
         if (isChecking) {
           // ── Visual: botão fica verde vibrante ──
-          button.style.background = '#84CC16';
-          button.style.borderColor = '#84CC16';
-          button.style.color = '#000';
-          button.style.boxShadow = '0 0 20px rgba(132, 204, 22, 0.6)';
-          button.querySelector('i')?.setAttribute('style', 'color: #000; transform: scale(1.3);');
+          button.classList.remove('bg-slate-700');
+          button.classList.add('bg-lime-500');
           
-          // ── Flash animation no botão ──
-          button.animate([
-            { transform: 'scale(1)', boxShadow: '0 0 0px rgba(132, 204, 22, 0)' },
-            { transform: 'scale(1.3)', boxShadow: '0 0 30px rgba(132, 204, 22, 0.8)' },
-            { transform: 'scale(1)', boxShadow: '0 0 20px rgba(132, 204, 22, 0.6)' }
-          ], { duration: 400, easing: 'ease-out' });
-
-          // ── Flash na row inteira ──
-          row.style.background = 'rgba(132, 204, 22, 0.15)';
-          row.style.borderLeft = '3px solid #84CC16';
+          const icon = button.querySelector('i');
+          if (icon) {
+             icon.classList.remove('text-slate-400');
+             icon.classList.add('text-slate-900');
+             icon.style.transform = 'scale(1.2)';
+          }
           
-          // ── Desabilitar input ──
+          // ── Desabilitar inputs ──
+          const repsInput = row.querySelector('.input-reps');
           if (kgInput) {
             kgInput.disabled = true;
-            kgInput.style.opacity = '0.6';
+            kgInput.classList.add('opacity-50');
+          }
+          if (repsInput) {
+            repsInput.disabled = true;
+            repsInput.classList.add('opacity-50');
           }
 
           // ── Persistir os kg no localStorage ──
@@ -460,17 +486,71 @@ export class WorkoutPlanner {
           if (this.soundEffects) this.soundEffects.playClick();
         } else {
           // ── Desfazer ──
-          button.style.background = 'rgba(255,255,255,0.05)';
-          button.style.borderColor = 'rgba(255,255,255,0.1)';
-          button.style.color = '#94A3B8';
-          button.style.boxShadow = 'none';
-          button.querySelector('i')?.setAttribute('style', '');
-          row.style.background = 'rgba(255,255,255,0.05)';
-          row.style.borderLeft = 'none';
+          button.classList.add('bg-slate-700');
+          button.classList.remove('bg-lime-500');
+          
+          const icon = button.querySelector('i');
+          if (icon) {
+             icon.classList.add('text-slate-400');
+             icon.classList.remove('text-slate-900');
+             icon.style.transform = '';
+          }
+          
+          const repsInput = row.querySelector('.input-reps');
           if (kgInput) {
             kgInput.disabled = false;
-            kgInput.style.opacity = '1';
+            kgInput.classList.remove('opacity-50');
           }
+          if (repsInput) {
+            repsInput.disabled = false;
+            repsInput.classList.remove('opacity-50');
+          }
+        }
+      });
+    });
+
+    this.containerEl.querySelectorAll('.btn-ex-options').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = e.currentTarget.dataset.index;
+        const dropdown = document.getElementById(`dropdown-ex-${idx}`);
+        
+        // Esconde todos os outros dropdowns
+        document.querySelectorAll('.dropdown-ex-options').forEach(el => {
+           if (el.id !== `dropdown-ex-${idx}`) el.classList.add('hidden');
+        });
+
+        if (dropdown) {
+          dropdown.classList.toggle('hidden');
+        }
+      });
+    });
+
+    this.containerEl.querySelectorAll('.btn-add-set').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.currentTarget.dataset.exIdx);
+        const routine = this.routines[this.activeRoutineKey];
+        if (routine && routine.exercises[idx]) {
+          const ex = routine.exercises[idx];
+          
+          let numSets = 4;
+          let repsText = "10 reps";
+          
+          if (ex.customSets) {
+            const numSetsMatch = ex.customSets.match(/(\d+)\s*série/i) || ex.customSets.match(/^(\d+)x/i);
+            numSets = numSetsMatch ? parseInt(numSetsMatch[1]) : 4;
+            const repsMatch = ex.customSets.match(/x\s*(.+)/i);
+            repsText = repsMatch ? repsMatch[1] : '10 reps';
+          }
+          
+          numSets += 1; // Adiciona +1 série
+          ex.customSets = `${numSets} séries x ${repsText}`;
+          
+          // Salva no localStorage global para o Explorer e para a Rotina
+          localStorage.setItem('gym_muscle_ex_sets_' + ex.id, ex.customSets);
+          this.saveRoutinesToStorage();
+          this.render();
+          
+          if (this.soundEffects) this.soundEffects.playAdd();
         }
       });
     });
