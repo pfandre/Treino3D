@@ -5,7 +5,7 @@
 import { MUSCLE_DATABASE } from './database.js?v=28';
 import { ImageAnatomyInteractive } from './imageAnatomyInteractive.js?v=32';
 
-import { ExerciseUI } from './exerciseUI.js?v=32';
+import { ExerciseUI } from './exerciseUI.js?v=33';
 import { EditorModal } from './editorModal.js?v=27';
 import { WorkoutPlanner } from './workoutPlanner.js?v=43';
 import { SoundEffects } from './soundEffects.js?v=27';
