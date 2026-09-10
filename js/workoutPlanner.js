@@ -384,10 +384,10 @@ export class WorkoutPlanner {
                       </button>
                       <div class="absolute right-0 mt-1 w-48 bg-slate-800 rounded-md shadow-2xl border border-white/10 z-50 hidden dropdown-ex-options" id="dropdown-ex-${idx}">
                         <div class="py-1 flex flex-col">
-                          <button class="flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors">
+                          <button class="btn-replace flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                             <i data-lucide="refresh-cw" class="w-4 h-4"></i> Substituir
                           </button>
-                          <button class="flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors">
+                          <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                             <i data-lucide="history" class="w-4 h-4"></i> Histórico
                           </button>
                         </div>
@@ -525,6 +525,24 @@ export class WorkoutPlanner {
       });
     });
 
+    this.containerEl.querySelectorAll('.btn-replace').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = e.currentTarget.dataset.exIdx;
+        const dropdown = document.getElementById(`dropdown-ex-${idx}`);
+        if (dropdown) dropdown.classList.add('hidden');
+        this.openReplaceModal(idx);
+      });
+    });
+
+    this.containerEl.querySelectorAll('.btn-history').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = e.currentTarget.dataset.exIdx;
+        const dropdown = document.getElementById(`dropdown-ex-${idx}`);
+        if (dropdown) dropdown.classList.add('hidden');
+        this.openHistoryModal(idx);
+      });
+    });
+
     this.containerEl.querySelectorAll('.btn-add-set').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const idx = parseInt(e.currentTarget.dataset.exIdx);
@@ -573,11 +591,213 @@ export class WorkoutPlanner {
 
     if (window.lucide) window.lucide.createIcons({ root: this.containerEl });
   }
+  openReplaceModal(exIdx) {
+    const routine = this.routines[this.activeRoutineKey];
+    if (!routine || !routine.exercises[exIdx]) return;
+    
+    const currentEx = routine.exercises[exIdx];
+    const category = MUSCLE_DATABASE[currentEx.categoryId];
+    
+    if (!category || !category.exercises) return;
+    
+    const alternatives = category.exercises.filter(e => e.id !== currentEx.id);
+    
+    const modal = document.createElement('div');
+    modal.className = 'routine-modal-overlay';
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 3000; padding: 20px; transition: opacity 0.3s ease;
+    `;
+    
+    let listHtml = '';
+    if (alternatives.length === 0) {
+      listHtml = `<div class="text-slate-400 text-center py-4">Nenhuma alternativa encontrada.</div>`;
+    } else {
+      listHtml = alternatives.map(alt => `
+        <button class="btn-select-replacement flex items-center justify-between w-full p-4 hover:bg-slate-800 border-b border-white/5 transition-colors text-left" data-alt-id="${alt.id}">
+          <div>
+            <div class="text-white font-semibold">${alt.name}</div>
+            <div class="text-xs text-slate-400">${alt.equipment}</div>
+          </div>
+          <i data-lucide="arrow-right-circle" class="w-5 h-5 text-lime-500"></i>
+        </button>
+      `).join('');
+    }
+    
+    modal.innerHTML = `
+      <div style="background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: all 0.3s ease;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin: 0;">Substituir Exercício</h3>
+          <button id="btn-close-replace" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="x"></i></button>
+        </div>
+        <div style="padding: 10px; overflow-y: auto; max-height: 60vh;">
+          <div class="text-sm text-slate-400 px-3 py-2">Substituindo: <span class="text-white font-semibold">${currentEx.name}</span></div>
+          <div class="flex flex-col mt-2 rounded-xl border border-white/5 overflow-hidden">
+            ${listHtml}
+          </div>
+        </div>
+        <div style="padding: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2);">
+          <button id="btn-cancel-replace" class="btn-secondary" style="padding: 10px 20px;">Cancelar</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    if (window.lucide) window.lucide.createIcons({ root: modal });
+    
+    const closeModal = () => {
+      modal.style.opacity = '0';
+      setTimeout(() => modal.remove(), 300);
+    };
+    
+    modal.querySelector('#btn-close-replace').addEventListener('click', closeModal);
+    modal.querySelector('#btn-cancel-replace').addEventListener('click', closeModal);
+    
+    modal.querySelectorAll('.btn-select-replacement').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const altId = e.currentTarget.dataset.altId;
+        const newEx = alternatives.find(a => a.id === altId);
+        if (newEx) {
+          const savedSetsReps = localStorage.getItem('gym_muscle_ex_sets_' + newEx.id);
+          routine.exercises[exIdx] = { ...newEx, customSets: savedSetsReps || '3 séries x 10 reps' };
+          
+          this._syncRoutineNameWithExercises(routine);
+          this.saveRoutinesToStorage();
+          this.render();
+          if (this.soundEffects) this.soundEffects.playAdd();
+          this.showNotification(`Exercício substituído por ${newEx.name}!`);
+          closeModal();
+        }
+      });
+    });
+  }
+
+  openHistoryModal(exIdx) {
+    const routine = this.routines[this.activeRoutineKey];
+    if (!routine || !routine.exercises[exIdx]) return;
+    
+    const exName = routine.exercises[exIdx].name;
+    let records = [];
+    try {
+      records = JSON.parse(localStorage.getItem('treino3d_set_records')) || [];
+    } catch { /* empty */ }
+    
+    const exRecords = records.filter(r => r.exercise === exName);
+    
+    const historyMap = {};
+    exRecords.forEach(r => {
+      const dateKey = new Date(r.date).toLocaleDateString();
+      if (!historyMap[dateKey] || r.kg > historyMap[dateKey]) {
+        historyMap[dateKey] = r.kg;
+      }
+    });
+    
+    const labels = Object.keys(historyMap);
+    const dataPoints = Object.values(historyMap);
+    
+    const modal = document.createElement('div');
+    modal.className = 'routine-modal-overlay';
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 3000; padding: 20px; transition: opacity 0.3s ease;
+    `;
+    
+    let contentHtml = '';
+    if (labels.length === 0) {
+      contentHtml = `
+        <div class="text-center py-10 text-slate-400">
+          <i data-lucide="line-chart" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+          Nenhum histórico encontrado para <br><b class="text-white">${exName}</b>.<br><br>
+          <span class="text-xs opacity-70">Complete algumas séries (marcando o check verde) com carga para ver o gráfico de progressão!</span>
+        </div>
+      `;
+    } else {
+      contentHtml = `
+        <div class="w-full bg-slate-800 rounded-lg p-3 border border-white/5 relative" style="height: 300px;">
+           <canvas id="history-chart-canvas"></canvas>
+        </div>
+      `;
+    }
+    
+    modal.innerHTML = `
+      <div style="background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: all 0.3s ease;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin: 0;">Histórico de Cargas</h3>
+          <button id="btn-close-history" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="x"></i></button>
+        </div>
+        
+        <div style="padding: 20px; overflow-y: auto; max-height: 60vh;">
+          ${contentHtml}
+        </div>
+        
+        <div style="padding: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2);">
+          <button id="btn-cancel-history" class="btn-primary" style="padding: 10px 20px;">Fechar</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    if (window.lucide) window.lucide.createIcons({ root: modal });
+    
+    const closeModal = () => {
+      modal.style.opacity = '0';
+      setTimeout(() => modal.remove(), 300);
+    };
+    
+    modal.querySelector('#btn-close-history').addEventListener('click', closeModal);
+    modal.querySelector('#btn-cancel-history').addEventListener('click', closeModal);
+    
+    if (labels.length > 0 && window.Chart) {
+      setTimeout(() => {
+        const ctx = document.getElementById('history-chart-canvas').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Carga Máxima (kg)',
+              data: dataPoints,
+              borderColor: '#84CC16',
+              backgroundColor: 'rgba(132, 204, 22, 0.1)',
+              borderWidth: 3,
+              tension: 0.3,
+              fill: true,
+              pointBackgroundColor: '#84CC16',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleColor: '#94a3b8',
+                bodyColor: '#fff',
+                padding: 10,
+                displayColors: false,
+                callbacks: {
+                  label: function(context) { return context.parsed.y + ' kg'; }
+                }
+              }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+              y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } }
+            }
+          }
+        });
+      }, 100);
+    }
+  }
+
   /**
-   * Persiste o registro de uma série concluída (exercício + kg) no localStorage.
-   * Formato: { exercise, kg, set, date }
-   * Chave: 'treino3d_set_records'
-   */
   _saveSetRecord(exerciseName, setNum, kg) {
     const STORAGE_KEY = 'treino3d_set_records';
     let records = [];
