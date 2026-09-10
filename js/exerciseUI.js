@@ -132,7 +132,7 @@ export class ExerciseUI {
   renderExerciseList() {
     if (!this.listContainer) return;
     this.listContainer.innerHTML = "";
-    this.listContainer.className = "flex flex-col w-full max-w-lg mx-auto gap-4 pb-20 pt-2 px-2";
+    this.listContainer.className = "flex-1 overflow-y-auto flex flex-col w-full max-w-lg mx-auto gap-4 pb-20 pt-2 px-2";
 
     let exercisesToDisplay = [];
 
