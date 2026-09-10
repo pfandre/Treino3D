@@ -132,7 +132,7 @@ export class ExerciseUI {
   renderExerciseList() {
     if (!this.listContainer) return;
     this.listContainer.innerHTML = "";
-    this.listContainer.className = "flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-20 pt-4 px-4 w-full max-w-7xl mx-auto";
+    this.listContainer.className = "flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-20 pt-4 px-4 w-full max-w-7xl mx-auto content-start";
 
     let exercisesToDisplay = [];
 
@@ -195,13 +195,10 @@ export class ExerciseUI {
       }
 
       const card = document.createElement('div');
-      card.className = "rounded-2xl border border-zinc-800/80 flex flex-col p-4 w-full relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50 hover:border-zinc-700/80";
+      card.className = "bg-zinc-900 rounded-2xl border border-white/5 flex flex-col p-4 w-full relative";
 
       const categoryData = MUSCLE_DATABASE[ex.categoryId];
-      const accentColor = categoryData ? categoryData.color : '#84cc16';
-      
-      card.style.background = `radial-gradient(120% 120% at 50% -10%, ${accentColor}20 0%, rgba(24,24,27,1) 40%, rgba(9,9,11,1) 100%)`;
-      card.style.boxShadow = `inset 0 1px 0 0 ${accentColor}30, 0 4px 6px -1px rgba(0, 0, 0, 0.3)`;
+      const accentColor = categoryData ? categoryData.color : 'var(--primary-cyan)';
 
       card.innerHTML = `
         <div class="flex flex-col mb-4">
