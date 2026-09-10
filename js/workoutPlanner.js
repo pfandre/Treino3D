@@ -798,6 +798,8 @@ export class WorkoutPlanner {
   }
 
   /**
+   * Persiste o registro de uma série concluída (exercício + kg) no localStorage.
+   */
   _saveSetRecord(exerciseName, setNum, kg) {
     const STORAGE_KEY = 'treino3d_set_records';
     let records = [];
