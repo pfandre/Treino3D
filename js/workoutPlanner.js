@@ -373,7 +373,6 @@ export class WorkoutPlanner {
               }
 
               return `
-              return `
               <div class="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden mb-4 shadow-lg flex flex-col">
                 <div class="p-4 flex justify-between items-start border-b border-zinc-800">
                   <div class="flex flex-col">
@@ -430,7 +429,6 @@ export class WorkoutPlanner {
             }).join('')}
           </div>
         `}
-      </div>
       </div>
     `;
 
