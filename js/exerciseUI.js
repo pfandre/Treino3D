@@ -242,18 +242,13 @@ export class ExerciseUI {
           </div>
         </div>
         
-        <details class="group mb-5">
-          <summary class="cursor-pointer text-[13px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 list-none select-none">
-            <i data-lucide="info" class="w-3.5 h-3.5"></i> Instruções e dicas biomecânicas
-          </summary>
-          <div class="mt-3 pt-3 border-t border-zinc-800/50 space-y-3">
-            <p class="editable-field text-sm text-zinc-400 leading-relaxed font-light" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
-            ${ex.biomechanics ? `<div class="text-[13px] text-zinc-500 italic flex gap-2 items-start bg-zinc-950/30 p-2.5 rounded-lg border border-zinc-900/50">
-              <span class="mt-0.5 opacity-80">💡</span>
-              <span class="editable-field leading-relaxed" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span>
-            </div>` : ''}
-          </div>
-        </details>
+        <div class="mb-5 flex-1">
+          <p class="editable-field text-[13px] text-zinc-400 leading-relaxed font-light line-clamp-3 mb-2" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
+          ${ex.biomechanics ? `<div class="text-[12px] text-zinc-500/80 italic flex gap-1.5 items-start">
+            <i data-lucide="zap" class="w-3 h-3 mt-0.5 opacity-70"></i>
+            <span class="editable-field leading-snug line-clamp-2" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span>
+          </div>` : ''}
+        </div>
         
         <div class="flex gap-2 mt-auto">
           <button class="btn-add-to-routine flex items-center justify-center gap-2 rounded-xl text-sm transition-colors bg-lime-500/10 text-lime-500 border border-lime-500/20 font-semibold hover:bg-lime-500/20 flex-1 shadow-sm py-2.5" title="Adicionar ao Treino Atual">
