@@ -596,9 +596,23 @@ export class WorkoutPlanner {
     if (!routine || !routine.exercises[exIdx]) return;
     
     const currentEx = routine.exercises[exIdx];
-    const category = MUSCLE_DATABASE[currentEx.categoryId];
     
-    if (!category || !category.exercises) return;
+    let categoryId = currentEx.categoryId;
+    if (!categoryId) {
+      for (const [key, catData] of Object.entries(window.MUSCLE_DATABASE || MUSCLE_DATABASE)) {
+        if (catData.exercises && catData.exercises.find(e => e.id === currentEx.id)) {
+          categoryId = key;
+          break;
+        }
+      }
+    }
+    
+    const category = (window.MUSCLE_DATABASE || MUSCLE_DATABASE)[categoryId];
+    
+    if (!category || !category.exercises) {
+      this.showNotification("Não foi possível encontrar alternativas para este exercício.", "error");
+      return;
+    }
     
     const alternatives = category.exercises.filter(e => e.id !== currentEx.id);
     
