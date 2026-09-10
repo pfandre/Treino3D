@@ -264,7 +264,8 @@ export class WorkoutPlanner {
     const estimatedSets = totalExercises * 4;
 
     this.containerEl.innerHTML = `
-      <div class="planner-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+      <div class="bg-zinc-950 min-h-screen -mx-5 -mt-5 p-5 pb-24">
+        <div class="planner-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
         <div>
           <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: var(--text-main);">
             <i data-lucide="calendar" style="color: var(--primary-lime)"></i> Montador de Rotinas de Treino
@@ -351,49 +352,54 @@ export class WorkoutPlanner {
               let setsHtml = '';
               for (let i = 1; i <= numSets; i++) {
                 setsHtml += `
-                  <div class="grid grid-cols-[28px_1fr_64px_64px_48px] gap-2 items-center px-1 set-row group w-full" data-ex-name="${ex.name}">
-                    <div class="w-7 h-7 flex items-center justify-center bg-slate-900 rounded text-slate-400 font-mono text-xs">
-                      ${i}
+                  <div class="flex items-center justify-between px-1 set-row group w-full mb-2" data-ex-name="${ex.name}">
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 flex items-center justify-center bg-zinc-950 border border-zinc-800 rounded text-zinc-400 font-mono text-xs">
+                        ${i}
+                      </div>
+                      <div class="text-zinc-500 text-xs font-mono truncate max-w-[60px]">
+                        -
+                      </div>
                     </div>
-                    <div class="text-slate-500 text-xs font-mono truncate pl-1">
-                      -
+                    <div class="flex items-center gap-2">
+                      <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-kg bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 focus:border-lime-500 outline-none transition-colors" placeholder="--" data-ex-name="${ex.name}" data-set-num="${i}">
+                      <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-reps bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 focus:border-lime-500 outline-none transition-colors" value="${repsText.replace(/\\D/g, '')}" data-ex-name="${ex.name}" data-set-num="${i}">
+                      <button class="btn-check-set h-11 w-11 rounded-md bg-zinc-800 text-zinc-400 flex items-center justify-center transition-colors duration-200 active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
+                        <i data-lucide="check" class="w-5 h-5 pointer-events-none"></i>
+                      </button>
                     </div>
-                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-kg bg-slate-900 rounded-md text-center font-mono text-white text-lg w-full h-11 border border-slate-700 focus:border-lime-500 outline-none transition-colors" placeholder="--" data-ex-name="${ex.name}" data-set-num="${i}">
-                    <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-reps bg-slate-900 rounded-md text-center font-mono text-white text-lg w-full h-11 border border-slate-700 focus:border-lime-500 outline-none transition-colors" value="${repsText.replace(/\\D/g, '')}" data-ex-name="${ex.name}" data-set-num="${i}">
-                    <button class="btn-check-set h-11 w-11 rounded-md bg-slate-700 text-slate-400 flex items-center justify-center transition-colors duration-200 active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
-                      <i data-lucide="check" class="w-5 h-5 pointer-events-none"></i>
-                    </button>
                   </div>
                 `;
               }
 
               return `
-              <div class="bg-slate-800 rounded-xl border border-white/5 overflow-hidden mb-4 shadow-lg flex flex-col">
-                <div class="p-4 flex justify-between items-start border-b border-white/5">
+              return `
+              <div class="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden mb-4 shadow-lg flex flex-col">
+                <div class="p-4 flex justify-between items-start border-b border-zinc-800">
                   <div class="flex flex-col">
-                    <h3 class="text-lg font-bold text-white leading-tight">${idx + 1}. ${ex.name}</h3>
-                    <div class="text-xs text-slate-400 mt-1">${ex.equipment}</div>
+                    <h3 class="text-lg font-bold text-zinc-100 leading-tight">${idx + 1}. ${ex.name}</h3>
+                    <div class="text-xs text-zinc-400 mt-1">${ex.equipment}</div>
                   </div>
                   <div class="relative flex-shrink-0 ml-2">
-                    <button class="text-slate-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/5 btn-ex-options" data-index="${idx}" title="Opções">
+                    <button class="text-zinc-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/5 btn-ex-options" data-index="${idx}" title="Opções">
                       <i data-lucide="more-horizontal" class="w-6 h-6 pointer-events-none"></i>
                     </button>
-                    <div class="absolute right-0 mt-1 w-48 bg-slate-800 rounded-md shadow-2xl border border-white/10 z-50 hidden dropdown-ex-options" id="dropdown-ex-${idx}">
+                    <div class="absolute right-0 mt-1 w-48 bg-zinc-800 rounded-md shadow-2xl border border-zinc-700 z-50 hidden dropdown-ex-options" id="dropdown-ex-${idx}">
                       <div class="py-1 flex flex-col">
-                        <button class="btn-replace flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                        <button class="btn-replace flex items-center gap-2 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="refresh-cw" class="w-4 h-4"></i> Substituir
                         </button>
-                        <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                        <button class="btn-history flex items-center gap-2 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="history" class="w-4 h-4"></i> Histórico
                         </button>
-                        <div class="border-t border-white/5 my-1"></div>
-                        <button class="btn-add-set flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                        <div class="border-t border-zinc-700 my-1"></div>
+                        <button class="btn-add-set flex items-center gap-2 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Série
                         </button>
-                        <button class="btn-remove-set flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
+                        <button class="btn-remove-set flex items-center gap-2 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white w-full text-left transition-colors" data-ex-idx="${idx}">
                           <i data-lucide="minus" class="w-4 h-4"></i> Remover Série
                         </button>
-                        <div class="border-t border-white/5 my-1"></div>
+                        <div class="border-t border-zinc-700 my-1"></div>
                         <button class="btn-remove-ex flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 w-full text-left transition-colors" data-index="${idx}">
                           <i data-lucide="trash-2" class="w-4 h-4"></i> Remover
                         </button>
@@ -403,15 +409,19 @@ export class WorkoutPlanner {
                 </div>
                 
                 <div class="p-4 w-full">
-                  <div class="grid grid-cols-[28px_1fr_64px_64px_48px] gap-2 mb-3 px-1 text-[10px] uppercase text-slate-500 tracking-wider font-semibold text-center items-center">
-                    <div>Série</div>
-                    <div class="text-left pl-1">Anterior</div>
-                    <div>kg</div>
-                    <div>Reps</div>
-                    <div><i data-lucide="check" class="w-4 h-4 mx-auto opacity-70"></i></div>
+                  <div class="flex items-center justify-between mb-3 px-1">
+                    <div class="flex items-center gap-2">
+                      <div class="text-[10px] uppercase text-zinc-400 tracking-wider font-semibold w-7 text-center">Série</div>
+                      <div class="text-[10px] uppercase text-zinc-400 tracking-wider font-semibold">Anterior</div>
+                    </div>
+                    <div class="flex items-center gap-2 text-[10px] uppercase text-zinc-400 tracking-wider font-semibold text-center">
+                      <div class="w-14">kg</div>
+                      <div class="w-14">Reps</div>
+                      <div class="w-11"><i data-lucide="check" class="w-4 h-4 mx-auto opacity-70"></i></div>
+                    </div>
                   </div>
                   
-                  <div class="space-y-2 w-full pb-2">
+                  <div class="space-y-1 w-full pb-2">
                     ${setsHtml}
                   </div>
                 </div>
@@ -420,6 +430,7 @@ export class WorkoutPlanner {
             }).join('')}
           </div>
         `}
+      </div>
       </div>
     `;
 
@@ -460,13 +471,13 @@ export class WorkoutPlanner {
 
         if (isChecking) {
           // ── Visual: botão fica verde vibrante ──
-          button.classList.remove('bg-slate-700');
+          button.classList.remove('bg-zinc-800');
           button.classList.add('bg-lime-500');
           
           const icon = button.querySelector('i');
           if (icon) {
-             icon.classList.remove('text-slate-400');
-             icon.classList.add('text-slate-900');
+             icon.classList.remove('text-zinc-400');
+             icon.classList.add('text-zinc-900');
              icon.style.transform = 'scale(1.2)';
           }
           
@@ -489,13 +500,13 @@ export class WorkoutPlanner {
           if (this.soundEffects) this.soundEffects.playClick();
         } else {
           // ── Desfazer ──
-          button.classList.add('bg-slate-700');
+          button.classList.add('bg-zinc-800');
           button.classList.remove('bg-lime-500');
           
           const icon = button.querySelector('i');
           if (icon) {
-             icon.classList.add('text-slate-400');
-             icon.classList.remove('text-slate-900');
+             icon.classList.add('text-zinc-400');
+             icon.classList.remove('text-zinc-900');
              icon.style.transform = '';
           }
           
