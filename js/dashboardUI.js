@@ -38,7 +38,17 @@ export class DashboardUI {
 
     // ── Volume estimado dos registros de séries reais ──
     const setRecords = loadSetRecords();
-    const monthSets = setRecords.filter(r => {
+    // Filtra setRecords para considerar APENAS os que pertencem a um treino salvo
+    const validSetRecords = setRecords.filter(r => {
+      const setTime = new Date(r.date).getTime();
+      return history.some(w => {
+        const endTime = new Date(w.date).getTime();
+        const exactStartTime = w.startTime ? new Date(w.startTime).getTime() : (endTime - (w.durationSeconds || 3600) * 1000);
+        return setTime >= (exactStartTime - 60000) && setTime <= (endTime + 60000);
+      });
+    });
+
+    const monthSets = validSetRecords.filter(r => {
       const d = new Date(r.date);
       return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
     });
@@ -51,7 +61,7 @@ export class DashboardUI {
     const frequency = this._calcFrequency(history);
 
     // ── Volume por semana (últimas 4 semanas) ──
-    const volumeWeekly = this._calcWeeklyVolume(history);
+    const volumeWeekly = this._calcWeeklyVolume(history, validSetRecords);
 
     // ── Últimos 3 treinos ──
     const recent = history
@@ -67,7 +77,7 @@ export class DashboardUI {
         const startTime = exactStartTime - (1 * 60 * 1000); 
         const endTimeWithBuffer = endTime + (1 * 60 * 1000); 
         
-        const workoutSets = setRecords.filter(r => {
+        const workoutSets = validSetRecords.filter(r => {
            const setTime = new Date(r.date).getTime();
            return setTime >= startTime && setTime <= endTimeWithBuffer;
         });
@@ -149,8 +159,8 @@ export class DashboardUI {
     return result;
   }
 
-  _calcWeeklyVolume(history) {
-    const setRecords = loadSetRecords();
+  _calcWeeklyVolume(history, validSetRecords) {
+    const setRecords = validSetRecords || loadSetRecords();
     if (setRecords.length === 0) {
       return [
         { week: 'Sem 1', kg: 0 },
