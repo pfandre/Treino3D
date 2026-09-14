@@ -1,4 +1,4 @@
-const CACHE_NAME = 'treino3d-cache-v58';
+const CACHE_NAME = 'treino3d-cache-v59';
 const urlsToCache = [
   '/',
   '/index.html',

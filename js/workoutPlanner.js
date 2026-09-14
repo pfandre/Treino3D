@@ -364,7 +364,7 @@ export class WorkoutPlanner {
               for (let i = 1; i <= numSets; i++) {
                 const key = `${ex.name}_${i}`;
                 const saved = prog[key] || {};
-                const isChecked = saved.checked;
+                const isChecked = saved.checked === true || saved.checked === 'true';
                 const kgVal = saved.kg !== undefined ? saved.kg : '';
                 const repsVal = saved.reps !== undefined ? saved.reps : repsText.replace(/\\D/g, '');
                 
@@ -553,7 +553,7 @@ export class WorkoutPlanner {
           } catch(e) {}
           const key = `${exName}_${setNum}`;
           const repsInput = row.querySelector('.input-reps');
-          progress[key] = { kg: kgInput ? kgInput.value : '', reps: repsInput ? repsInput.value : '', checked: isChecking };
+          progress[key] = { kg: kgInput ? kgInput.value : '', reps: repsInput ? repsInput.value : '', checked: isChecking ? true : false };
           localStorage.setItem('treino3d_workout_progress', JSON.stringify(progress));
         }
       });
@@ -576,7 +576,7 @@ export class WorkoutPlanner {
              if (progressStr) progress = JSON.parse(progressStr);
            } catch(e) {}
            const key = `${exName}_${setNum}`;
-           progress[key] = { kg, reps, checked: isChecked };
+           progress[key] = { kg, reps, checked: isChecked ? true : false };
            localStorage.setItem('treino3d_workout_progress', JSON.stringify(progress));
          }
       });
