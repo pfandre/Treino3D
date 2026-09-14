@@ -20,6 +20,7 @@ function loadSetRecords() {
 export class DashboardUI {
   constructor() {
     this.charts = {};
+    this.showAllRecent = false;
   }
 
   _getMuscleGroupInfo() {
@@ -77,9 +78,9 @@ export class DashboardUI {
     // ── Volume por semana (últimas 4 semanas) ──
     const volumeWeekly = this._calcWeeklyVolume(history, validSetRecords);
 
-    // ── Últimos 3 treinos ──
+    // ── Todos os treinos recentes (reversos) ──
     const recent = history
-      .slice(-3)
+      .slice()
       .reverse()
       .map(w => {
         const d = new Date(w.date);
@@ -343,10 +344,19 @@ export class DashboardUI {
               }
             }
           } catch (err) {
-            console.error("Erro ao excluir treino:", err);
+            console.error("Erro ao apagar treino:", err);
           }
         });
       });
+
+      // Bind evento do botão ver mais / ver menos
+      const btnToggleRecent = container.querySelector('#btn-toggle-recent');
+      if (btnToggleRecent) {
+        btnToggleRecent.addEventListener('click', () => {
+          this.showAllRecent = !this.showAllRecent;
+          this.renderProgressChart();
+        });
+      }
     });
   }
 
@@ -436,17 +446,27 @@ export class DashboardUI {
             </div>
           </div>
           <div class="space-y-3">
-            ${recentWorkouts.length > 0 
-              ? recentWorkouts.map((w, i) => this._activityRow(w, i, i === recentWorkouts.length - 1)).join('')
-              : `<div class="flex flex-col items-center justify-center py-10 text-center">
+            ${(() => {
+              const displayWorkouts = this.showAllRecent ? recentWorkouts : recentWorkouts.slice(0, 3);
+              if (displayWorkouts.length > 0) {
+                return displayWorkouts.map((w, i) => this._activityRow(w, i, i === displayWorkouts.length - 1)).join('');
+              }
+              return `<div class="flex flex-col items-center justify-center py-10 text-center">
                    <div class="w-14 h-14 rounded-2xl bg-slate-700/50 flex items-center justify-center mb-4">
                      <i data-lucide="inbox" class="w-6 h-6 text-slate-500"></i>
                    </div>
                    <p class="text-slate-400 text-sm font-medium">Nenhum treino registrado ainda</p>
                    <p class="text-slate-500 text-xs mt-1">Inicie seu primeiro treino para ver o histórico aqui</p>
-                 </div>`
-            }
+                 </div>`;
+            })()}
           </div>
+          ${recentWorkouts.length > 3 ? `
+            <div class="mt-4 flex justify-center">
+              <button id="btn-toggle-recent" class="text-slate-400 hover:text-white text-sm font-medium px-4 py-2 rounded-lg bg-slate-700/30 hover:bg-slate-700/50 transition-colors">
+                ${this.showAllRecent ? 'Ver Menos' : 'Ver Mais treinos'}
+              </button>
+            </div>
+          ` : ''}
         </div>
 
       </div>
@@ -601,7 +621,7 @@ export class DashboardUI {
     });
 
     this.charts.volume = new Chart(canvas, {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: volumeWeekly.weeks,
         datasets: datasets
