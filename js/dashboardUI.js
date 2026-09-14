@@ -234,11 +234,11 @@ export class DashboardUI {
       weekNum++;
     }
 
-    // Limit to the last 12 weeks to prevent chart crowding
-    if (weeks.length > 12) {
-      weeks.splice(0, weeks.length - 12);
+    // Limit to the last 4 weeks to prevent chart crowding
+    if (weeks.length > 4) {
+      weeks.splice(0, weeks.length - 4);
       groupList.forEach(g => {
-        dataByGroup[g].splice(0, dataByGroup[g].length - 12);
+        dataByGroup[g].splice(0, dataByGroup[g].length - 4);
       });
     }
 
