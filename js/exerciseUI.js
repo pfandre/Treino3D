@@ -195,7 +195,7 @@ export class ExerciseUI {
       }
 
       const card = document.createElement('div');
-      card.className = "bg-zinc-900 rounded-2xl border border-white/5 flex flex-col p-4 w-full relative";
+      card.className = "bg-zinc-900 rounded-2xl border border-white/5 flex flex-col p-4 w-full relative transition-all duration-300 hover:z-20 hover:-translate-y-1 hover:scale-[1.02] hover:border-white/40 hover:shadow-2xl hover:shadow-white/10";
 
       const categoryData = MUSCLE_DATABASE[ex.categoryId];
       const accentColor = categoryData ? categoryData.color : 'var(--primary-cyan)';
@@ -204,12 +204,9 @@ export class ExerciseUI {
         <div class="flex flex-col mb-4">
           <div class="flex justify-between items-start gap-3">
             <h3 class="card-title font-semibold text-zinc-100 text-[1.1rem] leading-snug cursor-pointer hover:text-lime-400 transition-colors" title="Ver Histórico de Progressão">${ex.name}</h3>
-            <button class="btn-edit-ex flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full transition-colors text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800" title="Editar Exercício">
-              <i data-lucide="edit-3" class="w-[18px] h-[18px] pointer-events-none"></i>
-            </button>
           </div>
           <div class="mt-1.5">
-            <span class="editable-field text-zinc-400 text-[11px] uppercase tracking-[0.1em] font-medium" contenteditable="true" data-field="targetHead" spellcheck="false" title="Clique para editar">
+            <span class="text-zinc-300 text-[11px] uppercase tracking-[0.1em] font-medium">
               ${ex.targetHead}
             </span>
           </div>
@@ -230,57 +227,42 @@ export class ExerciseUI {
               <select class="series-select bg-transparent outline-none font-mono font-medium text-white cursor-pointer appearance-none text-center">
                 ${Array.from({length: 10}, (_, i) => `<option value="${i+1}" class="bg-zinc-800 text-white" ${(i+1) === currentSeries ? 'selected' : ''}>${i+1}</option>`).join('')}
               </select>
-              <span class="text-zinc-500 text-[10px]">S</span>
+              <span class="text-zinc-400 text-[10px]">S</span>
             </div>
-            <span class="text-zinc-600 text-xs px-0.5">x</span>
+            <span class="text-zinc-500 text-xs px-0.5">x</span>
             <div class="flex items-baseline gap-1">
               <select class="reps-select bg-transparent outline-none font-mono font-medium text-white cursor-pointer appearance-none text-center">
                 ${Array.from({length: 15}, (_, i) => `<option value="${i+1}" class="bg-zinc-800 text-white" ${(i+1) === currentReps ? 'selected' : ''}>${i+1}</option>`).join('')}
               </select>
-              <span class="text-zinc-500 text-[10px]">R</span>
+              <span class="text-zinc-400 text-[10px]">R</span>
             </div>
           </div>
         </div>
         
         <div class="mb-5 flex-1">
-          <p class="editable-field text-[13px] text-zinc-400 leading-relaxed font-light line-clamp-3 mb-2" contenteditable="true" data-field="instructions" spellcheck="false" title="Clique para editar">${ex.instructions}</p>
-          ${ex.biomechanics ? `<div class="text-[12px] text-zinc-500/80 italic flex gap-1.5 items-start">
+          <p class="text-[13px] text-zinc-300 leading-relaxed font-light line-clamp-3 mb-2">${ex.instructions}</p>
+          ${ex.biomechanics ? `<div class="text-[12px] text-zinc-400 italic flex gap-1.5 items-start">
             <i data-lucide="zap" class="w-3 h-3 mt-0.5 opacity-70"></i>
-            <span class="editable-field leading-snug line-clamp-2" contenteditable="true" data-field="biomechanics" spellcheck="false" title="Clique para editar">${ex.biomechanics}</span>
+            <span class="leading-snug line-clamp-2">${ex.biomechanics}</span>
           </div>` : ''}
         </div>
         
-        <div class="flex gap-2 mt-auto">
-          <button class="btn-add-to-routine flex items-center justify-center gap-2 rounded-xl text-sm transition-colors bg-lime-500/10 text-lime-500 border border-lime-500/20 font-semibold hover:bg-lime-500/20 flex-1 shadow-sm py-2.5" title="Adicionar ao Treino Atual">
-            <i data-lucide="plus" class="w-[18px] h-[18px] pointer-events-none"></i> Treino
-          </button>
-          <button class="btn-add-workout flex items-center justify-center w-[46px] rounded-xl transition-colors bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white" title="Histórico de Progresso">
-            <i data-lucide="trending-up" class="w-[18px] h-[18px] pointer-events-none"></i>
-          </button>
+        <div class="flex mt-auto justify-end">
+          <div class="flex items-center gap-1 bg-lime-500/15 p-1 rounded-full border border-lime-500/10 shadow-sm">
+            <button class="btn-edit-ex flex items-center justify-center w-9 h-9 rounded-full transition-all text-lime-400 hover:bg-lime-500/20 hover:text-lime-300 hover:scale-105" title="Editar Exercício">
+              <i data-lucide="edit-3" class="w-[18px] h-[18px] pointer-events-none"></i>
+            </button>
+            <button class="btn-add-workout flex items-center justify-center w-9 h-9 rounded-full transition-all text-lime-400 hover:bg-lime-500/20 hover:text-lime-300 hover:scale-105" title="Histórico de Progresso">
+              <i data-lucide="trending-up" class="w-[18px] h-[18px] pointer-events-none"></i>
+            </button>
+            <button class="btn-add-to-routine flex items-center justify-center w-9 h-9 rounded-full transition-all text-lime-400 hover:bg-lime-500/20 hover:text-lime-300 hover:scale-105" title="Adicionar ao Treino Atual">
+              <i data-lucide="plus" class="w-[20px] h-[20px] pointer-events-none"></i>
+            </button>
+          </div>
         </div>
       `;
 
-      // Inline Editing Logic
-      const editableFields = card.querySelectorAll('.editable-field');
-      editableFields.forEach(field => {
-        // Save value on blur
-        field.addEventListener('blur', (e) => {
-          const fieldName = e.target.getAttribute('data-field');
-          const newValue = e.target.textContent.trim();
-          if (newValue) {
-            ex[fieldName] = newValue;
-          }
-        });
-
-        // Prevent newlines in single-line fields
-        field.addEventListener('keydown', (e) => {
-          const fieldName = e.target.getAttribute('data-field');
-          if (e.key === 'Enter' && fieldName !== 'instructions' && fieldName !== 'biomechanics') {
-            e.preventDefault();
-            e.target.blur();
-          }
-        });
-      });
+      // Inline Editing Logic Removida a pedido (agora apenas pelo lápis)
 
       const seriesSelect = card.querySelector('.series-select');
       const repsSelect = card.querySelector('.reps-select');

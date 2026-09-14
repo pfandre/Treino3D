@@ -31,6 +31,12 @@ export class WorkoutPlanner {
   }
 
   init() {
+    useWorkoutStore.subscribe((state, prevState) => {
+      // Quando o treino é encerrado, renderizamos novamente para limpar os inputs
+      if (prevState.isWorkoutActive && !state.isWorkoutActive) {
+        this.render();
+      }
+    });
     this.render();
   }
 
@@ -282,8 +288,8 @@ export class WorkoutPlanner {
           <button id="btn-delete-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px; color: #ef4444;">
             <i data-lucide="trash-2" style="width: 14px;"></i> Apagar Atual
           </button>
-          <button id="btn-export-workout" class="btn-primary" style="font-size: 0.82rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
-            <i data-lucide="printer" style="width: 14px;"></i> Imprimir / Exportar
+          <button id="btn-export-workout" class="btn-primary" style="padding: 8px 12px; display: flex; align-items: center; justify-content: center;" title="Imprimir / Exportar">
+            <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
           </button>
           <button id="btn-start-planner-workout" class="flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-black px-4 py-2 rounded-md font-semibold transition-colors shadow-lg shadow-lime-500/20" style="font-size: 0.82rem;">
             <i data-lucide="play" style="width: 14px;"></i> Iniciar Treino
@@ -349,8 +355,27 @@ export class WorkoutPlanner {
               const repsMatch = ex.customSets ? ex.customSets.match(/x\s*(.+)/i) : null;
               const repsText = repsMatch ? repsMatch[1] : '10-12 reps';
               
+              let prog = {};
+              try {
+                const progStr = localStorage.getItem('treino3d_workout_progress');
+                if (progStr) prog = JSON.parse(progStr);
+              } catch(e) {}
               let setsHtml = '';
               for (let i = 1; i <= numSets; i++) {
+                const key = `${ex.name}_${i}`;
+                const saved = prog[key] || {};
+                const isChecked = saved.checked;
+                const kgVal = saved.kg !== undefined ? saved.kg : '';
+                const repsVal = saved.reps !== undefined ? saved.reps : repsText.replace(/\\D/g, '');
+                
+                const kgAttrs = isChecked ? 'disabled class="input-kg bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 outline-none opacity-50 transition-colors"' : 'class="input-kg bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 focus:border-lime-500 outline-none transition-colors"';
+                
+                const repsAttrs = isChecked ? 'disabled class="input-reps bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 outline-none opacity-50 transition-colors"' : 'class="input-reps bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 focus:border-lime-500 outline-none transition-colors"';
+                
+                const btnClass = isChecked ? 'bg-lime-500' : 'bg-zinc-800 text-zinc-400';
+                const iconColor = isChecked ? 'text-zinc-900' : '';
+                const iconScale = isChecked ? 'style="transform: scale(1.2)"' : '';
+                
                 setsHtml += `
                   <div class="flex items-center justify-between px-1 set-row group w-full mb-2" data-ex-name="${ex.name}">
                     <div class="flex items-center gap-2">
@@ -362,10 +387,10 @@ export class WorkoutPlanner {
                       </div>
                     </div>
                     <div class="flex items-center gap-2">
-                      <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-kg bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 focus:border-lime-500 outline-none transition-colors" placeholder="--" data-ex-name="${ex.name}" data-set-num="${i}">
-                      <input type="text" inputmode="decimal" pattern="[0-9]*" class="input-reps bg-zinc-950 rounded-md text-center font-mono text-white text-lg w-14 h-11 border border-zinc-800 focus:border-lime-500 outline-none transition-colors" value="${repsText.replace(/\\D/g, '')}" data-ex-name="${ex.name}" data-set-num="${i}">
-                      <button class="btn-check-set h-11 w-11 rounded-md bg-zinc-800 text-zinc-400 flex items-center justify-center transition-colors duration-200 active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
-                        <i data-lucide="check" class="w-5 h-5 pointer-events-none"></i>
+                      <input type="text" inputmode="decimal" pattern="[0-9]*" ${kgAttrs} placeholder="--" value="${kgVal}" data-ex-name="${ex.name}" data-set-num="${i}">
+                      <input type="text" inputmode="decimal" pattern="[0-9]*" ${repsAttrs} value="${repsVal}" data-ex-name="${ex.name}" data-set-num="${i}">
+                      <button class="btn-check-set h-11 w-11 rounded-md ${btnClass} flex items-center justify-center transition-colors duration-200 active:scale-95" data-ex-idx="${idx}" data-set-idx="${i}" data-ex-name="${ex.name}">
+                        <i data-lucide="check" class="w-5 h-5 pointer-events-none ${iconColor}" ${iconScale}></i>
                       </button>
                     </div>
                   </div>
@@ -373,7 +398,7 @@ export class WorkoutPlanner {
               }
 
               return `
-              <div class="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden mb-4 shadow-lg flex flex-col">
+              <div class="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden mb-4 shadow-lg flex flex-col relative transition-all duration-300 hover:z-20 hover:-translate-y-1 hover:scale-[1.02] hover:border-white/40 hover:shadow-2xl hover:shadow-white/10">
                 <div class="p-4 flex justify-between items-start border-b border-zinc-800">
                   <div class="flex flex-col">
                     <h3 class="text-lg font-bold text-zinc-100 leading-tight">${idx + 1}. ${ex.name}</h3>
@@ -518,6 +543,42 @@ export class WorkoutPlanner {
             repsInput.classList.remove('opacity-50');
           }
         }
+        
+        // Persistir estado do checkbox e inputs no localStorage apenas se o treino estiver ativo
+        if (useWorkoutStore.getState().isWorkoutActive) {
+          let progress = {};
+          try {
+            const progressStr = localStorage.getItem('treino3d_workout_progress');
+            if (progressStr) progress = JSON.parse(progressStr);
+          } catch(e) {}
+          const key = `${exName}_${setNum}`;
+          const repsInput = row.querySelector('.input-reps');
+          progress[key] = { kg: kgInput ? kgInput.value : '', reps: repsInput ? repsInput.value : '', checked: isChecking };
+          localStorage.setItem('treino3d_workout_progress', JSON.stringify(progress));
+        }
+      });
+    });
+
+    this.containerEl.querySelectorAll('.input-kg, .input-reps').forEach(input => {
+      input.addEventListener('input', (e) => {
+         const row = e.target.closest('.set-row');
+         const exName = row.dataset.exName;
+         const setNum = e.target.dataset.setNum;
+         const kg = row.querySelector('.input-kg')?.value || '';
+         const reps = row.querySelector('.input-reps')?.value || '';
+         const isChecked = row.querySelector('.btn-check-set').classList.contains('bg-lime-500');
+         
+         // Apenas persiste se o treino estiver ativo
+         if (useWorkoutStore.getState().isWorkoutActive) {
+           let progress = {};
+           try {
+             const progressStr = localStorage.getItem('treino3d_workout_progress');
+             if (progressStr) progress = JSON.parse(progressStr);
+           } catch(e) {}
+           const key = `${exName}_${setNum}`;
+           progress[key] = { kg, reps, checked: isChecked };
+           localStorage.setItem('treino3d_workout_progress', JSON.stringify(progress));
+         }
       });
     });
 

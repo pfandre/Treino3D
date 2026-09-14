@@ -553,8 +553,9 @@ body {
 
 .exercise-card:hover {
   border-color: rgba(132, 204, 22, 0.3);
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-4px) scale(1.03);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .exercise-card:hover::after {
@@ -956,8 +957,9 @@ body.light-theme .exercise-card .card-instructions {
 
 body.light-theme .exercise-card:hover {
   border-color: #84CC16;
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-4px) scale(1.03);
   box-shadow: 0 0 0 1px #84CC16, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
 }
 
 body.light-theme .exercise-card:hover::after {

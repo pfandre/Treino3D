@@ -59,9 +59,20 @@ export class DashboardUI {
       .reverse()
       .map(w => {
         const d = new Date(w.date);
-        const dayString = d.toISOString().slice(0, 10);
-        const daySets = setRecords.filter(r => r.date.startsWith(dayString));
-        const totalKg = daySets.reduce((sum, r) => sum + (r.kg || 0), 0);
+        const endTime = d.getTime();
+        // Usa o startTime exato se existir, senão calcula com base na duração
+        const exactStartTime = w.startTime ? new Date(w.startTime).getTime() : (endTime - (w.durationSeconds || 3600) * 1000);
+        
+        // Margens muito curtas (1 minuto) para evitar que treinos testes seguidos puxem as mesmas séries
+        const startTime = exactStartTime - (1 * 60 * 1000); 
+        const endTimeWithBuffer = endTime + (1 * 60 * 1000); 
+        
+        const workoutSets = setRecords.filter(r => {
+           const setTime = new Date(r.date).getTime();
+           return setTime >= startTime && setTime <= endTimeWithBuffer;
+        });
+        
+        const totalKg = workoutSets.reduce((sum, r) => sum + (r.kg || 0), 0);
         return {
           original: w, // para acesso completo aos dados
           name: w.name,
@@ -70,7 +81,7 @@ export class DashboardUI {
           dateStr: w.date, // raw data for filtering
           date: this._relativeDate(d),
           volume: totalKg,
-          sets: daySets // pass sets to the modal
+          sets: workoutSets // pass sets to the modal
         };
       });
 
@@ -252,6 +263,49 @@ export class DashboardUI {
           }
         });
       });
+
+      // Bind evento do botão excluir
+      container.querySelectorAll('.btn-delete-workout').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (!confirm("Tem certeza que deseja apagar este treino do histórico?")) return;
+          try {
+            const index = e.currentTarget.dataset.index;
+            if (this._lastRecentWorkouts && this._lastRecentWorkouts[index]) {
+              const wData = this._lastRecentWorkouts[index];
+              const history = JSON.parse(localStorage.getItem('treino3d_workout_history')) || [];
+              const realIndex = history.findIndex(h => h.date === wData.original.date);
+              if (realIndex > -1) {
+                history.splice(realIndex, 1);
+                localStorage.setItem('treino3d_workout_history', JSON.stringify(history));
+                
+                // Remove as séries do localStorage que pertenciam a este treino
+                const originalWorkout = wData.original;
+                const endTime = new Date(originalWorkout.date).getTime();
+                const exactStartTime = originalWorkout.startTime ? new Date(originalWorkout.startTime).getTime() : (endTime - (originalWorkout.durationSeconds || 3600) * 1000);
+                const startTimeWindow = exactStartTime - (1 * 60 * 1000);
+                const endTimeWindow = endTime + (1 * 60 * 1000);
+                
+                let setRecords = [];
+                try {
+                  setRecords = JSON.parse(localStorage.getItem('treino3d_set_records')) || [];
+                } catch(e) {}
+                
+                const remainingSets = setRecords.filter(r => {
+                  const setTime = new Date(r.date).getTime();
+                  // Mantém as séries que estão FORA da janela de tempo deste treino
+                  return setTime < startTimeWindow || setTime > endTimeWindow;
+                });
+                
+                localStorage.setItem('treino3d_set_records', JSON.stringify(remainingSets));
+                
+                this.renderProgressChart(); // Recarrega o dashboard
+              }
+            }
+          } catch (err) {
+            console.error("Erro ao excluir treino:", err);
+          }
+        });
+      });
     });
   }
 
@@ -401,6 +455,10 @@ export class DashboardUI {
           <button class="btn-ver-detalhes text-xs text-slate-400 hover:text-white transition-colors font-medium px-3 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10" 
             data-index="${i}">
             Ver Detalhes
+          </button>
+          <button class="btn-delete-workout text-red-500/60 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors" 
+            data-index="${i}" title="Excluir Treino">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
         </div>
       </div>

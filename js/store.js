@@ -46,25 +46,76 @@ function createStore(createState) {
   return api;
 }
 
-export const useWorkoutStore = createStore((set, get) => ({
-  isWorkoutActive: false,
-  workoutName: '',
-  elapsedSeconds: 0,
-  intervalId: null,
+const ACTIVE_WORKOUT_KEY = 'treino3d_active_workout_state';
+
+// Recuperar estado ativo salvo
+function getSavedActiveWorkout() {
+  try {
+    const saved = localStorage.getItem(ACTIVE_WORKOUT_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data.isWorkoutActive && data.startTime) {
+        const elapsed = Math.floor((Date.now() - data.startTime) / 1000);
+        return {
+          isWorkoutActive: true,
+          workoutName: data.workoutName,
+          elapsedSeconds: elapsed > 0 ? elapsed : 0,
+          startTime: data.startTime
+        };
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+const savedWorkout = getSavedActiveWorkout();
+
+export const useWorkoutStore = createStore((set, get) => {
+  // Inicialização (pode iniciar rodando se houver salvo)
+  const initialState = {
+    isWorkoutActive: savedWorkout ? savedWorkout.isWorkoutActive : false,
+    workoutName: savedWorkout ? savedWorkout.workoutName : '',
+    elapsedSeconds: savedWorkout ? savedWorkout.elapsedSeconds : 0,
+    intervalId: null,
+    startTime: savedWorkout ? savedWorkout.startTime : null
+  };
+
+  if (initialState.isWorkoutActive) {
+    initialState.intervalId = setInterval(() => {
+      set((state) => {
+        const newElapsed = Math.floor((Date.now() - state.startTime) / 1000);
+        return { elapsedSeconds: newElapsed };
+      });
+    }, 1000);
+  }
+
+  return {
+    ...initialState,
 
   startWorkout: (name) => {
     const currentState = get();
     if (currentState.isWorkoutActive) return; // Já está rodando
 
+    const startTime = Date.now();
+    localStorage.setItem(ACTIVE_WORKOUT_KEY, JSON.stringify({
+      isWorkoutActive: true,
+      workoutName: name || 'Treino Livre',
+      startTime: startTime
+    }));
+
     const intervalId = setInterval(() => {
-      set((state) => ({ elapsedSeconds: state.elapsedSeconds + 1 }));
+      set((state) => {
+        const newElapsed = Math.floor((Date.now() - state.startTime) / 1000);
+        return { elapsedSeconds: newElapsed };
+      });
     }, 1000);
 
     set({
       isWorkoutActive: true,
       workoutName: name || 'Treino Livre',
       elapsedSeconds: 0,
-      intervalId: intervalId
+      intervalId: intervalId,
+      startTime: startTime
     });
   },
 
@@ -80,16 +131,23 @@ export const useWorkoutStore = createStore((set, get) => ({
       saveWorkoutRecord({
         name: currentState.workoutName,
         date: new Date().toISOString(),
+        startTime: new Date(currentState.startTime).toISOString(),
         durationSeconds: currentState.elapsedSeconds,
         durationLabel: minutes > 0 ? `${minutes} min` : `${currentState.elapsedSeconds}s`
       });
     }
 
+    localStorage.removeItem(ACTIVE_WORKOUT_KEY);
+    // Remove o progresso do planner também
+    localStorage.removeItem('treino3d_workout_progress');
+
     set({
       isWorkoutActive: false,
       workoutName: '',
       elapsedSeconds: 0,
-      intervalId: null
+      intervalId: null,
+      startTime: null
     });
   }
-}));
+};
+});
