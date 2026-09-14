@@ -90,11 +90,23 @@ export class ProgressionModal {
     
     // Ler dados reais do localStorage para este exercício
     let allRecords = [];
+    let history = [];
     try {
       allRecords = JSON.parse(localStorage.getItem('treino3d_set_records')) || [];
+      history = JSON.parse(localStorage.getItem('treino3d_workout_history')) || [];
     } catch { /* empty */ }
 
-    const exRecords = allRecords.filter(r => r.exercise === exerciseName);
+    // Filtra para considerar apenas as séries que pertencem a um treino salvo
+    const validRecords = allRecords.filter(r => {
+      const setTime = new Date(r.date).getTime();
+      return history.some(w => {
+        const endTime = new Date(w.date).getTime();
+        const exactStartTime = w.startTime ? new Date(w.startTime).getTime() : (endTime - (w.durationSeconds || 3600) * 1000);
+        return setTime >= (exactStartTime - 60000) && setTime <= (endTime + 60000);
+      });
+    });
+
+    const exRecords = validRecords.filter(r => r.exercise === exerciseName);
 
     // Agrupar por semana (últimas 8 semanas) pegando o kg máximo
     const now = new Date();
