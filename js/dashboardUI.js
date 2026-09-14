@@ -5,6 +5,7 @@
  */
 
 import { loadWorkoutHistory } from './store.js';
+import { MUSCLE_DATABASE } from './database.js';
 
 const SET_RECORDS_KEY = 'treino3d_set_records';
 
@@ -19,6 +20,19 @@ function loadSetRecords() {
 export class DashboardUI {
   constructor() {
     this.charts = {};
+  }
+
+  _getMuscleGroupInfo() {
+    if (this._muscleMap) return this._muscleMap;
+    this._muscleMap = {};
+    for (const key in MUSCLE_DATABASE) {
+      const group = MUSCLE_DATABASE[key];
+      const shortName = group.name.split(' (')[0].trim();
+      group.exercises.forEach(ex => {
+        this._muscleMap[ex.name] = { name: shortName };
+      });
+    }
+    return this._muscleMap;
   }
 
   /* ─── Data Layer (lê do localStorage) ────────────────── */
@@ -161,13 +175,20 @@ export class DashboardUI {
 
   _calcWeeklyVolume(history, validSetRecords) {
     const setRecords = validSetRecords || loadSetRecords();
+    
+    const map = this._getMuscleGroupInfo();
+    const groups = new Set();
+    setRecords.forEach(r => {
+      const g = map[r.exercise]?.name || 'Outros';
+      groups.add(g);
+    });
+    const groupList = Array.from(groups);
+
     if (setRecords.length === 0) {
-      return [
-        { week: 'Sem 1', kg: 0 },
-        { week: 'Sem 2', kg: 0 },
-        { week: 'Sem 3', kg: 0 },
-        { week: 'Sem 4', kg: 0 }
-      ];
+      return {
+        weeks: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+        data: {}
+      };
     }
 
     // Find the first workout date
@@ -178,6 +199,9 @@ export class DashboardUI {
 
     const now = new Date();
     const weeks = [];
+    const dataByGroup = {};
+    groupList.forEach(g => dataByGroup[g] = []);
+
     let currentWeekStart = new Date(firstDate);
     let weekNum = 1;
 
@@ -185,16 +209,18 @@ export class DashboardUI {
       const weekEnd = new Date(currentWeekStart);
       weekEnd.setDate(weekEnd.getDate() + 7);
 
-      const weekKg = setRecords
-        .filter(r => {
-          const d = new Date(r.date);
-          return d >= currentWeekStart && d < weekEnd;
-        })
-        .reduce((sum, r) => sum + (r.kg || 0), 0);
+      const weekSets = setRecords.filter(r => {
+        const d = new Date(r.date);
+        return d >= currentWeekStart && d < weekEnd;
+      });
 
-      weeks.push({
-        week: `Sem ${weekNum}`,
-        kg: weekKg
+      weeks.push(`Sem ${weekNum}`);
+
+      groupList.forEach(g => {
+        const kg = weekSets
+          .filter(r => (map[r.exercise]?.name || 'Outros') === g)
+          .reduce((sum, r) => sum + (r.kg || 0), 0);
+        dataByGroup[g].push(kg);
       });
 
       currentWeekStart.setDate(currentWeekStart.getDate() + 7);
@@ -203,15 +229,20 @@ export class DashboardUI {
 
     // Ensure at least 4 weeks are shown for a good chart layout
     while (weeks.length < 4) {
-      weeks.push({
-        week: `Sem ${weekNum}`,
-        kg: 0
-      });
+      weeks.push(`Sem ${weekNum}`);
+      groupList.forEach(g => dataByGroup[g].push(0));
       weekNum++;
     }
 
     // Limit to the last 12 weeks to prevent chart crowding
-    return weeks.slice(-12);
+    if (weeks.length > 12) {
+      weeks.splice(0, weeks.length - 12);
+      groupList.forEach(g => {
+        dataByGroup[g].splice(0, dataByGroup[g].length - 12);
+      });
+    }
+
+    return { weeks, data: dataByGroup };
   }
 
   _relativeDate(d) {
@@ -379,7 +410,7 @@ export class DashboardUI {
           <div class="bg-slate-800/50 backdrop-blur-sm border border-white/5 rounded-2xl p-5 md:p-6">
             <div class="flex items-center justify-between mb-5">
               <div>
-                <h3 class="text-white font-semibold text-base">Evolução de Volume</h3>
+                <h3 class="text-white font-semibold text-base">Evolução de Volume por grupo muscular</h3>
                 <p class="text-slate-500 text-xs mt-0.5">Carga total por semana (kg)</p>
               </div>
               <div class="w-9 h-9 rounded-xl bg-lime-500/10 flex items-center justify-center">
@@ -541,38 +572,55 @@ export class DashboardUI {
     const { volumeWeekly } = data;
     const ctx = canvas.getContext('2d');
 
-    // Build gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-    gradient.addColorStop(0, 'rgba(132, 204, 22, 0.35)');
-    gradient.addColorStop(0.7, 'rgba(132, 204, 22, 0.05)');
-    gradient.addColorStop(1, 'rgba(132, 204, 22, 0.0)');
+    const groups = Object.keys(volumeWeekly.data);
+    
+    // Paleta de cores premium e vibrante para cada grupo muscular
+    const colorPalette = [
+      '#84CC16', '#3B82F6', '#EF4444', '#F59E0B', '#10B981',
+      '#8B5CF6', '#EC4899', '#06B6D4', '#F97316', '#6366F1',
+      '#14B8A6', '#F43F5E'
+    ];
+    const getColor = (index) => colorPalette[index % colorPalette.length];
+
+    const datasets = groups.map((g, idx) => {
+      const color = getColor(idx);
+      return {
+        label: g,
+        data: volumeWeekly.data[g],
+        borderColor: color,
+        borderWidth: 2,
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.4,
+        pointBackgroundColor: '#0F172A',
+        pointBorderColor: color,
+        pointBorderWidth: 1.5,
+        pointRadius: 3,
+        pointHoverRadius: 5
+      };
+    });
 
     this.charts.volume = new Chart(canvas, {
       type: 'line',
       data: {
-        labels: volumeWeekly.map(d => d.week),
-        datasets: [{
-          data: volumeWeekly.map(d => d.kg),
-          borderColor: '#84CC16',
-          borderWidth: 2.5,
-          backgroundColor: gradient,
-          fill: true,
-          tension: 0.45,
-          pointBackgroundColor: '#0F172A',
-          pointBorderColor: '#84CC16',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          pointHoverBackgroundColor: '#84CC16',
-          pointHoverBorderColor: '#0F172A',
-          pointHoverBorderWidth: 2
-        }]
+        labels: volumeWeekly.weeks,
+        datasets: datasets
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          legend: { 
+            display: true, 
+            position: 'top',
+            align: 'end',
+            labels: { 
+              color: '#94A3B8', 
+              usePointStyle: true,
+              boxWidth: 8,
+              font: { family: "'Inter', sans-serif", size: 10 }
+            } 
+          },
           tooltip: {
             backgroundColor: 'rgba(15, 23, 42, 0.95)',
             borderColor: 'rgba(255,255,255,0.08)',
@@ -581,11 +629,11 @@ export class DashboardUI {
             bodyColor: '#F8FAFC',
             padding: 12,
             cornerRadius: 8,
-            displayColors: false,
+            displayColors: true,
             titleFont: { family: "'Inter', sans-serif", size: 11 },
             bodyFont: { family: "'Inter', sans-serif", size: 13, weight: 'bold' },
             callbacks: {
-              label: (ctx) => `${ctx.raw.toLocaleString('pt-BR')} kg`
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toLocaleString('pt-BR')} kg`
             }
           }
         },
