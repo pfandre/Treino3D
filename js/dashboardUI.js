@@ -365,7 +365,6 @@ export class DashboardUI {
           this.renderProgressChart();
         });
       }
-      }
     });
   }
 
