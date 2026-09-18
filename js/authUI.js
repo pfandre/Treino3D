@@ -19,6 +19,10 @@ export class AuthUI {
           </div>
 
           <form id="auth-form" class="space-y-4">
+            <div id="nickname-field-container" class="hidden">
+              <label class="block text-sm font-medium text-slate-300 mb-1">Nickname (Apelido)</label>
+              <input type="text" id="auth-nickname" class="w-full bg-[#0F172A] border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-[#84CC16] focus:ring-1 focus:ring-[#84CC16] transition-all" placeholder="Seu apelido ninja">
+            </div>
             <div>
               <label class="block text-sm font-medium text-slate-300 mb-1">E-mail</label>
               <input type="email" id="auth-email" required class="w-full bg-[#0F172A] border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-[#84CC16] focus:ring-1 focus:ring-[#84CC16] transition-all" placeholder="seu@email.com">
@@ -47,6 +51,8 @@ export class AuthUI {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     this.modal = document.getElementById('auth-modal');
     this.form = document.getElementById('auth-form');
+    this.nicknameContainer = document.getElementById('nickname-field-container');
+    this.nicknameInput = document.getElementById('auth-nickname');
     this.emailInput = document.getElementById('auth-email');
     this.passwordInput = document.getElementById('auth-password');
     this.errorBox = document.getElementById('auth-error');
@@ -109,18 +115,23 @@ export class AuthUI {
       submitBtn.textContent = 'Entrar';
       switchText.textContent = 'Não tem uma conta?';
       switchBtn.textContent = 'Cadastre-se';
+      this.nicknameContainer.classList.add('hidden');
+      this.nicknameInput.removeAttribute('required');
     } else {
       title.textContent = 'Criar Conta';
       subtitle.textContent = 'Cadastre-se gratuitamente';
       submitBtn.textContent = 'Cadastrar';
       switchText.textContent = 'Já tem uma conta?';
       switchBtn.textContent = 'Entrar';
+      this.nicknameContainer.classList.remove('hidden');
+      this.nicknameInput.setAttribute('required', 'true');
     }
   }
 
   async handleSubmit() {
     const email = this.emailInput.value;
     const password = this.passwordInput.value;
+    const nickname = this.nicknameInput.value;
     const submitBtn = document.getElementById('btn-auth-submit');
     
     this.hideMessages();
@@ -134,10 +145,21 @@ export class AuthUI {
         if (error) throw error;
         this.showSuccess('Login realizado com sucesso!');
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password,
+          options: {
+            data: {
+              nickname: nickname
+            }
+          }
+        });
         if (error) throw error;
-        this.showSuccess('Conta criada! Verifique seu e-mail (se necessário) ou faça login.');
-        setTimeout(() => this.toggleMode(), 2000);
+        this.showSuccess('Conta criada com sucesso! Você já pode fazer login.');
+        setTimeout(() => {
+          this.toggleMode(); // Volta pra tela de login
+          this.emailInput.value = email; // Preenche o email para facilitar
+        }, 2000);
       }
     } catch (error) {
       let msg = error.message;
@@ -194,7 +216,8 @@ export class AuthUI {
 
     if (session) {
       // User is logged in
-      headerBtn.innerHTML = '<i data-lucide="log-out"></i> Sair';
+      const displayName = session.user.user_metadata?.nickname || session.user.email.split('@')[0];
+      headerBtn.innerHTML = `<i data-lucide="log-out"></i> Sair (${displayName})`;
       headerBtn.title = `Logado como: ${session.user.email}`;
       headerBtn.classList.remove('btn-primary');
       headerBtn.classList.add('btn-secondary'); // Estilo alternativo se existir
