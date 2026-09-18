@@ -200,6 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
         await syncRoutines();
         if (dashboardUI) dashboardUI.renderProgressChart();
       }
+      
+      if (event === 'SIGNED_OUT') {
+        window.location.reload();
+      }
     });
   }
 
