@@ -14,6 +14,7 @@ import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
 import { DashboardUI } from './dashboardUI.js?v=8';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
+import { AuthUI } from './authUI.js?v=2';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
@@ -47,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1.5 Inicializar UI do Treino Ativo (observador global)
   new ActiveWorkoutUI(soundEffects);
+
+  // Inicializar Autenticação
+  new AuthUI();
 
 
 

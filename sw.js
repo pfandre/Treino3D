@@ -1,4 +1,4 @@
-const CACHE_NAME = 'treino3d-cache-v60';
+const CACHE_NAME = 'treino3d-cache-v61';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -13,6 +13,8 @@ const urlsToCache = [
   '/js/dashboardUI.js',
   '/js/progressionModal.js',
   '/js/app.js',
+  '/js/supabaseClient.js',
+  '/js/authUI.js',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png',
   '/assets/anatomical_body.png',

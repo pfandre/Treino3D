@@ -81,6 +81,9 @@
           <i data-lucide="calendar"></i> Montar Treino
         </button>
       </div>
+      <button id="btn-header-auth" class="btn-primary" style="margin-left: 16px; font-size: 0.85rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
+        <i data-lucide="user"></i> Entrar
+      </button>
     </div>
   </header>
 
@@ -194,14 +197,15 @@
   <!-- Script Principal App Orchestrator -->
   <script type="module" src="js/app.js?v=70"></script>
 
-  <!-- PWA Service Worker Registration -->
+  <!-- Remove PWA Service Worker to prevent caching issues during development -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-          console.log('SW registered: ', registration);
-        }).catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+            console.log('ServiceWorker unregistered to clear cache');
+          }
         });
       });
     }
