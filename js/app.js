@@ -9,7 +9,7 @@ import { ExerciseUI } from './exerciseUI.js?v=39';
 import { EditorModal } from './editorModal.js?v=27';
 import { WorkoutPlanner } from './workoutPlanner.js?v=43';
 import { SoundEffects } from './soundEffects.js?v=27';
-import { useWorkoutStore, syncWorkoutHistory, syncCustomExercises } from './store.js?v=6';
+import { useWorkoutStore, syncWorkoutHistory, syncCustomExercises, syncRoutines } from './store.js?v=6';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
 import { DashboardUI } from './dashboardUI.js?v=12';
 import { ProgressionModal } from './progressionModal.js?v=2';
@@ -197,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (session) {
         await syncWorkoutHistory();
         await syncCustomExercises();
+        await syncRoutines();
         if (dashboardUI) dashboardUI.renderProgressChart();
       }
     });

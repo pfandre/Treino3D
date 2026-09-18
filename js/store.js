@@ -144,6 +144,51 @@ export async function syncCustomExercises() {
   }
 }
 
+/** Salva o JSON de Rotinas no Supabase */
+export async function saveRoutinesToCloud(jsonStr) {
+  if (!window.supabase) return;
+  const { data: { session } } = await window.supabase.auth.getSession();
+  if (!session) return;
+  
+  try {
+    const jsonObj = JSON.parse(jsonStr);
+    await window.supabase.from('user_routines').upsert({ 
+      user_id: session.user.id, 
+      routines_json: jsonObj 
+    });
+  } catch (err) {
+    console.error("Erro ao salvar rotinas na nuvem:", err);
+  }
+}
+
+/** Puxa as Rotinas da nuvem e mescla no localStorage */
+export async function syncRoutines() {
+  if (!window.supabase) return;
+  const { data: { session } } = await window.supabase.auth.getSession();
+  if (!session) return;
+
+  try {
+    const { data, error } = await window.supabase
+      .from('user_routines')
+      .select('routines_json')
+      .eq('user_id', session.user.id)
+      .single();
+      
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+
+    if (data && data.routines_json) {
+      localStorage.setItem('gym_muscle_app_routines', JSON.stringify(data.routines_json));
+      // Avisar a classe WorkoutPlanner para renderizar novamente, se estiver instanciada
+      // Mas isso normalmente roda no boot, então os dados estarão no localStorage antes
+      // do Planner ser aberto.
+    }
+  } catch (err) {
+    console.error("Erro ao sincronizar rotinas da nuvem:", err);
+  }
+}
+
 function createStore(createState) {
   let state;
   const listeners = new Set();

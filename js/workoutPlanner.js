@@ -2,7 +2,7 @@
  * WorkoutPlanner - Criador Avançado de Rotinas de Treino & Métricas Atléticas
  */
 import { MUSCLE_DATABASE } from './database.js';
-import { useWorkoutStore } from './store.js';
+import { useWorkoutStore, saveRoutinesToCloud } from './store.js?v=7';
 
 export class WorkoutPlanner {
   constructor(options) {
@@ -970,7 +970,10 @@ export class WorkoutPlanner {
 
   saveRoutinesToStorage() {
     try {
-      localStorage.setItem('gym_muscle_app_routines', JSON.stringify(this.routines));
+      const jsonStr = JSON.stringify(this.routines);
+      localStorage.setItem('gym_muscle_app_routines', jsonStr);
+      // Sincronizar com a nuvem
+      saveRoutinesToCloud(jsonStr);
     } catch (e) {
       console.warn("Erro ao salvar rotinas:", e);
     }
