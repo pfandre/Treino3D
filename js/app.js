@@ -11,10 +11,11 @@ import { WorkoutPlanner } from './workoutPlanner.js?v=43';
 import { SoundEffects } from './soundEffects.js?v=27';
 import { useWorkoutStore } from './store.js?v=2';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
-import { DashboardUI } from './dashboardUI.js?v=10';
+import { DashboardUI } from './dashboardUI.js?v=11';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
 import { AuthUI } from './authUI.js?v=6';
+import { ProfileModal } from './profileModal.js?v=1';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
@@ -37,14 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let dashboardUI = null;
   let progressionModal = null;
   let workoutDetailsModal = null;
+  let profileModal = null;
 
   // 1. Inicializar Sintetizador de Efeitos Sonoros
   soundEffects = new SoundEffects();
 
   // Inicializar UIs de Gráficos
   dashboardUI = new DashboardUI();
-  progressionModal = new ProgressionModal();
-  workoutDetailsModal = new WorkoutDetailsModal();
+  window.progressionModal = new ProgressionModal();
+  window.workoutDetailsModal = new WorkoutDetailsModal();
+  window.profileModal = new ProfileModal();
+  profileModal = window.profileModal;
 
   // 1.5 Inicializar UI do Treino Ativo (observador global)
   new ActiveWorkoutUI(soundEffects);

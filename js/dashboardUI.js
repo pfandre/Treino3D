@@ -358,35 +358,14 @@ export class DashboardUI {
         });
       }
 
-      // Bind evento do botão editar nickname
-      const btnEdit = container.querySelector('#btn-edit-nickname');
-      if (btnEdit) {
-        btnEdit.addEventListener('click', async () => {
-          const newNickname = prompt("Digite seu novo Nickname:", window.currentNickname !== 'Atleta' ? window.currentNickname : '');
-          if (newNickname && newNickname.trim() !== '') {
-            try {
-              if (!window.supabase) throw new Error("Conexão não inicializada.");
-              
-              const btnIcon = btnEdit.querySelector('i');
-              if(btnIcon) btnIcon.setAttribute('data-lucide', 'loader-2');
-              if(btnIcon) btnIcon.classList.add('animate-spin');
-              if(window.lucide) window.lucide.createIcons({ root: btnEdit });
-
-              const { data, error } = await window.supabase.auth.updateUser({
-                data: { nickname: newNickname.trim() }
-              });
-              if (error) throw error;
-              
-              // Atualiza local e re-renderiza
-              window.currentNickname = newNickname.trim();
-              
-              // Força a atualização do Header UI
-              if (window.authUI) window.authUI.checkSession();
-              
-              this.renderProgressChart();
-            } catch (err) {
-              alert("Erro ao atualizar apelido: " + err.message);
-            }
+      // Substituindo o antigo "prompt" pelo novo Modal de Perfil Completo
+      const btnEditNickname = container.querySelector('#btn-edit-nickname');
+      if (btnEditNickname) {
+        btnEditNickname.addEventListener('click', () => {
+          if (window.profileModal) {
+            window.profileModal.open();
+          } else {
+            alert("Modal de perfil ainda não carregado.");
           }
         });
       }
