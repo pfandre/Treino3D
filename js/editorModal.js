@@ -3,6 +3,7 @@
  */
 
 import { MUSCLE_DATABASE } from './database.js';
+import { saveCustomExercisesToCloud } from './store.js?v=5';
 
 export class EditorModal {
   constructor(onSaveSuccessCallback) {
@@ -163,7 +164,11 @@ export class EditorModal {
       Object.keys(MUSCLE_DATABASE).forEach(cat => {
         customData[cat] = MUSCLE_DATABASE[cat].exercises;
       });
-      localStorage.setItem('gym_muscle_app_custom_exercises', JSON.stringify(customData));
+      const jsonStr = JSON.stringify(customData);
+      localStorage.setItem('gym_muscle_app_custom_exercises', jsonStr);
+      
+      // Sincroniza com a nuvem
+      saveCustomExercisesToCloud(jsonStr);
     } catch (e) {
       console.warn("Não foi possível salvar no localStorage:", e);
     }

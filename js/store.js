@@ -94,7 +94,53 @@ export async function syncWorkoutHistory() {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(formattedHistory));
     }
   } catch (err) {
-    console.error("Erro ao sincronizar treinos:", err);
+    console.error("Erro ao sincronizar treinos da nuvem:", err);
+  }
+}
+
+/** Salva o JSON de exercícios personalizados no Supabase */
+export async function saveCustomExercisesToCloud(jsonStr) {
+  if (!window.supabase) return;
+  const { data: { session } } = await window.supabase.auth.getSession();
+  if (!session) return;
+  
+  try {
+    const jsonObj = JSON.parse(jsonStr);
+    await window.supabase.from('custom_data').upsert({ 
+      user_id: session.user.id, 
+      exercises_json: jsonObj 
+    });
+  } catch (err) {
+    console.error("Erro ao salvar exercícios customizados na nuvem:", err);
+  }
+}
+
+/** Puxa os exercícios customizados da nuvem e mescla no localStorage */
+export async function syncCustomExercises() {
+  if (!window.supabase) return;
+  const { data: { session } } = await window.supabase.auth.getSession();
+  if (!session) return;
+
+  try {
+    const { data, error } = await window.supabase
+      .from('custom_data')
+      .select('exercises_json')
+      .eq('user_id', session.user.id)
+      .single();
+      
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+
+    if (data && data.exercises_json) {
+      localStorage.setItem('gym_muscle_app_custom_exercises', JSON.stringify(data.exercises_json));
+      // Avisar a classe EditorModal para reler do disco
+      if (window.EditorModal) {
+         window.EditorModal.loadPersistedData();
+      }
+    }
+  } catch (err) {
+    console.error("Erro ao sincronizar exercícios customizados:", err);
   }
 }
 

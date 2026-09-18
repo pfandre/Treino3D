@@ -9,7 +9,7 @@ import { ExerciseUI } from './exerciseUI.js?v=39';
 import { EditorModal } from './editorModal.js?v=27';
 import { WorkoutPlanner } from './workoutPlanner.js?v=43';
 import { SoundEffects } from './soundEffects.js?v=27';
-import { useWorkoutStore } from './store.js?v=2';
+import { useWorkoutStore, syncWorkoutHistory, syncCustomExercises } from './store.js?v=6';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
 import { DashboardUI } from './dashboardUI.js?v=12';
 import { ProgressionModal } from './progressionModal.js?v=2';
@@ -173,9 +173,32 @@ document.addEventListener('DOMContentLoaded', () => {
     workoutDetailsModal.open(e.detail);
   });
 
+  document.addEventListener('workout-started', () => {
+    // Esconder o botão flutuante quando o treino iniciar
+    btnStartWorkout.classList.add('hidden');
+  });
+
+  document.addEventListener('workout-finished', () => {
+    // Mostrar o botão flutuante quando o treino finalizar
+    btnStartWorkout.classList.remove('hidden');
+    // Atualizar o histórico
+    if (dashboardUI) dashboardUI.renderProgressChart();
+  });
+
   if (btnNewEx) {
     btnNewEx.addEventListener('click', () => {
       editorModal.openForNew(exerciseUI.activeCategory);
+    });
+  }
+
+  // Sincronizar Histórico e Exercícios com a nuvem quando logar
+  if (window.supabase) {
+    window.supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        await syncWorkoutHistory();
+        await syncCustomExercises();
+        if (dashboardUI) dashboardUI.renderProgressChart();
+      }
     });
   }
 
