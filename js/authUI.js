@@ -217,16 +217,38 @@ export class AuthUI {
     if (session) {
       // User is logged in
       const displayName = session.user.user_metadata?.nickname || session.user.email.split('@')[0];
+      window.currentNickname = displayName;
+      
       headerBtn.innerHTML = `<i data-lucide="log-out"></i> Sair (${displayName})`;
       headerBtn.title = `Logado como: ${session.user.email}`;
       headerBtn.classList.remove('btn-primary');
       headerBtn.classList.add('btn-secondary'); // Estilo alternativo se existir
+
+      // Atualiza o overlay do modelo 3D
+      const overlay = document.getElementById('model-nickname-overlay');
+      if (overlay) {
+        overlay.innerHTML = `<i data-lucide="user" class="w-3 h-3 inline-block mr-1"></i> ${displayName}`;
+        overlay.style.opacity = '1';
+      }
     } else {
       // User is logged out
+      window.currentNickname = 'Atleta';
+
       headerBtn.innerHTML = '<i data-lucide="user"></i> Entrar';
       headerBtn.title = 'Fazer Login';
       headerBtn.classList.add('btn-primary');
       headerBtn.classList.remove('btn-secondary');
+
+      // Oculta o overlay do modelo 3D
+      const overlay = document.getElementById('model-nickname-overlay');
+      if (overlay) {
+        overlay.style.opacity = '0';
+      }
+    }
+    
+    // Força atualização do Dashboard se ele já estiver carregado
+    if (window.dashboardUI) {
+      window.dashboardUI.renderProgressChart();
     }
     
     if (window.lucide) window.lucide.createIcons();

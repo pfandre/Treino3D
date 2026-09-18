@@ -111,7 +111,7 @@ export class DashboardUI {
       });
 
     return {
-      user: { name: 'Atleta', streak, split: treinosNoMes > 0 ? this._guessSplit(history) : '—' },
+      user: { name: window.currentNickname || 'Atleta', streak, split: treinosNoMes > 0 ? this._guessSplit(history) : '—' },
       metrics: [
         {
           label: 'Treinos no Mês', value: treinosNoMes, icon: 'dumbbell',
@@ -357,6 +357,39 @@ export class DashboardUI {
           this.renderProgressChart();
         });
       }
+
+      // Bind evento do botão editar nickname
+      const btnEdit = container.querySelector('#btn-edit-nickname');
+      if (btnEdit) {
+        btnEdit.addEventListener('click', async () => {
+          const newNickname = prompt("Digite seu novo Nickname:", window.currentNickname !== 'Atleta' ? window.currentNickname : '');
+          if (newNickname && newNickname.trim() !== '') {
+            try {
+              if (!window.supabase) throw new Error("Conexão não inicializada.");
+              
+              const btnIcon = btnEdit.querySelector('i');
+              if(btnIcon) btnIcon.setAttribute('data-lucide', 'loader-2');
+              if(btnIcon) btnIcon.classList.add('animate-spin');
+              if(window.lucide) window.lucide.createIcons({ root: btnEdit });
+
+              const { data, error } = await window.supabase.auth.updateUser({
+                data: { nickname: newNickname.trim() }
+              });
+              if (error) throw error;
+              
+              // Atualiza local e re-renderiza
+              window.currentNickname = newNickname.trim();
+              
+              // Força a atualização do Header UI
+              if (window.authUI) window.authUI.checkSession();
+              
+              this.renderProgressChart();
+            } catch (err) {
+              alert("Erro ao atualizar apelido: " + err.message);
+            }
+          }
+        });
+      }
     });
   }
 
@@ -373,8 +406,11 @@ export class DashboardUI {
         <!-- ══════ HEADER ══════ -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
-              Olá, ${user.name} 👋
+            <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight flex items-center gap-2">
+              Olá, <span id="dash-user-name">${user.name}</span> 👋
+              <button id="btn-edit-nickname" class="text-slate-500 hover:text-[#84CC16] transition-colors p-1" title="Editar Apelido">
+                <i data-lucide="edit-2" class="w-5 h-5"></i>
+              </button>
             </h1>
             <p class="text-slate-400 text-sm mt-1">
               Seu resumo de desempenho e evolução

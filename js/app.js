@@ -11,10 +11,10 @@ import { WorkoutPlanner } from './workoutPlanner.js?v=43';
 import { SoundEffects } from './soundEffects.js?v=27';
 import { useWorkoutStore } from './store.js?v=2';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
-import { DashboardUI } from './dashboardUI.js?v=8';
+import { DashboardUI } from './dashboardUI.js?v=9';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
-import { AuthUI } from './authUI.js?v=3';
+import { AuthUI } from './authUI.js?v=4';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
@@ -50,9 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
   new ActiveWorkoutUI(soundEffects);
 
   // Inicializar Autenticação
-  new AuthUI();
+  window.authUI = new AuthUI();
 
-
+  // Exportar Dashboard para acesso global rápido (ex: ao editar nickname)
+  window.dashboardUI = dashboardUI;
 
   // 2. Inicializar Montador de Treino
   workoutPlanner = new WorkoutPlanner({
