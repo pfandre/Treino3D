@@ -15,10 +15,60 @@ export function loadWorkoutHistory() {
 }
 
 /** Salva um registro de treino concluído */
-function saveWorkoutRecord(record) {
+export async function saveWorkoutRecord(record) {
   const history = loadWorkoutHistory();
   history.push(record);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+  // Tenta salvar no Supabase se estiver logado
+  if (window.supabase) {
+    const { data: { session } } = await window.supabase.auth.getSession();
+    if (session) {
+      try {
+        await window.supabase.from('workouts').insert([{
+          user_id: session.user.id,
+          name: record.name,
+          date: record.date,
+          start_time: record.startTime,
+          duration_seconds: record.durationSeconds,
+          duration_label: record.durationLabel
+        }]);
+      } catch (err) {
+        console.error("Erro ao salvar no Supabase:", err);
+      }
+    }
+  }
+}
+
+/** Sincroniza os treinos da nuvem com o localStorage ao fazer login */
+export async function syncWorkoutHistory() {
+  if (!window.supabase) return;
+  const { data: { session } } = await window.supabase.auth.getSession();
+  if (!session) return;
+
+  try {
+    const { data: cloudWorkouts, error } = await window.supabase
+      .from('workouts')
+      .select('*')
+      .order('date', { ascending: true });
+
+    if (error) throw error;
+    if (cloudWorkouts && cloudWorkouts.length > 0) {
+      // Converte do formato do banco para o formato do app
+      const formattedHistory = cloudWorkouts.map(cw => ({
+        name: cw.name,
+        date: cw.date,
+        startTime: cw.start_time,
+        durationSeconds: cw.duration_seconds,
+        durationLabel: cw.duration_label
+      }));
+      
+      // Substitui o histórico local pelo da nuvem (fonte da verdade)
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(formattedHistory));
+    }
+  } catch (err) {
+    console.error("Erro ao sincronizar treinos:", err);
+  }
 }
 
 function createStore(createState) {

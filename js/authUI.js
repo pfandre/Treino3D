@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js?v=2';
+import { syncWorkoutHistory } from './store.js?v=3';
 
 export class AuthUI {
   constructor() {
@@ -89,11 +90,15 @@ export class AuthUI {
     });
 
     // Escutar mudanças de estado do Supabase
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
       this.updateHeaderUI(session);
       if (event === 'SIGNED_IN') {
         if (this.mode !== 'update_password') {
           this.hideModal();
+          await syncWorkoutHistory();
+          if (window.dashboardUI) {
+            window.dashboardUI.renderProgressChart();
+          }
         }
       } else if (event === 'PASSWORD_RECOVERY') {
         this.setMode('update_password');

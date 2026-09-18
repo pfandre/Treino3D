@@ -11,10 +11,10 @@ import { WorkoutPlanner } from './workoutPlanner.js?v=43';
 import { SoundEffects } from './soundEffects.js?v=27';
 import { useWorkoutStore } from './store.js?v=2';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
-import { DashboardUI } from './dashboardUI.js?v=9';
+import { DashboardUI } from './dashboardUI.js?v=10';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
-import { AuthUI } from './authUI.js?v=5';
+import { AuthUI } from './authUI.js?v=6';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
