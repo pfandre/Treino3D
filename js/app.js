@@ -14,7 +14,7 @@ import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
 import { DashboardUI } from './dashboardUI.js?v=9';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
-import { AuthUI } from './authUI.js?v=4';
+import { AuthUI } from './authUI.js?v=5';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();

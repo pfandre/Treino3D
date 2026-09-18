@@ -27,9 +27,12 @@ export class AuthUI {
               <label class="block text-sm font-medium text-slate-300 mb-1">E-mail</label>
               <input type="email" id="auth-email" required class="w-full bg-[#0F172A] border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-[#84CC16] focus:ring-1 focus:ring-[#84CC16] transition-all" placeholder="seu@email.com">
             </div>
-            <div>
+            <div id="password-field-container">
               <label class="block text-sm font-medium text-slate-300 mb-1">Senha</label>
               <input type="password" id="auth-password" required class="w-full bg-[#0F172A] border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-[#84CC16] focus:ring-1 focus:ring-[#84CC16] transition-all" placeholder="••••••••">
+              <div class="flex justify-end mt-1">
+                <button type="button" id="btn-forgot-password" class="text-xs text-[#84CC16] hover:underline">Esqueci minha senha?</button>
+              </div>
             </div>
 
             <div id="auth-error" class="text-red-400 text-sm hidden bg-red-400/10 p-3 rounded-lg border border-red-400/20"></div>
@@ -40,9 +43,10 @@ export class AuthUI {
             </button>
           </form>
 
-          <div class="mt-6 text-center text-sm text-slate-400">
+          <div id="auth-footer" class="mt-6 text-center text-sm text-slate-400">
             <span id="auth-switch-text">Não tem uma conta?</span>
-            <button id="btn-switch-auth" class="text-[#84CC16] hover:underline font-medium ml-1">Cadastre-se</button>
+            <button type="button" id="btn-switch-auth" class="text-[#84CC16] hover:underline font-medium ml-1">Cadastre-se</button>
+            <br><button type="button" id="btn-back-to-login" class="text-[#84CC16] hover:underline font-medium mt-2 hidden">Voltar para o Login</button>
           </div>
         </div>
       </div>
@@ -52,12 +56,19 @@ export class AuthUI {
     this.modal = document.getElementById('auth-modal');
     this.form = document.getElementById('auth-form');
     this.nicknameContainer = document.getElementById('nickname-field-container');
+    this.passwordContainer = document.getElementById('password-field-container');
     this.nicknameInput = document.getElementById('auth-nickname');
     this.emailInput = document.getElementById('auth-email');
     this.passwordInput = document.getElementById('auth-password');
     this.errorBox = document.getElementById('auth-error');
     this.successBox = document.getElementById('auth-success');
-    this.isLoginMode = true;
+    this.btnForgotPassword = document.getElementById('btn-forgot-password');
+    this.btnBackToLogin = document.getElementById('btn-back-to-login');
+    this.authFooter = document.getElementById('auth-footer');
+    this.switchBtn = document.getElementById('btn-switch-auth');
+    this.switchText = document.getElementById('auth-switch-text');
+    
+    this.mode = 'login'; // login | register | recovery | update_password
 
     // Refresh icons
     if (window.lucide) {
@@ -66,8 +77,10 @@ export class AuthUI {
   }
 
   setupEventListeners() {
-    // Alternar entre Login e Cadastro
-    document.getElementById('btn-switch-auth').addEventListener('click', () => this.toggleMode());
+    // Alternar modos
+    this.switchBtn.addEventListener('click', () => this.setMode(this.mode === 'login' ? 'register' : 'login'));
+    this.btnForgotPassword.addEventListener('click', () => this.setMode('recovery'));
+    this.btnBackToLogin.addEventListener('click', () => this.setMode('login'));
 
     // Submissão do Formulário
     this.form.addEventListener('submit', async (e) => {
@@ -75,11 +88,16 @@ export class AuthUI {
       await this.handleSubmit();
     });
 
-    // Escutar mudanças de estado do Supabase (Login/Logout detectados de fora)
+    // Escutar mudanças de estado do Supabase
     supabase.auth.onAuthStateChange((event, session) => {
       this.updateHeaderUI(session);
       if (event === 'SIGNED_IN') {
-        this.hideModal();
+        if (this.mode !== 'update_password') {
+          this.hideModal();
+        }
+      } else if (event === 'PASSWORD_RECOVERY') {
+        this.setMode('update_password');
+        this.showModal();
       }
     });
 
@@ -99,32 +117,57 @@ export class AuthUI {
     }
   }
 
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
+  setMode(newMode) {
+    this.mode = newMode;
     const title = document.getElementById('auth-title');
     const subtitle = document.getElementById('auth-subtitle');
     const submitBtn = document.querySelector('#btn-auth-submit span');
-    const switchText = document.getElementById('auth-switch-text');
-    const switchBtn = document.getElementById('btn-switch-auth');
 
     this.hideMessages();
 
-    if (this.isLoginMode) {
+    // Reseta visibilidade
+    this.nicknameContainer.classList.add('hidden');
+    this.nicknameInput.removeAttribute('required');
+    this.passwordContainer.classList.remove('hidden');
+    this.passwordInput.setAttribute('required', 'true');
+    this.btnForgotPassword.classList.add('hidden');
+    this.btnBackToLogin.classList.add('hidden');
+    this.switchText.style.display = 'inline';
+    this.switchBtn.style.display = 'inline';
+
+    if (this.mode === 'login') {
       title.textContent = 'Entrar';
       subtitle.textContent = 'Faça login para salvar seus treinos';
       submitBtn.textContent = 'Entrar';
-      switchText.textContent = 'Não tem uma conta?';
-      switchBtn.textContent = 'Cadastre-se';
-      this.nicknameContainer.classList.add('hidden');
-      this.nicknameInput.removeAttribute('required');
-    } else {
+      this.switchText.textContent = 'Não tem uma conta?';
+      this.switchBtn.textContent = 'Cadastre-se';
+      this.btnForgotPassword.classList.remove('hidden');
+    } else if (this.mode === 'register') {
       title.textContent = 'Criar Conta';
       subtitle.textContent = 'Cadastre-se gratuitamente';
       submitBtn.textContent = 'Cadastrar';
-      switchText.textContent = 'Já tem uma conta?';
-      switchBtn.textContent = 'Entrar';
+      this.switchText.textContent = 'Já tem uma conta?';
+      this.switchBtn.textContent = 'Entrar';
       this.nicknameContainer.classList.remove('hidden');
       this.nicknameInput.setAttribute('required', 'true');
+    } else if (this.mode === 'recovery') {
+      title.textContent = 'Recuperar Senha';
+      subtitle.textContent = 'Digite seu e-mail para receber o link';
+      submitBtn.textContent = 'Enviar Link';
+      this.passwordContainer.classList.add('hidden');
+      this.passwordInput.removeAttribute('required');
+      this.switchText.style.display = 'none';
+      this.switchBtn.style.display = 'none';
+      this.btnBackToLogin.classList.remove('hidden');
+    } else if (this.mode === 'update_password') {
+      title.textContent = 'Criar Nova Senha';
+      subtitle.textContent = 'Digite sua nova senha abaixo';
+      submitBtn.textContent = 'Atualizar Senha';
+      this.emailInput.parentElement.classList.add('hidden');
+      this.emailInput.removeAttribute('required');
+      this.switchText.style.display = 'none';
+      this.switchBtn.style.display = 'none';
+      this.btnBackToLogin.classList.remove('hidden');
     }
   }
 
@@ -136,39 +179,50 @@ export class AuthUI {
     
     this.hideMessages();
     submitBtn.disabled = true;
+    const originalText = submitBtn.querySelector('span').textContent;
     submitBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> Processando...';
     if (window.lucide) window.lucide.createIcons();
 
     try {
-      if (this.isLoginMode) {
+      if (this.mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         this.showSuccess('Login realizado com sucesso!');
-      } else {
+      } else if (this.mode === 'register') {
         const { error } = await supabase.auth.signUp({ 
-          email, 
-          password,
-          options: {
-            data: {
-              nickname: nickname
-            }
-          }
+          email, password, options: { data: { nickname: nickname } }
         });
         if (error) throw error;
         this.showSuccess('Conta criada com sucesso! Você já pode fazer login.');
         setTimeout(() => {
-          this.toggleMode(); // Volta pra tela de login
-          this.emailInput.value = email; // Preenche o email para facilitar
+          this.setMode('login');
+          this.emailInput.value = email;
+        }, 2000);
+      } else if (this.mode === 'recovery') {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + window.location.pathname
+        });
+        if (error) throw error;
+        this.showSuccess('Link de recuperação enviado para o seu e-mail!');
+      } else if (this.mode === 'update_password') {
+        const { error } = await supabase.auth.updateUser({ password: password });
+        if (error) throw error;
+        this.showSuccess('Senha atualizada com sucesso!');
+        setTimeout(() => {
+          this.hideModal();
+          this.emailInput.parentElement.classList.remove('hidden');
+          this.setMode('login'); // Restaura o estado normal para a próxima vez
         }, 2000);
       }
     } catch (error) {
       let msg = error.message;
       if (msg.includes('Invalid login credentials')) msg = 'E-mail ou senha incorretos.';
       if (msg.includes('Password should be at least')) msg = 'A senha deve ter pelo menos 6 caracteres.';
+      if (msg.includes('User not found')) msg = 'Usuário não encontrado.';
       this.showError(msg);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `<span>${this.isLoginMode ? 'Entrar' : 'Cadastrar'}</span>`;
+      submitBtn.innerHTML = `<span>${originalText}</span>`;
     }
   }
 
