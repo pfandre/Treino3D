@@ -4,7 +4,7 @@
  * Quando não há dados, exibe estado vazio elegante.
  */
 
-import { loadWorkoutHistory } from './store.js';
+import { loadWorkoutHistory, deleteWorkoutRecord } from './store.js?v=4';
 import { MUSCLE_DATABASE } from './database.js';
 
 const SET_RECORDS_KEY = 'treino3d_set_records';
@@ -308,43 +308,51 @@ export class DashboardUI {
 
       // Bind evento do botão excluir
       container.querySelectorAll('.btn-delete-workout').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
           if (!confirm("Tem certeza que deseja apagar este treino do histórico?")) return;
           try {
             const index = e.currentTarget.dataset.index;
             if (this._lastRecentWorkouts && this._lastRecentWorkouts[index]) {
               const wData = this._lastRecentWorkouts[index];
-              const history = JSON.parse(localStorage.getItem('treino3d_workout_history')) || [];
-              const realIndex = history.findIndex(h => h.date === wData.original.date);
-              if (realIndex > -1) {
-                history.splice(realIndex, 1);
-                localStorage.setItem('treino3d_workout_history', JSON.stringify(history));
-                
-                // Remove as séries do localStorage que pertenciam a este treino
-                const originalWorkout = wData.original;
-                const endTime = new Date(originalWorkout.date).getTime();
-                const exactStartTime = originalWorkout.startTime ? new Date(originalWorkout.startTime).getTime() : (endTime - (originalWorkout.durationSeconds || 3600) * 1000);
-                const startTimeWindow = exactStartTime - (1 * 60 * 1000);
-                const endTimeWindow = endTime + (1 * 60 * 1000);
-                
-                let setRecords = [];
-                try {
-                  setRecords = JSON.parse(localStorage.getItem('treino3d_set_records')) || [];
-                } catch(e) {}
-                
-                const remainingSets = setRecords.filter(r => {
-                  const setTime = new Date(r.date).getTime();
-                  // Mantém as séries que estão FORA da janela de tempo deste treino
-                  return setTime < startTimeWindow || setTime > endTimeWindow;
-                });
-                
-                localStorage.setItem('treino3d_set_records', JSON.stringify(remainingSets));
-                
-                this.renderProgressChart(); // Recarrega o dashboard
+              const originalWorkout = wData.original;
+              
+              // Estado de loading visual na lixeira
+              const btnIcon = e.currentTarget.querySelector('i');
+              if (btnIcon) {
+                btnIcon.setAttribute('data-lucide', 'loader-2');
+                btnIcon.classList.add('animate-spin');
+                if (window.lucide) window.lucide.createIcons({ root: e.currentTarget });
               }
+              e.currentTarget.disabled = true;
+
+              // Apaga localmente e na Nuvem via store.js
+              await deleteWorkoutRecord(originalWorkout.date);
+              
+              // Remove as séries (sets) do localStorage que pertenciam a este treino
+              const endTime = new Date(originalWorkout.date).getTime();
+              const exactStartTime = originalWorkout.startTime ? new Date(originalWorkout.startTime).getTime() : (endTime - (originalWorkout.durationSeconds || 3600) * 1000);
+              const startTimeWindow = exactStartTime - (1 * 60 * 1000);
+              const endTimeWindow = endTime + (1 * 60 * 1000);
+              
+              let setRecords = [];
+              try {
+                setRecords = JSON.parse(localStorage.getItem('treino3d_set_records')) || [];
+              } catch(e) {}
+              
+              const remainingSets = setRecords.filter(r => {
+                const setTime = new Date(r.date).getTime();
+                // Mantém as séries que estão FORA da janela de tempo deste treino
+                return setTime < startTimeWindow || setTime > endTimeWindow;
+              });
+              
+              localStorage.setItem('treino3d_set_records', JSON.stringify(remainingSets));
+              
+              // Atualizar Dashboard
+              this.renderProgressChart();
             }
           } catch (err) {
-            console.error("Erro ao apagar treino:", err);
+            console.error("Erro ao deletar treino:", err);
+            alert("Erro ao excluir treino: " + err.message);
           }
         });
       });

@@ -40,6 +40,33 @@ export async function saveWorkoutRecord(record) {
   }
 }
 
+/** Exclui um treino do histórico local e da nuvem (via data) */
+export async function deleteWorkoutRecord(date) {
+  // 1. Remove do localStorage
+  const history = loadWorkoutHistory();
+  const realIndex = history.findIndex(h => h.date === date);
+  if (realIndex > -1) {
+    history.splice(realIndex, 1);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }
+
+  // 2. Tenta remover do Supabase se estiver logado
+  if (window.supabase) {
+    const { data: { session } } = await window.supabase.auth.getSession();
+    if (session) {
+      try {
+        await window.supabase
+          .from('workouts')
+          .delete()
+          .eq('date', date)
+          .eq('user_id', session.user.id);
+      } catch (err) {
+        console.error("Erro ao deletar no Supabase:", err);
+      }
+    }
+  }
+}
+
 /** Sincroniza os treinos da nuvem com o localStorage ao fazer login */
 export async function syncWorkoutHistory() {
   if (!window.supabase) return;
