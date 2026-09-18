@@ -3,6 +3,7 @@
  */
 
 import { MUSCLE_DATABASE } from './database.js';
+import { saveCustomExercisesToCloud } from './store.js?v=8';
 
 export class ExerciseUI {
   constructor(options) {
@@ -258,6 +259,9 @@ export class ExerciseUI {
             <button class="btn-add-to-routine flex items-center justify-center w-9 h-9 rounded-full transition-all text-lime-400 hover:bg-lime-500/20 hover:text-lime-300 hover:scale-105" title="Adicionar ao Treino Atual">
               <i data-lucide="plus" class="w-[20px] h-[20px] pointer-events-none"></i>
             </button>
+            <button class="btn-delete-ex flex items-center justify-center w-9 h-9 rounded-full transition-all text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:scale-105" title="Excluir Exercício">
+              <i data-lucide="trash-2" class="w-[18px] h-[18px] pointer-events-none"></i>
+            </button>
           </div>
         </div>
       `;
@@ -316,6 +320,29 @@ export class ExerciseUI {
 
       card.querySelector('.btn-edit-ex').addEventListener('click', () => {
         if (this.onEditExerciseCallback) this.onEditExerciseCallback(ex);
+      });
+
+      card.querySelector('.btn-delete-ex').addEventListener('click', () => {
+        if (confirm(`Tem certeza que deseja excluir o exercício "${ex.name}" permanentemente? Isso removerá o exercício do banco de dados.`)) {
+          const category = MUSCLE_DATABASE[ex.categoryId];
+          if (category) {
+            category.exercises = category.exercises.filter(e => e.id !== ex.id);
+            
+            const customData = {};
+            Object.keys(MUSCLE_DATABASE).forEach(cat => {
+              customData[cat] = MUSCLE_DATABASE[cat].exercises;
+            });
+            const jsonStr = JSON.stringify(customData);
+            localStorage.setItem('gym_muscle_app_custom_exercises', jsonStr);
+            saveCustomExercisesToCloud(jsonStr);
+            
+            this.renderExerciseList();
+            
+            if (window.workoutPlanner) {
+               window.workoutPlanner.showNotification(`"${ex.name}" excluído.`);
+            }
+          }
+        }
       });
 
       this.listContainer.appendChild(card);
