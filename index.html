@@ -81,7 +81,15 @@
           <i data-lucide="calendar"></i> Montar Treino
         </button>
       </div>
-      <button id="btn-header-auth" class="btn-primary" style="margin-left: 16px; font-size: 0.85rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
+      <div id="header-user-actions" class="hidden items-center gap-1.5 ml-4">
+        <button id="btn-header-edit-profile" class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Editar Perfil / Medidas">
+          <i data-lucide="edit-2" class="w-[15px] h-[15px] pointer-events-none"></i>
+        </button>
+        <button id="btn-header-change-password" class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Alterar Senha">
+          <i data-lucide="key" class="w-[15px] h-[15px] pointer-events-none"></i>
+        </button>
+      </div>
+      <button id="btn-header-auth" class="btn-primary" style="margin-left: 10px; font-size: 0.85rem; padding: 8px 16px; display: flex; align-items: center; gap: 6px;">
         <i data-lucide="user"></i> Entrar
       </button>
     </div>
@@ -200,7 +208,7 @@
   <div id="profile-modal-root"></div>
 
   <!-- Script Principal App Orchestrator -->
-  <script type="module" src="js/app.js?v=79"></script>
+  <script type="module" src="js/app.js?v=80"></script>
 
   <!-- Remove PWA Service Worker to prevent caching issues during development -->
   <script>

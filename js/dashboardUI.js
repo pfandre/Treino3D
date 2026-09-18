@@ -365,47 +365,6 @@ export class DashboardUI {
           this.renderProgressChart();
         });
       }
-
-      // Substituindo o antigo "prompt" pelo novo Modal de Perfil Completo
-      const btnEditNickname = container.querySelector('#btn-edit-nickname');
-      if (btnEditNickname) {
-        btnEditNickname.addEventListener('click', () => {
-          if (window.profileModal) {
-            window.profileModal.open();
-          } else {
-            alert("Modal de perfil ainda não carregado.");
-          }
-        });
-      }
-
-      // Bind evento do botão trocar senha
-      const btnChangePwd = container.querySelector('#btn-change-password');
-      if (btnChangePwd) {
-        btnChangePwd.addEventListener('click', async () => {
-          const newPassword = prompt("Digite a sua nova senha (mínimo 6 caracteres):");
-          if (newPassword && newPassword.trim().length >= 6) {
-            try {
-              if (!window.supabase) throw new Error("Conexão não inicializada.");
-              
-              const btnIcon = btnChangePwd.querySelector('i');
-              if(btnIcon) btnIcon.setAttribute('data-lucide', 'loader-2');
-              if(btnIcon) btnIcon.classList.add('animate-spin');
-              if(window.lucide) window.lucide.createIcons({ root: btnChangePwd });
-
-              const { error } = await window.supabase.auth.updateUser({
-                password: newPassword.trim()
-              });
-              if (error) throw error;
-              
-              alert("Senha alterada com sucesso!");
-              this.renderProgressChart();
-            } catch (err) {
-              alert("Erro ao atualizar senha: " + err.message);
-            }
-          } else if (newPassword) {
-            alert("A senha deve ter pelo menos 6 caracteres.");
-          }
-        });
       }
     });
   }
@@ -425,12 +384,6 @@ export class DashboardUI {
           <div>
             <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight flex items-center gap-2 flex-wrap">
               Olá, <span id="dash-user-name">${user.name}</span> 👋
-              <button id="btn-edit-nickname" class="text-slate-500 hover:text-[#84CC16] transition-colors p-1 bg-slate-800 rounded-lg shadow-sm border border-slate-700" title="Editar Apelido">
-                <i data-lucide="edit-2" class="w-4 h-4"></i>
-              </button>
-              <button id="btn-change-password" class="text-slate-500 hover:text-[#84CC16] transition-colors p-1 bg-slate-800 rounded-lg shadow-sm border border-slate-700 ml-1" title="Trocar Senha">
-                <i data-lucide="key" class="w-4 h-4"></i>
-              </button>
             </h1>
             <p class="text-slate-400 text-sm mt-1">
               Seu resumo de desempenho e evolução

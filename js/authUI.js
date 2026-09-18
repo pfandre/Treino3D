@@ -271,6 +271,7 @@ export class AuthUI {
 
   updateHeaderUI(session) {
     const headerBtn = document.getElementById('btn-header-auth');
+    const headerActions = document.getElementById('header-user-actions');
     if (!headerBtn) return;
 
     if (session) {
@@ -283,6 +284,11 @@ export class AuthUI {
       headerBtn.classList.remove('btn-primary');
       headerBtn.classList.add('btn-secondary'); // Estilo alternativo se existir
 
+      if (headerActions) {
+        headerActions.classList.remove('hidden');
+        headerActions.classList.add('flex');
+      }
+
       // Atualiza o overlay do modelo 3D
       const overlay = document.getElementById('model-nickname-overlay');
       if (overlay) {
@@ -293,12 +299,16 @@ export class AuthUI {
       // User is logged out
       window.currentNickname = 'Atleta';
 
-      headerBtn.innerHTML = '<i data-lucide="user"></i> Entrar';
-      headerBtn.title = 'Fazer Login';
+      headerBtn.innerHTML = `<i data-lucide="user"></i> Entrar`;
+      headerBtn.title = `Fazer Login`;
       headerBtn.classList.add('btn-primary');
       headerBtn.classList.remove('btn-secondary');
 
-      // Oculta o overlay do modelo 3D
+      if (headerActions) {
+        headerActions.classList.add('hidden');
+        headerActions.classList.remove('flex');
+      }
+
       const overlay = document.getElementById('model-nickname-overlay');
       if (overlay) {
         overlay.style.opacity = '0';

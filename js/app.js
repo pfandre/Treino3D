@@ -207,6 +207,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const btnProfileHeader = document.getElementById('btn-header-edit-profile');
+  if (btnProfileHeader) {
+    btnProfileHeader.addEventListener('click', () => {
+      if (profileModal) profileModal.open();
+    });
+  }
+
+  const btnChangePwdHeader = document.getElementById('btn-header-change-password');
+  if (btnChangePwdHeader) {
+    btnChangePwdHeader.addEventListener('click', async () => {
+      const newPassword = prompt("Digite a sua nova senha (mínimo 6 caracteres):");
+      if (newPassword && newPassword.trim().length >= 6) {
+        try {
+          if (!window.supabase) throw new Error("Conexão não inicializada.");
+          
+          const btnIcon = btnChangePwdHeader.querySelector('i');
+          if(btnIcon) btnIcon.setAttribute('data-lucide', 'loader-2');
+          if(btnIcon) btnIcon.classList.add('animate-spin');
+          if(window.lucide) window.lucide.createIcons({ root: btnChangePwdHeader });
+
+          const { error } = await window.supabase.auth.updateUser({
+            password: newPassword.trim()
+          });
+          if (error) throw error;
+          
+          alert("Senha alterada com sucesso!");
+        } catch (err) {
+          alert("Erro ao atualizar senha: " + err.message);
+        } finally {
+          const btnIcon = btnChangePwdHeader.querySelector('i');
+          if(btnIcon) btnIcon.setAttribute('data-lucide', 'key');
+          if(btnIcon) btnIcon.classList.remove('animate-spin');
+          if(window.lucide) window.lucide.createIcons({ root: btnChangePwdHeader });
+        }
+      } else if (newPassword) {
+        alert("A senha deve ter pelo menos 6 caracteres.");
+      }
+    });
+  }
+
   // 9. Troca de Abas Principais (Explorador vs Montador de Treino)
   const tabBtnExplorer = document.getElementById('tab-btn-explorer');
   const mobBtnExplorer = document.getElementById('mobile-tab-btn-explorer');
