@@ -39,7 +39,7 @@ export class ProfileModal {
           <div class="grid grid-cols-2 gap-4">
             <!-- Peso -->
             <div>
-              <label class="block text-sm font-medium text-slate-400 mb-1">Peso (kg)</label>
+              <label class="block text-sm font-medium text-slate-400 mb-1">Peso Atual (kg)</label>
               <input type="number" step="0.1" id="profile-weight" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 outline-none focus:border-[#84CC16] focus:ring-1 focus:ring-[#84CC16] transition-all" placeholder="Ex: 80.5">
             </div>
             

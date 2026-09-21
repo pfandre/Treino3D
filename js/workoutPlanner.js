@@ -282,17 +282,17 @@ export class WorkoutPlanner {
         </div>
         
         <div style="display: flex; gap: 8px;">
-          <button id="btn-rename-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px;">
-            <i data-lucide="edit-2" style="width: 14px;"></i> Renomear Atual
+          <button id="btn-rename-routine" class="btn-secondary" style="padding: 8px 12px; display: flex; align-items: center; justify-content: center;" title="Renomear Atual">
+            <i data-lucide="edit-2" style="width: 16px; height: 16px;"></i>
           </button>
-          <button id="btn-delete-routine" class="btn-secondary" style="font-size: 0.82rem; padding: 8px 12px; display: flex; align-items: center; gap: 6px; color: #ef4444;">
-            <i data-lucide="trash-2" style="width: 14px;"></i> Apagar Atual
+          <button id="btn-delete-routine" class="btn-secondary" style="padding: 8px 12px; display: flex; align-items: center; justify-content: center; color: #ef4444;" title="Apagar Atual">
+            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
           </button>
           <button id="btn-export-workout" class="btn-primary" style="padding: 8px 12px; display: flex; align-items: center; justify-content: center;" title="Imprimir / Exportar">
             <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
           </button>
-          <button id="btn-start-planner-workout" class="flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-black px-4 py-2 rounded-md font-semibold transition-colors shadow-lg shadow-lime-500/20" style="font-size: 0.82rem;">
-            <i data-lucide="play" style="width: 14px;"></i> Iniciar Treino
+          <button id="btn-start-planner-workout" class="bg-lime-500 hover:bg-lime-600 text-black px-4 py-2 flex items-center justify-center rounded-md transition-colors shadow-lg shadow-lime-500/20" title="Iniciar Treino">
+            <i data-lucide="play" style="width: 16px; height: 16px;"></i>
           </button>
         </div>
       </div>

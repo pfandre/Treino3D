@@ -74,6 +74,9 @@
         <button id="tab-btn-dashboard" class="nav-tab-btn">
           <i data-lucide="bar-chart-2"></i> Dashboard
         </button>
+        <button id="tab-btn-metas" class="nav-tab-btn">
+          <i data-lucide="user"></i> Perfil e Metas
+        </button>
         <button id="tab-btn-explorer" class="nav-tab-btn active">
           <i data-lucide="compass"></i> Explorar
         </button>
@@ -82,9 +85,7 @@
         </button>
       </div>
       <div id="header-user-actions" class="hidden items-center gap-1.5 ml-4">
-        <button id="btn-header-edit-profile" class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Editar Perfil / Medidas">
-          <i data-lucide="edit-2" class="w-[15px] h-[15px] pointer-events-none"></i>
-        </button>
+
         <button id="btn-header-change-password" class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Alterar Senha">
           <i data-lucide="key" class="w-[15px] h-[15px] pointer-events-none"></i>
         </button>
@@ -183,6 +184,11 @@
         <!-- Renderizado inteiramente via DashboardUI.js -->
       </div>
 
+      <!-- Painel de Metas (Oculto por Padrão) -->
+      <div id="metas-panel-content" style="display: none; overflow-y: auto; padding: 0; width: 100%; height: 100%; flex-direction: column;">
+        <!-- Renderizado inteiramente via MetasUI.js -->
+      </div>
+
     </section>
 
   </main>
@@ -192,6 +198,10 @@
     <button id="mobile-tab-btn-dashboard" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
       <i data-lucide="bar-chart-2" stroke-width="1.5"></i>
       <span class="text-[10px] font-semibold tracking-wide uppercase">Stats</span>
+    </button>
+    <button id="mobile-tab-btn-metas" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
+      <i data-lucide="user" stroke-width="1.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide uppercase">Perfil</span>
     </button>
     <button id="mobile-tab-btn-explorer" class="flex flex-col items-center justify-center w-full h-full text-[#84CC16] gap-1 transition-all">
       <i data-lucide="compass" stroke-width="1.5"></i>

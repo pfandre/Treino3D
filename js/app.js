@@ -12,6 +12,7 @@ import { SoundEffects } from './soundEffects.js?v=27';
 import { useWorkoutStore, syncWorkoutHistory, syncCustomExercises, syncRoutines } from './store.js?v=6';
 import { ActiveWorkoutUI } from './activeWorkoutUI.js?v=1';
 import { DashboardUI } from './dashboardUI.js?v=12';
+import { MetasUI } from './metasUI.js?v=1';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
 import { AuthUI } from './authUI.js?v=6';
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let workoutPlanner = null;
   let soundEffects = null;
   let dashboardUI = null;
+  let metasUI = null;
   let progressionModal = null;
   let workoutDetailsModal = null;
   let profileModal = null;
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar UIs de Gráficos
   dashboardUI = new DashboardUI();
+  metasUI = new MetasUI();
   window.progressionModal = new ProgressionModal();
   window.workoutDetailsModal = new WorkoutDetailsModal();
   window.profileModal = new ProfileModal();
@@ -254,65 +257,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobBtnPlanner = document.getElementById('mobile-tab-btn-planner');
   const tabBtnDashboard = document.getElementById('tab-btn-dashboard');
   const mobBtnDashboard = document.getElementById('mobile-tab-btn-dashboard');
+  const tabBtnMetas = document.getElementById('tab-btn-metas');
+  const mobBtnMetas = document.getElementById('mobile-tab-btn-metas');
 
   const explorerPanel = document.getElementById('explorer-panel-content');
   const plannerPanel = document.getElementById('planner-panel-content');
   const dashboardPanel = document.getElementById('dashboard-panel-content');
+  const metasPanel = document.getElementById('metas-panel-content');
 
   function switchTab(tabId) {
+    // Esconde todos
+    if (explorerPanel) explorerPanel.style.display = 'none';
+    if (plannerPanel) plannerPanel.style.display = 'none';
+    if (dashboardPanel) dashboardPanel.style.display = 'none';
+    if (metasPanel) metasPanel.style.display = 'none';
+
+    // Desativa tabs desktop
+    if (tabBtnExplorer) tabBtnExplorer.classList.remove('active');
+    if (tabBtnPlanner) tabBtnPlanner.classList.remove('active');
+    if (tabBtnDashboard) tabBtnDashboard.classList.remove('active');
+    if (tabBtnMetas) tabBtnMetas.classList.remove('active');
+
+    // Desativa tabs mobile
+    if (mobBtnExplorer) { mobBtnExplorer.classList.add('text-slate-400'); mobBtnExplorer.classList.remove('text-[#84CC16]'); }
+    if (mobBtnPlanner) { mobBtnPlanner.classList.add('text-slate-400'); mobBtnPlanner.classList.remove('text-[#84CC16]'); }
+    if (mobBtnDashboard) { mobBtnDashboard.classList.add('text-slate-400'); mobBtnDashboard.classList.remove('text-[#84CC16]'); }
+    if (mobBtnMetas) { mobBtnMetas.classList.add('text-slate-400'); mobBtnMetas.classList.remove('text-[#84CC16]'); }
+
     if (tabId === 'explorer') {
-      explorerPanel.style.display = 'flex';
-      plannerPanel.style.display = 'none';
-      dashboardPanel.style.display = 'none';
-      
-      tabBtnExplorer.classList.add('active');
-      tabBtnPlanner.classList.remove('active');
-      if (tabBtnDashboard) tabBtnDashboard.classList.remove('active');
-
-      mobBtnExplorer.classList.add('text-[#84CC16]');
-      mobBtnExplorer.classList.remove('text-slate-400');
-      mobBtnPlanner.classList.add('text-slate-400');
-      mobBtnPlanner.classList.remove('text-[#84CC16]');
-      if (mobBtnDashboard) {
-        mobBtnDashboard.classList.add('text-slate-400');
-        mobBtnDashboard.classList.remove('text-[#84CC16]');
-      }
+      if (explorerPanel) explorerPanel.style.display = 'flex';
+      if (tabBtnExplorer) tabBtnExplorer.classList.add('active');
+      if (mobBtnExplorer) { mobBtnExplorer.classList.add('text-[#84CC16]'); mobBtnExplorer.classList.remove('text-slate-400'); }
     } else if (tabId === 'planner') {
-      explorerPanel.style.display = 'none';
-      plannerPanel.style.display = 'flex';
-      dashboardPanel.style.display = 'none';
-
-      tabBtnPlanner.classList.add('active');
-      tabBtnExplorer.classList.remove('active');
-      if (tabBtnDashboard) tabBtnDashboard.classList.remove('active');
-
-      mobBtnPlanner.classList.add('text-[#84CC16]');
-      mobBtnPlanner.classList.remove('text-slate-400');
-      mobBtnExplorer.classList.add('text-slate-400');
-      mobBtnExplorer.classList.remove('text-[#84CC16]');
-      if (mobBtnDashboard) {
-        mobBtnDashboard.classList.add('text-slate-400');
-        mobBtnDashboard.classList.remove('text-[#84CC16]');
-      }
+      if (plannerPanel) plannerPanel.style.display = 'flex';
+      if (tabBtnPlanner) tabBtnPlanner.classList.add('active');
+      if (mobBtnPlanner) { mobBtnPlanner.classList.add('text-[#84CC16]'); mobBtnPlanner.classList.remove('text-slate-400'); }
     } else if (tabId === 'dashboard') {
-      explorerPanel.style.display = 'none';
-      plannerPanel.style.display = 'none';
-      dashboardPanel.style.display = 'block';
-
+      if (dashboardPanel) dashboardPanel.style.display = 'block';
       if (tabBtnDashboard) tabBtnDashboard.classList.add('active');
-      tabBtnExplorer.classList.remove('active');
-      tabBtnPlanner.classList.remove('active');
-
-      if (mobBtnDashboard) {
-        mobBtnDashboard.classList.add('text-[#84CC16]');
-        mobBtnDashboard.classList.remove('text-slate-400');
-      }
-      mobBtnExplorer.classList.add('text-slate-400');
-      mobBtnExplorer.classList.remove('text-[#84CC16]');
-      mobBtnPlanner.classList.add('text-slate-400');
-      mobBtnPlanner.classList.remove('text-[#84CC16]');
-
-      dashboardUI.renderProgressChart();
+      if (mobBtnDashboard) { mobBtnDashboard.classList.add('text-[#84CC16]'); mobBtnDashboard.classList.remove('text-slate-400'); }
+      if (dashboardUI) dashboardUI.renderProgressChart();
+    } else if (tabId === 'metas') {
+      if (metasPanel) metasPanel.style.display = 'flex';
+      if (tabBtnMetas) tabBtnMetas.classList.add('active');
+      if (mobBtnMetas) { mobBtnMetas.classList.add('text-[#84CC16]'); mobBtnMetas.classList.remove('text-slate-400'); }
+      if (metasUI) metasUI.render();
     }
     
     if (soundEffects) soundEffects.playSelect();
@@ -321,10 +310,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tabBtnExplorer) tabBtnExplorer.addEventListener('click', () => switchTab('explorer'));
   if (tabBtnPlanner) tabBtnPlanner.addEventListener('click', () => switchTab('planner'));
   if (tabBtnDashboard) tabBtnDashboard.addEventListener('click', () => switchTab('dashboard'));
+  if (tabBtnMetas) tabBtnMetas.addEventListener('click', () => switchTab('metas'));
 
   if (mobBtnExplorer) mobBtnExplorer.addEventListener('click', () => switchTab('explorer'));
   if (mobBtnPlanner) mobBtnPlanner.addEventListener('click', () => switchTab('planner'));
   if (mobBtnDashboard) mobBtnDashboard.addEventListener('click', () => switchTab('dashboard'));
+  if (mobBtnMetas) mobBtnMetas.addEventListener('click', () => switchTab('metas'));
 
   if (window.lucide) {
     window.lucide.createIcons();
