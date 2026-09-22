@@ -92,16 +92,35 @@ export class AdminUI {
     if (adminBtn) {
       adminBtn.addEventListener('click', () => this.open());
     }
+
+    const adminBtnMobile = document.getElementById('btn-admin-dashboard-mobile');
+    if (adminBtnMobile) {
+      adminBtnMobile.addEventListener('click', () => this.open());
+    }
   }
 
   checkAdminPrivileges(session) {
     const adminBtn = document.getElementById('btn-admin-dashboard');
-    if (!adminBtn) return;
+    const adminBtnMobile = document.getElementById('btn-admin-dashboard-mobile');
 
-    if (session && session.user && session.user.email === this.adminEmail) {
-      adminBtn.classList.remove('hidden');
-    } else {
-      adminBtn.classList.add('hidden');
+    const isAdmin = session && session.user && session.user.email === this.adminEmail;
+
+    if (adminBtn) {
+      if (isAdmin) {
+        adminBtn.classList.remove('hidden');
+      } else {
+        adminBtn.classList.add('hidden');
+      }
+    }
+
+    if (adminBtnMobile) {
+      if (isAdmin) {
+        adminBtnMobile.classList.remove('hidden');
+        adminBtnMobile.classList.add('flex');
+      } else {
+        adminBtnMobile.classList.add('hidden');
+        adminBtnMobile.classList.remove('flex');
+      }
     }
   }
 
