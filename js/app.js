@@ -17,6 +17,7 @@ import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
 import { AuthUI } from './authUI.js?v=6';
 import { ProfileModal } from './profileModal.js?v=1';
+import { AdminUI } from './adminUI.js?v=1';
 
 document.addEventListener('DOMContentLoaded', () => {
   EditorModal.loadPersistedData();
@@ -58,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar Autenticação
   window.authUI = new AuthUI();
+
+  // Inicializar Painel Administrativo
+  window.adminUI = new AdminUI();
 
   // Exportar Dashboard para acesso global rápido (ex: ao editar nickname)
   window.dashboardUI = dashboardUI;

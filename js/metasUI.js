@@ -93,7 +93,7 @@ export class MetasUI {
             <i data-lucide="user" class="text-slate-300 group-hover:text-[#84CC16] w-6 h-6 mb-2 transition-colors"></i>
             <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Atleta</div>
             <div class="flex items-center w-full mt-1">
-              <input type="text" id="inline-nickname" class="bg-transparent text-center text-white font-bold text-lg w-full outline-none focus:ring-1 focus:ring-[#84CC16] rounded transition-all placeholder:text-slate-600" placeholder="Seu nome" value="${p.nickname}">
+              <input type="text" id="inline-nickname" autocomplete="off" class="bg-transparent text-center text-white font-bold text-lg w-full outline-none focus:ring-1 focus:ring-[#84CC16] rounded transition-all placeholder:text-slate-600" placeholder="Seu nome" value="${p.nickname}">
             </div>
           </div>
           
@@ -145,14 +145,7 @@ export class MetasUI {
           </div>
         </div>
 
-        <!-- Bio Card (Frase de Identificação) -->
-        <div class="w-full max-w-4xl bg-slate-900/50 border border-slate-800 rounded-xl p-5 shadow-lg mb-8 hover:border-[#84CC16] hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(132,204,22,0.3)] transition-all duration-300 group cursor-text" onclick="document.getElementById('inline-bio').focus()">
-          <div class="flex items-center gap-2 mb-2">
-            <i data-lucide="quote" class="text-slate-300 group-hover:text-[#84CC16] w-5 h-5 transition-colors"></i>
-            <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Sua Frase de Identificação</div>
-          </div>
-          <input type="text" id="inline-bio" class="bg-transparent text-white text-lg w-full outline-none focus:ring-1 focus:ring-[#84CC16] rounded transition-all placeholder:text-slate-600 italic" placeholder="Ex: Gosto de treinar todos os dias pela manhã..." value="${p.bio}">
-        </div>
+
 
         <!-- Área Central: Velocímetro -->
         <div class="w-full max-w-4xl bg-slate-900/30 border border-slate-800/50 rounded-2xl p-6 md:p-10 flex flex-col items-center relative shadow-2xl">
@@ -219,7 +212,7 @@ export class MetasUI {
   }
 
   attachEventListeners() {
-    const inputs = ['inline-nickname', 'inline-start-weight', 'inline-weight', 'inline-target-weight', 'inline-height', 'inline-bio'];
+    const inputs = ['inline-nickname', 'inline-start-weight', 'inline-weight', 'inline-target-weight', 'inline-height'];
     
     inputs.forEach(id => {
       const el = document.getElementById(id);
@@ -278,17 +271,15 @@ export class MetasUI {
     this.profileData.targetWeight = document.getElementById('inline-target-weight').value;
     this.profileData.height = document.getElementById('inline-height').value;
     this.profileData.goal = document.getElementById('inline-goal').value;
-    this.profileData.bio = document.getElementById('inline-bio').value;
 
     const p = this.profileData;
 
-    // 1. Salva valores locais no LocalStorage (Peso Inicial, Peso Alvo, Peso Atual, Bio)
+    // 1. Salva valores locais no LocalStorage (Peso Inicial, Peso Alvo, Peso Atual)
     // Agora salvamos associado ao objetivo ativo para ter perfis independentes
     const activeGoal = p.goal;
     localStorage.setItem(`metas_sw_${this.session.user.id}_${activeGoal}`, p.startWeight);
     localStorage.setItem(`metas_tw_${this.session.user.id}_${activeGoal}`, p.targetWeight);
     localStorage.setItem(`metas_cw_${this.session.user.id}_${activeGoal}`, p.weight);
-    localStorage.setItem(`metas_bio_${this.session.user.id}`, p.bio);
 
     // Update nickname in auth se alterou
     if (p.nickname && p.nickname !== (this.session.user.user_metadata?.nickname)) {
@@ -311,7 +302,8 @@ export class MetasUI {
         id: this.session.user.id,
         weight: p.weight ? parseFloat(p.weight) : null,
         height: p.height ? parseFloat(p.height) : null,
-        goal: p.goal
+        goal: p.goal,
+        nickname: p.nickname
       };
 
       const { error } = await window.supabase.from('profiles').upsert(supabaseData);

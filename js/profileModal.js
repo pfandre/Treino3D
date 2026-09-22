@@ -207,7 +207,8 @@ export class ProfileModal {
         id: session.user.id,
         weight: weight ? parseFloat(weight) : null,
         height: height ? parseFloat(height) : null,
-        goal: goal
+        goal: goal,
+        nickname: nickname
       };
 
       const { error: profileError } = await window.supabase
