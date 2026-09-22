@@ -740,11 +740,7 @@ export class AuthUI {
         headerActions.classList.add('flex');
       }
 
-      const overlay = document.getElementById('model-nickname-overlay');
-      if (overlay) {
-        overlay.innerHTML = `<i data-lucide="user" class="w-3 h-3 inline-block mr-1"></i> ${displayName}`;
-        overlay.style.opacity = '1';
-      }
+
     } else {
       window.currentNickname = 'Atleta';
       
@@ -769,10 +765,7 @@ export class AuthUI {
         headerActions.classList.remove('flex');
       }
 
-      const overlay = document.getElementById('model-nickname-overlay');
-      if (overlay) {
-        overlay.style.opacity = '0';
-      }
+
     }
     
     if (window.dashboardUI) {
