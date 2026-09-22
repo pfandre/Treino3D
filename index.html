@@ -204,24 +204,48 @@
 
   </main>
 
-  <!-- Mobile Bottom Navigation (Glassmorphism) -->
-  <nav class="fixed bottom-0 left-0 right-0 z-[100] w-full h-[70px] bg-[#0F172A]/80 backdrop-blur-xl border-t border-white/5 flex items-center justify-around md:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
-    <button id="mobile-tab-btn-dashboard" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
-      <i data-lucide="bar-chart-2" stroke-width="1.5"></i>
-      <span class="text-[10px] font-semibold tracking-wide uppercase">Stats</span>
-    </button>
-    <button id="mobile-tab-btn-metas" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
-      <i data-lucide="user" stroke-width="1.5"></i>
-      <span class="text-[10px] font-semibold tracking-wide uppercase">Perfil</span>
-    </button>
-    <button id="mobile-tab-btn-explorer" class="flex flex-col items-center justify-center w-full h-full text-[#84CC16] gap-1 transition-all">
-      <i data-lucide="compass" stroke-width="1.5"></i>
-      <span class="text-[10px] font-semibold tracking-wide uppercase">Explorar</span>
-    </button>
-    <button id="mobile-tab-btn-planner" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-[#84CC16] gap-1 transition-all">
-      <i data-lucide="calendar" stroke-width="1.5"></i>
-      <span class="text-[10px] font-semibold tracking-wide uppercase">Treino</span>
-    </button>
+  <!-- Mobile Bottom Navigation (Premium Animated) -->
+  <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 z-[100] w-full md:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
+    <!-- Glassmorphism background bar -->
+    <div class="relative flex items-end justify-around h-[75px]">
+      <!-- Background shape with notch -->
+      <div class="absolute inset-0 bg-[#0F172A]/90 backdrop-blur-2xl border-t border-white/[0.06] rounded-t-2xl shadow-[0_-8px_32px_rgba(0,0,0,0.5)]"></div>
+
+      <!-- Stats -->
+      <button id="mobile-tab-btn-dashboard" class="mobile-nav-item text-slate-500" data-tab="dashboard">
+        <div class="mobile-nav-icon-wrap">
+          <i data-lucide="bar-chart-2" stroke-width="1.8"></i>
+        </div>
+        <span class="mobile-nav-label">Stats</span>
+        <div class="mobile-nav-indicator"></div>
+      </button>
+
+      <!-- Perfil -->
+      <button id="mobile-tab-btn-metas" class="mobile-nav-item text-slate-500" data-tab="metas">
+        <div class="mobile-nav-icon-wrap">
+          <i data-lucide="user" stroke-width="1.8"></i>
+        </div>
+        <span class="mobile-nav-label">Perfil</span>
+        <div class="mobile-nav-indicator"></div>
+      </button>
+
+      <!-- Explorar (Central Floating Button) -->
+      <button id="mobile-tab-btn-explorer" class="mobile-nav-center-btn active" data-tab="explorer">
+        <div class="mobile-nav-center-ring"></div>
+        <div class="mobile-nav-center-inner">
+          <i data-lucide="compass" stroke-width="2"></i>
+        </div>
+      </button>
+
+      <!-- Treino -->
+      <button id="mobile-tab-btn-planner" class="mobile-nav-item text-slate-500" data-tab="planner">
+        <div class="mobile-nav-icon-wrap">
+          <i data-lucide="calendar" stroke-width="1.8"></i>
+        </div>
+        <span class="mobile-nav-label">Treino</span>
+        <div class="mobile-nav-indicator"></div>
+      </button>
+    </div>
   </nav>
 
   <!-- Container for Modals -->

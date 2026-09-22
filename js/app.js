@@ -282,29 +282,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabBtnDashboard) tabBtnDashboard.classList.remove('active');
     if (tabBtnMetas) tabBtnMetas.classList.remove('active');
 
-    // Desativa tabs mobile
-    if (mobBtnExplorer) { mobBtnExplorer.classList.add('text-slate-400'); mobBtnExplorer.classList.remove('text-[#84CC16]'); }
-    if (mobBtnPlanner) { mobBtnPlanner.classList.add('text-slate-400'); mobBtnPlanner.classList.remove('text-[#84CC16]'); }
-    if (mobBtnDashboard) { mobBtnDashboard.classList.add('text-slate-400'); mobBtnDashboard.classList.remove('text-[#84CC16]'); }
-    if (mobBtnMetas) { mobBtnMetas.classList.add('text-slate-400'); mobBtnMetas.classList.remove('text-[#84CC16]'); }
+    // Desativa tabs mobile (regular items)
+    const mobileItems = [mobBtnDashboard, mobBtnMetas, mobBtnPlanner];
+    mobileItems.forEach(btn => {
+      if (btn) {
+        btn.classList.remove('active');
+        btn.classList.add('text-slate-500');
+        btn.classList.remove('text-[#84CC16]');
+      }
+    });
+    // Desativa center button
+    if (mobBtnExplorer) mobBtnExplorer.classList.remove('active');
 
     if (tabId === 'explorer') {
       if (explorerPanel) explorerPanel.style.display = 'flex';
       if (tabBtnExplorer) tabBtnExplorer.classList.add('active');
-      if (mobBtnExplorer) { mobBtnExplorer.classList.add('text-[#84CC16]'); mobBtnExplorer.classList.remove('text-slate-400'); }
+      if (mobBtnExplorer) mobBtnExplorer.classList.add('active');
     } else if (tabId === 'planner') {
       if (plannerPanel) plannerPanel.style.display = 'flex';
       if (tabBtnPlanner) tabBtnPlanner.classList.add('active');
-      if (mobBtnPlanner) { mobBtnPlanner.classList.add('text-[#84CC16]'); mobBtnPlanner.classList.remove('text-slate-400'); }
+      if (mobBtnPlanner) { mobBtnPlanner.classList.add('active'); mobBtnPlanner.classList.remove('text-slate-500'); }
     } else if (tabId === 'dashboard') {
       if (dashboardPanel) dashboardPanel.style.display = 'block';
       if (tabBtnDashboard) tabBtnDashboard.classList.add('active');
-      if (mobBtnDashboard) { mobBtnDashboard.classList.add('text-[#84CC16]'); mobBtnDashboard.classList.remove('text-slate-400'); }
+      if (mobBtnDashboard) { mobBtnDashboard.classList.add('active'); mobBtnDashboard.classList.remove('text-slate-500'); }
       if (dashboardUI) dashboardUI.renderProgressChart();
     } else if (tabId === 'metas') {
       if (metasPanel) metasPanel.style.display = 'flex';
       if (tabBtnMetas) tabBtnMetas.classList.add('active');
-      if (mobBtnMetas) { mobBtnMetas.classList.add('text-[#84CC16]'); mobBtnMetas.classList.remove('text-slate-400'); }
+      if (mobBtnMetas) { mobBtnMetas.classList.add('active'); mobBtnMetas.classList.remove('text-slate-500'); }
       if (metasUI) metasUI.render();
     }
     
