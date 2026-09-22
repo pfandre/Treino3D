@@ -478,7 +478,7 @@ body {
 /* Controls Bar */
 .model-controls-bar {
   position: absolute;
-  top: 80px;
+  top: 140px;
   left: 12px;
   display: flex;
   flex-direction: column;
