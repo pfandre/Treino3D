@@ -1,6 +1,6 @@
 {
-  "liveServer.settings.port": 5500,
-  "liveServer.settings.root": "/",
-  "fiveServer.port": 5500,
-  "fiveServer.root": "."
+  "fiveServer.port": 3000,
+  "liveServer.settings.port": 3000,
+  "fiveServer.root": ".",
+  "liveServer.settings.root": "/"
 }

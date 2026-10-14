@@ -1,5 +1,5 @@
 module.exports = {
-  port: 5500,
+  port: 3000,
   root: ".",
   open: true,
   wait: 1000
