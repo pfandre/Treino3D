@@ -15,7 +15,7 @@ import { DashboardUI } from './dashboardUI.js?v=12';
 import { MetasUI } from './metasUI.js?v=1';
 import { ProgressionModal } from './progressionModal.js?v=2';
 import { WorkoutDetailsModal } from './workoutDetailsModal.js?v=2';
-import { AuthUI } from './authUI.js?v=6';
+import { AuthUI } from './authUI.js?v=7';
 import { ProfileModal } from './profileModal.js?v=1';
 import { AdminUI } from './adminUI.js?v=1';
 

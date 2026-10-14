@@ -5,8 +5,21 @@ export class AuthUI {
   constructor() {
     this.lampOn = true;
     this.createAuthModal();
+
+    // Detecta previamente se abriu a página a partir de um link de recuperação de senha
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const searchParams = new URLSearchParams(window.location.search);
+    const isRecovery = hashParams.get('type') === 'recovery' || searchParams.get('type') === 'recovery';
+    if (isRecovery) {
+      this.setMode('update_password');
+    }
+
     this.setupEventListeners();
     this.checkSession();
+
+    if (isRecovery) {
+      this.showModal();
+    }
     
     // Auto-logout por inatividade (30 minutos = 1.800.000 ms)
     this.inactivityTimeout = null;
@@ -478,6 +491,8 @@ export class AuthUI {
     this.hideMessages();
 
     // Reseta visibilidade
+    this.emailInput.parentElement.classList.remove('hidden');
+    this.emailInput.setAttribute('required', 'true');
     this.nicknameContainer.classList.add('hidden');
     this.nicknameInput.removeAttribute('required');
     this.passwordContainer.classList.remove('hidden');
@@ -575,10 +590,12 @@ export class AuthUI {
       } else if (this.mode === 'update_password') {
         const { error } = await supabase.auth.updateUser({ password: password });
         if (error) throw error;
+        if (window.location.hash || window.location.search) {
+          window.history.replaceState(null, null, window.location.pathname);
+        }
         this.showSuccess('Senha atualizada com sucesso!');
         setTimeout(() => {
           this.hideModal();
-          this.emailInput.parentElement.classList.remove('hidden');
           this.setMode('login'); // Restaura o estado normal
         }, 2000);
       }
